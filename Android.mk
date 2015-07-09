@@ -53,4 +53,4 @@ LOCAL_PREBUILT_LIBS += libweibosdkcore:libs/armeabi/libweibosdkcore.so
 LOCAL_MODULE_TAGS := optional  
 include $(BUILD_MULTI_PREBUILT)  
 
-include $(call all-makefiles-under,$(LOCAL_PATH))
+# include $(call all-makefiles-under,$(LOCAL_PATH))

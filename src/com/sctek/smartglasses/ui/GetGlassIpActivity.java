@@ -1,6 +1,7 @@
 package com.sctek.smartglasses.ui;
 
 import cn.ingenic.glasssync.R;
+import cn.ingenic.glasssync.SyncApp;
 import cn.ingenic.glasssync.screen.LiveDisplayActivity;
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
@@ -78,7 +79,7 @@ public class GetGlassIpActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_get_glasses_ip);
 		Log.e(TAG, "onCreate");
-		
+		SyncApp.getInstance().addActivity(this);
 		setTitle(R.string.video_live);
 		getActionBar().setDisplayHomeAsUpEnabled(false);
 		getActionBar().setHomeButtonEnabled(false);
@@ -121,6 +122,7 @@ public class GetGlassIpActivity extends Activity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		unregisterReceiver(mApStateBroadcastReceiver);
+		SyncApp.getInstance().removeActivity(this);
 		super.onDestroy();
 	}
 	

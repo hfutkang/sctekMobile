@@ -66,23 +66,23 @@ public class DeviceTransaction extends Transaction {
 			ConnectionManager.getInstance().device2Device(cmd, res);
 			break;
 
-		case Commands.CMD_CLEAR_CALL_LOG:
-			DeviceModule.getInstance().getCallLogManager().watchClearFinished(Integer.valueOf(data));
-			break;
+		// case Commands.CMD_CLEAR_CALL_LOG:
+		// 	DeviceModule.getInstance().getCallLogManager().watchClearFinished(Integer.valueOf(data));
+		// 	break;
 			
-		case Commands.CMD_SYNC_CALL_LOG:
-			int syncRes = Integer.valueOf(data);
-			DeviceModule.getInstance().getCallLogManager().watchSyncFinished(syncRes);
-			break;
+		// case Commands.CMD_SYNC_CALL_LOG:
+		// 	int syncRes = Integer.valueOf(data);
+		// 	DeviceModule.getInstance().getCallLogManager().watchSyncFinished(syncRes);
+		// 	break;
 			
-		case Commands.CMD_SYNC_CALL_LOG_REQUEST:
-			DeviceModule.getInstance().getCallLogManager().syncIgnoreMode();
-			break;
+		// case Commands.CMD_SYNC_CALL_LOG_REQUEST:
+		// 	DeviceModule.getInstance().getCallLogManager().syncIgnoreMode();
+		// 	break;
 			
-		case Commands.CMD_SYNC_WATCH_ON_CLEAR:
-			DeviceModule.getInstance().getCallLogManager().reset();
-			DeviceModule.getInstance().getCallLogManager().sync();
-			break;
+		// case Commands.CMD_SYNC_WATCH_ON_CLEAR:
+		// 	DeviceModule.getInstance().getCallLogManager().reset();
+		// 	DeviceModule.getInstance().getCallLogManager().sync();
+		// 	break;
 			
 		case Commands.CMD_REQUEST_BATTERY:
 			BatteryInfoManager.getInstance().sendBatteryInfo();

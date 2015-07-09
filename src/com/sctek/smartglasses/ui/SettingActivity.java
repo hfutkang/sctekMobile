@@ -7,13 +7,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
-
+import cn.ingenic.glasssync.SyncApp;
 public class SettingActivity extends FragmentActivity {
 
 	private String TAG;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		SyncApp.getInstance().addActivity(this);
 		new Handler().post(new Runnable() {
 			
 			@SuppressLint("NewApi")
@@ -29,5 +30,10 @@ public class SettingActivity extends FragmentActivity {
 						.replace(android.R.id.content, settingGF, TAG).commit();
 			}
 		});
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		SyncApp.getInstance().removeActivity(this);
 	}
 }

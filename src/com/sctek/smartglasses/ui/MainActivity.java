@@ -66,13 +66,19 @@ public class MainActivity extends FragmentActivity {
 	
 	private DefaultSyncManager mSyncManager;
 
+	private static MainActivity mInstance = null;
+	public static MainActivity getInstance() {
+		return mInstance;
+	}
+	
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.myactivity_main);
 		getActionBar().hide();
-		
+		mInstance = this;
+		SyncApp.getInstance().addActivity(this);
 		photoIb = (ImageButton)findViewById(R.id.photo_ib);
 		videoIb = (ImageButton)findViewById(R.id.video_ib);
 		settingIb = (ImageButton)findViewById(R.id.setting_ib);
@@ -221,7 +227,13 @@ public class MainActivity extends FragmentActivity {
 		
 		builder.create().show();
 	}
-	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		Log.i(TAG,"onDestroy in");
+		mInstance = null;
+		SyncApp.getInstance().exitAllActivity();
+	}
 	private void unBond() {
 		GlassDetect glassDetect = (GlassDetect)GlassDetect.getInstance(getApplicationContext());
 		glassDetect.set_audio_disconnect();
