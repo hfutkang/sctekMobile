@@ -421,7 +421,8 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
         mConnectedHandler.removeCallbacks(runnable2);	
 	mWifiDeviceConnected = true;
 	
-	mLiveModule.sendQuitMessage();
+	if (mLiveModule != null)
+	    mLiveModule.sendQuitMessage();
 
 	super.onStop();
 	finish();
