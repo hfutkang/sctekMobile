@@ -12,11 +12,13 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.os.Build;
+import android.view.KeyEvent;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Dialog;
 import android.app.Application; 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.content.ComponentName;
@@ -318,6 +320,14 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	ProgressDialog pd = new ProgressDialog(LiveDisplayActivity.this); 
 	pd.setCancelable(false); 
 	pd.setMessage(LiveDisplayActivity.this.getString(R.string.live_dialog_loading)); 
+	pd.setOnKeyListener(new DialogInterface.OnKeyListener(){
+			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+				if (keyCode == KeyEvent.KEYCODE_BACK) {
+					finish();
+				}
+				return false;
+			}
+		});
 	return pd;
     }
 
@@ -411,6 +421,8 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
         mConnectedHandler.removeCallbacks(runnable2);	
 	mWifiDeviceConnected = true;
 	
+	mLiveModule.sendQuitMessage();
+
 	super.onStop();
 	finish();
     }
