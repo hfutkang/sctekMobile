@@ -32,6 +32,7 @@ public class LiveModule extends SyncModule {
     public static final String LIVE_NAME = "live_module";
     public static final String LIVE_SHARE = "live_share";
     public static final String LIVE_TRANSPORT_CMD = "live_transport_cmd";
+    public static final String LIVE_QUIT_CMD = "live_quit_cmd";
     public static final String LIVE_RTSP_URL = "live_rtsp_url";
 
     public static final String LIVE_WIFI_CONNECTED = "live_wifi_connected";
@@ -124,6 +125,19 @@ public class LiveModule extends SyncModule {
 	if (DEBUG) Log.e(TAG, "bool = " + bool);
 	try {
 	    if (DEBUG) Log.e(TAG, "---send data " + bool);
+	    send(data);
+	} catch (SyncException e) {
+	    Log.e(TAG, "---send file sync failed:" + e);
+	}
+    }
+
+    public void sendQuitMessage() {
+	SyncData data = new SyncData();
+	Log.e(TAG, "sendQuitMessage");
+	data.putInt(LIVE_SHARE, 1);
+	data.putBoolean(LIVE_QUIT_CMD, true);
+	try {
+	    Log.e(TAG, "---send quit message");
 	    send(data);
 	} catch (SyncException e) {
 	    Log.e(TAG, "---send file sync failed:" + e);

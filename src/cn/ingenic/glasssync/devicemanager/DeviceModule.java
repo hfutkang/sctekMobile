@@ -35,9 +35,9 @@ public class DeviceModule extends Module {
 		return mConnectionManager;
 	}
 
-	public CallLogManager getCallLogManager() {
-		return mCallLogManager;
-	}
+	// public CallLogManager getCallLogManager() {
+	// 	return mCallLogManager;
+	// }
 
     private DeviceModule() {
         super(MODULE, new String[]{FEATURE_CALLLOG, FEATURE_WEATHER, FEATURE_BATTERY, FEATURE_TIME, FEATURE_UNBIND});
@@ -63,7 +63,7 @@ public class DeviceModule extends Module {
         mConnectionManager = ConnectionManager.getInstance(context);
         
         //init calllog manager
-        mCallLogManager = CallLogManager.getInstance(context);
+        // mCallLogManager = CallLogManager.getInstance(context);
         
         //init battery manager
         mBatteryManager = BatteryInfoManager.init(mContext);
@@ -114,8 +114,8 @@ public class DeviceModule extends Module {
                 }else{
                     BatteryInfoManager.setFeature(mContext,false);
                 }
-		} else {
-			mCallLogManager.onDisconnected();
+		// } else {
+		// 	mCallLogManager.onDisconnected();
 		}
 	}
 
@@ -132,22 +132,22 @@ public class DeviceModule extends Module {
                     ConnectionManager.getInstance()
                             .device2Device(Commands.CMD_GET_TIME, time+","+timezoneId);
 				}
-			} else if (FEATURE_CALLLOG.equals(feature)) {
-				if (enabled) {
-					mCallLogManager.sync();
-				}
+			// } else if (FEATURE_CALLLOG.equals(feature)) {
+			// 	if (enabled) {
+			// 		mCallLogManager.sync();
+			// 	}
 			}
 	}
 
 	@Override
 	protected void onClear(String address) {
 		klilog.i("onClear.  address:"+address);
-		mCallLogManager.reset();
+		// mCallLogManager.reset();
 	}
 	
-	@Override
-	protected void onModeChanged(int mode) {
-			mCallLogManager.sync();
-	}
+	// @Override
+	// protected void onModeChanged(int mode) {
+	// 		mCallLogManager.sync();
+	// }
 
 }

@@ -3,7 +3,7 @@ package com.sctek.smartglasses.ui;
 import java.util.ArrayList;
 
 import cn.ingenic.glasssync.MediaSyncService;
-
+import cn.ingenic.glasssync.SyncApp;
 import com.sctek.smartglasses.fragments.NativePhotoGridFragment;
 import com.sctek.smartglasses.utils.MediaData;
 
@@ -26,6 +26,7 @@ public class PhotoActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		SyncApp.getInstance().addActivity(this);
 //		setContentView(R.layout.activity_photo);
 		new Handler().post(new Runnable() {
 			
@@ -73,6 +74,7 @@ public class PhotoActivity extends FragmentActivity {
 		// TODO Auto-generated method stub
 		unbindService(mConnection);
 		super.onDestroy();
+		SyncApp.getInstance().removeActivity(this);
 	}
 	
 	private ServiceConnection mConnection = new ServiceConnection() {

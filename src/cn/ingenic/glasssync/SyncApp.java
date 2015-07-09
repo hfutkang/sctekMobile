@@ -2,10 +2,11 @@ package cn.ingenic.glasssync;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-
+import java.util.LinkedList; 
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.Application;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.util.Log;
@@ -38,11 +39,13 @@ import java.util.List;
 
 public class SyncApp extends Application implements
 		Enviroment.EnviromentCallback {
-    public static final String SHARED_FILE_NAME = "Install";
+	public static final String SHARED_FILE_NAME = "Install";
+	private List<Activity> mActivityList = new LinkedList<Activity>();
+	public static SyncApp mInstance;
 	@Override
 	public void onCreate() {
 		super.onCreate();
-
+		mInstance = this;
 		if (LogTag.V) {
 			Log.d(LogTag.APP, "Sync App created.");
 		}
@@ -70,10 +73,10 @@ public class SyncApp extends Application implements
 		 	Log.i(LogTag.APP, "SystemModule is registed.");
 		 }
 
-		// DeviceModule dm = DeviceModule.getInstance();
-	        // if (manager.registModule(dm)) {
-		//     Log.i(LogTag.APP, "DeviceModule  registed");
-		// }
+		DeviceModule dm = DeviceModule.getInstance();
+	        if (manager.registModule(dm)) {
+		    Log.i(LogTag.APP, "DeviceModule  registed");
+		}
 
 		SyncModule contactLite = ContactsLiteModule.getInstance(this);
 		contactLite.getMidTableManager().startObserve();
@@ -167,6 +170,29 @@ public class SyncApp extends Application implements
 		}
 	    }
 	    return null;
+	}
+
+	public static SyncApp getInstance(){
+		return mInstance;
+	}
+	public void addActivity(Activity activity) { 
+		mActivityList.add(activity); 
+	}
+
+	public void removeActivity(Activity activity) { 
+		mActivityList.remove(activity); 
+	}
+	public void exitAllActivity() { 
+            try { 
+		    for (Activity activity:mActivityList) { 
+			    if (activity != null) 
+				    activity.finish(); 
+		    } 
+	    } catch (Exception e) { 
+		    e.printStackTrace(); 
+	    } finally { 
+		    // System.exit(0); 
+	    } 
 	}
     
 }

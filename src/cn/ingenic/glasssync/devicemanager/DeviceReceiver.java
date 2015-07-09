@@ -9,7 +9,7 @@ import android.util.Log;
 import cn.ingenic.glasssync.SyncApp;
 import cn.ingenic.glasssync.DefaultSyncManager;
 import cn.ingenic.glasssync.ui.BindGlassActivity;
-import cn.ingenic.glasssync.ui.Fragment_MainActivity;
+import com.sctek.smartglasses.ui.MainActivity;
 import cn.ingenic.glasssync.devicemanager.GlassDetect;
 
 public class DeviceReceiver extends DeviceAdminReceiver {
@@ -53,7 +53,7 @@ public class DeviceReceiver extends DeviceAdminReceiver {
 		    public void run() {
 		    DefaultSyncManager manager = DefaultSyncManager.getDefault();
 		    manager.setLockedAddress("",false);
-		    Log.d(TAG, "unbind setlockeraddress ok");
+		    Log.i(TAG, "unbind setlockeraddress ok");
 		    try {
 			Thread.sleep(1000);
 		    } catch (Exception e) {
@@ -64,19 +64,19 @@ public class DeviceReceiver extends DeviceAdminReceiver {
 
 		    manager.disconnect();
 		    
-		    if(Fragment_MainActivity.sMainActivity != null){
-			Intent intent = new Intent(Fragment_MainActivity.sMainActivity,BindGlassActivity.class);	    
-			Fragment_MainActivity.sMainActivity.startActivity(intent);
-			Fragment_MainActivity.sMainActivity.finish();
+		    if(MainActivity.getInstance() != null){
+		        Intent intent = new Intent(MainActivity.getInstance(),BindGlassActivity.class);	    
+			MainActivity.getInstance().startActivity(intent);
+			MainActivity.getInstance().finish();
 		    }
-		    Log.d(TAG, "unBond out");
+		    Log.i(TAG, "unBond out");
 		}
 	    }).start();
     }
 
     private void updateBluetoothHeadSet(Context context){
 	SharedPreferences pref = context.getSharedPreferences(SyncApp.SHARED_FILE_NAME, Context.MODE_PRIVATE);
-	Log.d(TAG,"get last_headset_state="+pref.getBoolean("last_headset_state", false));
+	Log.i(TAG,"get last_headset_state="+pref.getBoolean("last_headset_state", false));
 	if (pref.getBoolean("last_headset_state", false)) {
 	    GlassDetect gd = (GlassDetect)GlassDetect.getInstance(context);
 	    if(gd.getCurrentState() == BluetoothProfile.STATE_DISCONNECTED){
