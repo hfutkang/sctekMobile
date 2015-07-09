@@ -35,7 +35,7 @@ LOCAL_JNI_SHARED_LIBRARIES := liblocSDK5
 LOCAL_JNI_SHARED_LIBRARIES += libffmpeg
 LOCAL_JNI_SHARED_LIBRARIES += liblive_jni
 LOCAL_JNI_SHARED_LIBRARIES += libweibosdkcore
-LOCAL_PACKAGE_NAME := SmartGlassesClient
+LOCAL_PACKAGE_NAME := HanLang
 
 
 # Builds against the public SDK
