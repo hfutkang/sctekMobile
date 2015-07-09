@@ -1,0 +1,358 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">Glass Aide</string>
+    <string name="app_label">Glass Aide</string>
+    <string name="bond">bind</string>
+    <string name="pair">pair</string>
+    <string name="pair_fail">Matching failure</string>
+    <string name="pair_success">Matching success</string>
+    <string name="bond_message">bind the device %1$s ?</string>
+    <string name="open_bt">open bluetooth</string>
+    <!-- <string name="bluetooth_preference_bonded_devices">bound devices</string> -->
+    <!-- <string name="bluetooth_preference_bonded_devices_connect">bound devices (click to connect)</string> -->
+    <!-- <string name="bluetooth_preference_bonded_devices_disconnect">bound devices (click to disconnect)</string> -->
+    <string name="bluetooth_preference_paired_devices">can bonded device</string>
+    <!-- <string name="bluetooth_preference_paired_devices_bond">paired devices(click to bind)</string> -->
+    <string name="bluetooth_preference_devices">available devices(click to pair)</string>
+    <string name="bluetooth_pairing">"is pairing..."</string>
+    <!-- state of call, -->
+    <string name="idle">idle</string>
+    <string name="accepting">accepting</string>
+    <string name="ring">ring</string>
+    <string name="offhook">offhook</string>
+    <string name="disconnecting">disconnecting</string>
+
+    <!-- for ota update -->
+    <string name="current_version">current version:</string>
+    <string name="latest_version">latest version:</string>
+    <string name="firstly"> 1 .</string>
+    <string name="check_update">check update</string>
+    <string name="secondly">2 .</string>
+    <string name="download">download update</string>
+    <string name="thirdly">3 .</string>
+    <string name="run_update">update now</string>
+    <string name="not_need_update">your version is latest, need no update</string>
+    <string name="checking_update">checking update . . .</string>
+    <string name="download_title">OTA update</string>
+    <string name="download_description">Download file for OTA update</string>
+    <string name="read_me">------------------------------------\n
+        Notices: \n
+        1. need a SD card;\n
+        2. need a network conntection;(WLAN preferred)\n
+        3. maybe you need to reboot after download successly.\n
+        ------------------------------------\n</string> <!--  -->
+
+    <string name="check_now">Check now</string>
+    <string name="get_watch_failed">failed to get information of watch \n please check bluetooth connection with wath </string>
+    <string name="scheduled_check">Scheduled check</string>
+    <string name="software_updates">Software updates</string>
+    <string name="later">Later</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="install">Install</string>
+    <string name="abandon">Abandon</string>
+    <string name="sync_failed">Sync failed!</string>
+    <string name="already_latest_version">This is already the latest version!</string>
+    <string name="no_rollback_version">no version to back!</string>
+    <string name="checking">Checking&#8230;</string>
+    <string name="version_back">version back</string>
+    <string name="product">product : </string>
+    <string name="android_version">Android version: </string>
+    <string name="system_version">system version：</string>
+    <string name="update_to_version">update to version: %s</string>
+    <string name="rollback_to_version">back to version: %s</string>
+    <string name="current_version_ps">current version</string>
+    <string name="please_choose_version">choose a version</string>
+
+    <!-- update download -->
+    <string name="downloading">Download task is running.Please wait ...</string>
+    <string name="download_any_data">Download via any available data connection</string>
+    <string name="download_only_wifi">Download via Wi-Fi only</string>
+    <string name="version">Version:</string>
+    <string name="size">Size:%s bytes</string>
+    <string name="description">Description:</string>
+    <string name="network_not_avaliable">Network not available!</string>
+
+    <!-- update install -->
+    <string name="sdcard_not_avaliable">SD card not available!</string>
+    <string name="get_watch_info">getting watch information</string>
+    <string name="install_alerting">you must keep power on,when updating </string>
+    <string name="install_notices">please backup your datas, such as contacts,sms,call log,etc</string>
+    <string name="update_later_msg">click to update</string>
+    <string name="exit_title">update later</string>
+    <string name="exit_message">you can update from status bar any time</string>
+    <string name="check_file_failed">file check failed, please Re-Download </string>
+
+    <!-- mode settings -->
+    <string-array name="mode_entries">
+        <item>save power mode</item>
+        <item>realtime mode</item>
+    </string-array>
+    <string-array name="mode_entry_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <!-- System -->
+    <string name="bond_request">Bond Request</string>
+    <string name="bond_request_message">Bond with %1$s?</string>
+    <string name="notification_title_settings">Timeout Notification</string>
+    <string name="notification_summary_settings">Enable/disable Timeout Notification</string>
+    <string name="timout_noti_title">IndroidSync Timeout</string>
+    <string name="timout_noti_content">IndroidSync running without Bluetooth connectivity ability for a long time</string>
+    <string name="time_noti_ticker">IndroidSync disable auto connect</string>
+    <string name="retry_connect">reconnect&#8230;</string>
+    <string name="retry_connect_success">reconnect success</string>
+    <string name="retry_connect_failed">reconnect failed</string>
+    <string name="retry_connect_failed_with_no_address">Lost remote device</string>
+
+    <!-- remote control -->
+    <string name="remote_ring_title">remote ring</string>
+    <string name="remote_ring_msg">command coming from ( %1$s ) .\nclick button below to stop.</string>
+    <!-- ime -->
+    <string name="ime_title">Sync IME</string>
+    <string name="ime_notice">click OK to send to watch</string>
+    <string name="ime_reconnect">reconnect</string>
+    <string name="ime_delete">delete</string>
+    <string name="please_input">Input content please!</string>
+    <!-- strings for Contacts(new) -->
+    <string name="contactslite_midtable_authority" translatable="false">contactslite.mid-src</string>
+    <!-- for app manager -->
+    <string name="install_app_tab">Install</string>
+    <string name="install_app_tab_description">All installed applications</string>
+    <string name="all_app_tab">All</string>
+    <string name="all_app_tab_description">All applications</string>
+    <string name="no_application_infos">No Applications</string>
+    <string name="application_manager_menu_title">Watch application manager</string>
+    <string name="bluetooth_connect_wrong_message">Bluetooth connected Failed , try again please!</string>
+    <string name="download_message">Downloading wait please !</string>
+    <string name="uninstall_dialog_title">Uninstall</string>
+    <string name="uninstall_dialog_message">Do you want uninstall this application ?</string>
+    <string name="uninstall_dialog_ok">OK</string>
+    <string name="uninstall_dialog_cancel">Cancel</string>
+    <string name="uninstall_message_send_failed">Uninstall message send failed !</string>
+    <string name="uninstall_toast">Uninstalling...</string>
+    <string name="uninstall_success">Uninstall seccess</string>
+
+    <!-- weixin info -->
+    <string name="errcode_success">send success</string>
+    <string name="errcode_cancel">send cancel</string>
+    <string name="errcode_deny">send deny</string>
+    <string name="errcode_unknown">send unknown</string>
+
+    <!-- multimedia process -->
+    <string name="processing">processing,wait please!</string>
+    <string name="error_process">original file no find!</string>
+    <string name="media_tip">Synchronous video requires a lot of time, confirm synchronization?</string>
+    <string name="media_yes">Yes</string>
+    <string name="media_no">No</string>	
+    <!-- bluetooth -->
+    <string name="scan">Two dimensional code using the Glass sweep of the above binding equipment</string>
+    <string name="binding">Bonded devices</string>
+    <string name="my_text">我的二维码</string>
+    <string name="device">设备名: </string>
+    <string name="mac">MAC &#160;&#160;&#160;:</string>
+    <string name="picture_nofind">no find pictures about glass</string>
+    <string name="video_nofind">no find videos about glass</string>
+    <!-- setting -->
+    <string name="default_click">Default settings</string>
+    <string name="time">Time</string>
+    <string name="message">Message</string>
+    <string name="media_picture">Picture</string>
+    <string name="media_video">Video</string>
+    <string name="position">geographical</string>
+    <string name="phone">Mobile phone audio</string>
+    <string name="wifi">WIFI synchronization</string>
+    <string name ="gps">Position Information</string>
+    <string name="contact">Contacts</string>
+    <string name="screen_control">Glass screen controller</string>
+    <string name="progress">Synchronizing data</string>
+    <string name="refresh">Click to refresh</string>
+
+    <!--seeting toast-->
+    <string name="sms_send_fail">Message data sync fail</string>
+    <string name="contact_send_fail">Contact data sync fail</string>
+    <string name="screen_control_msg">Share screen from glass and control it</string>
+    <string name="screen_transport_failed">Glass transport data failed, exit then try again </string>
+    <string name="wifi_off">Wifi sync requires wifi opened and connected</string>
+    <!-- screen_controller -->   
+      <string name="controller_info">You can slide up(down,left,right), click, long press to control screen from glass.</string>
+    <string name="start">Start to experience</string>
+    <string name="live">Camera live to experience</string>
+ <!-- main_menu -->
+    <string name="setting">The synchronization settings</string>
+    <string name="media">Media browser</string>
+    <string name="bind_Glass">Binding of glasses</string>
+    <string name="unbond">Release the bound</string>
+    <string name="finish">Finish</string>
+    <string name="other_bind">No camera shortcut binding</string>
+    <string name="pho_bind">camera binding</string>
+    <string name="other_bind_info">A key binding glasses, you need glasses start after 2 minutes in operation, otherwise the binding will not be carried out    </string>
+    <string name="reminder">Reminder:</string>
+    <string name="key_binding">Scanning equipment</string>
+    <string name="scan_device">Find glasses equipment are matched</string>
+    <string name="bind_device">Binding is..., please try later</string>
+    <string name="disconnect">Bind failed, click Retry</string>
+    <string name="title_bind">Bind</string>
+    <string name="title_sync">Sync</string>
+    <string name="title_media">Media</string>
+    <string name="title_screen">Screen</string>
+    <string name="pair_device">Are the search...</string>
+    <string name="no_found_device">Not found the equipment, click rescan</string>
+    <string name="name_info">Have been scanned to equipment:</string>
+    <string name="address_info">Equipment MAC address:</string>
+   <!-- video play error toast -->
+    <string name="play_error">Did not find the appropriate application of play </string>
+    <!--the dialog of bluetooth-->
+    <string name="dialog_title">Binding the glass need to open the Bluetooth</string>
+    <string name="dialog_ok">Go now</string>
+    <string name="dialog_cancle">Exit the application</string>
+
+    <string name="live_dialog_title">live need to open the phone wifi hotpot then make glass connect to hotpot</string>
+    <string name="live_dialog_ok">Go now</string>
+    <string name="live_dialog_cancle">Exit the live</string>
+    <string name="live_dialog_loading">Getting Video, waiting...</string>
+
+    <string name="live_not_connected_dialog_title">glass has not connected phone yet</string>
+    <string name="live_quit_dialog_title">live failed because of network error or other unknown reason</string>
+    <string name="live_quit_dialog_cancle">Exit the live</string>
+
+
+    <string name="bluetooth_off">Bluetooth is off, has quit the Glass Aide application</string>
+    <string name="bind_timeout">Binding device timeout, please research glass</string>
+
+    <!-- weibo -->    
+    <string name="weibo_share_success">Share successfully</string>
+    <string name="weibo_share_failed">Share failed</string>
+    <string name="weibo_share_canceled">Share Canceled</string>
+    <string name="weibo_auth_success">Authorize successfully</string>
+    <string name="weibo_auth_failed">Authorize failed</string>
+    <string name="weibo_auth_canceled">Authorize Canceled</string>
+    <string name="weibo_share_title">Sending content to sina</string>
+    <!-- sync_framework -->
+    <string name="service_msg">Sync service is running</string>
+    <string name="fail_addr_mismatch">Glass has bonded other Device.Try again after Disbond</string>
+    <string name="fail_ver_mismatch">Sync Protocol version mismatch</string>
+    <string name="fail_unknow">Unknow error</string>
+    
+    <string name="unbond_st">Unbond status</string>
+    <string name="unbond_st_content">Watch have not any Bond device</string>
+    <string name="lost_bond_st">Lost Bond Status</string>
+    <string name="lost_bond_st_content">This device had lost bond status with remote watch</string>
+    
+    <string name="other_device_dialog_content">Third Party Device:%1$s requesting to bond with this watch, accept it?</string>
+    
+    <!-- refresh -->
+    <string name="release_refresh">release</string>  
+    <string name="pullto_refresh">pull to</string>  
+    <string name="refreshing">scaning…</string>
+    
+    <!-- weather -->
+    <string name="weather_tip1">Is get the weather information from mobile phone</string>   
+    <string name="weather_tip2">The weather get failure,please make sure that wifi is available</string>
+    <string name="weather_tip3">The weather to be successful</string>
+    
+    <!--wifi password dialog-->
+    <string name ="wifi_dialog_title">Please input %1$s password</string>
+    <string name="wifi_dialog_ok">OK</string>
+    <string name="wifi_dialog_cancle">Cancle</string>
+    <string name ="wifi_open">wifi</string>
+    <string name="wifi_connect">Can be connected wi-fi hotspots</string>
+    <!-- Substring of wifi status for wifi with authentication.  This version is for when the
+	 string is first in the list (titlecase in english) -->
+    <string name="wifi_secured_first_item">Secured with <xliff:g id="wifi_security_short">%1$s</xliff:g></string>
+    <string name ="wifi_free">The WPS can be used</string>
+    <string name ="wifi_sync_fail">WIFI sync fail!</string>
+    <string name ="wifi_list_null">No wi-fi hotspots nearby</string>
+    <!-- wifi security-->
+    <!-- Do not translate.  Concise terminology for wifi with WEP security -->
+    <string name="wifi_security_short_wep">WEP</string>
+    <!-- Do not translate.  Concise terminology for wifi with WPA security -->
+    <string name="wifi_security_short_wpa">WPA</string>
+    <!-- Do not translate.  Concise terminology for wifi with WPA2 security -->
+    <string name="wifi_security_short_wpa2">WPA2</string>
+    <!-- Do not translate.  Concise terminology for wifi with both WPA/WPA2 security -->
+    <string name="wifi_security_short_wpa_wpa2">WPA/WPA2</string>
+    <!-- Do not translate.  Concise terminology for wifi with unknown PSK type -->
+    <string name="wifi_security_short_psk_generic">@string/wifi_security_short_wpa_wpa2</string>
+    <!-- Do not translate.  Concise terminology for wifi with 802.1x EAP security -->
+    <string name="wifi_security_short_eap">802.1x</string>
+    <!-- Used in Wi-Fi settings dialogs when Wi-Fi does not have any security. -->
+    <string name="wifi_security_none">None</string>
+    <!-- Do not translate.  Terminology for wifi with WEP security -->
+    <string name="wifi_security_wep">WEP</string>
+    <!-- Do not translate.  Terminology for wifi with WPA security -->
+    <string name="wifi_security_wpa">WPA PSK</string>
+    <!-- Do not translate.  Terminology for wifi with WPA2 security -->
+    <string name="wifi_security_wpa2">WPA2 PSK</string>
+    <!-- Do not translate.  Terminology for wifi with both WPA/WPA2 security, or unknown -->
+    <string name="wifi_security_wpa_wpa2">WPA/WPA2 PSK</string>
+    <!-- Do not translate.  Terminology for wifi with unknown PSK type -->
+    <string name="wifi_security_psk_generic">@string/wifi_security_wpa_wpa2</string>
+    <!-- Do not translate.  Concise terminology for wifi with 802.1x EAP security -->
+    <string name="wifi_security_eap">802.1x EAP</string>
+
+  <!--add by hky 20150701-->
+	<string name="default_switch">Glasses Switch</string>
+	<string name="default_switch_summary">Turn on/off glasses function</string>
+	<string name="vedio_duration">Video Fragment</string>
+	<string name="vedio_duration_summary">choose the duration of video fragment</string>
+	<string name="electric_anti_shake">Anti Electronic Shake</string>
+	<string name="anti_shake_summary">Turn on/off anti electronic shake</string>
+	<string name="vedio_timestamp">Timestamp</string>
+	<string name="vedio_timestamp_summary">Turn on/off video timestamp</string>
+	<string name="media_pixel">Pixel</string>
+	<string name="vedio_pixel_summary">choose the pixel for video</string>
+	<string name="photo_pixel_summary">choose thi pixel for photo</string>
+	<string name="bluetooth_error">Bluetooth connection error,try again</string>
+	<string name="select_all">All</string>
+	<string name="vedio">Vide</string>
+	<string name="photo">Photo</string>
+	<string name="volume">Volume</string>
+	<string name="volume_summary">Accomodate Glasses Volume</string>
+	<string name="other">Others</string>
+	<string name="glass_ssid">SSID For Ap</string>
+	<string name="glass_ssid_summary">set your ssid for ap</string>
+	<string name="glass_ap_pw">Password For Ap</string>
+	<string name="glass_appw_summary">set your pw for ap</string>
+	<string name="wifi_ap">wifi Ap</string>
+	<string name="wifi_ap_summary">set pw/ssid for ap</string>
+	<string name="wifi_ap_setting">Ap Setting</string>
+	<string name="empty_ssid">Input your SSID</string>
+	<string name="pw_too_short">password must be not less than 8</string>
+	<string name="password">PW:</string>
+	<string name="ssid">SSID:</string>
+	<string name="live_wifi_ap_hint">Turn on the Ap on your phone before living</string>
+	<string name="waiting_for_glass_connect">waiting for device connect#8230;#8230;#8230;</string>
+	<string name="video_live">Live</string>
+	<string name="bluetooth_phone">Bluetooth Phone</string>
+	<string name="bluetooth_phone_summary">Enable/Disable the bluetooth phone</string>
+	<string name="low_power">低电提醒</string>
+	<string name="low_power_msg">眼镜电量过低,请及时充电</string>
+	<string name="glass_version">版本</string>
+	<string name="version_code_summary">V1.0</string>
+	<string name="glass_serial_number">序列号</string>
+	<string name="serial_number_summary">ABCD123456789</string>
+	<string name="glass_power">电量</string>
+	<string name="power_summary">点击查看眼镜当前电量</string>
+	<string name="glass_storage">存储</string>
+	<string name="storage_summary">点击查看眼镜当前存储</string>
+	<string name="about_glass">关于捍狼</string>
+
+	<string name="vitamio_library_app_name">VitamioLibrary</string>
+	<string name="vitamio_init_decoders">Initializing decoders…</string>
+	<string name="permission_group_tools_label">Vitamio tools</string>
+	<string name="permission_group_tools_description">Access Vitamio package and resources.</string>
+	<string name="permission_receive_messages_label">Receive Vitamio messages</string>
+	<string name="permission_receive_messages_description">Receive all broadcasts from Vitamio service.</string>
+	<string name="permission_write_providers_label">Write Vitamio providers</string>
+	<string name="permission_write_providers_description">Delete, update or create new items in Vitamio providers.
+	</string>
+	<string name="VideoView_error_title">Cannot play video</string>
+	<string name="VideoView_error_text_invalid_progressive_playback">Sorry, this video is not valid for streaming to
+		this device.
+	</string>
+	<string name="VideoView_error_text_unknown">Sorry, this video cannot be played.</string>
+	<string name="VideoView_error_button">OK</string>
+	<string name="mediacontroller_play_pause">Play/Pause</string>
+	<string name="bluetooth_finded_devices">can connect device</string>
+</resources>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+        
+<!--        <SwitchPreference 
+           android:defaultValue="true"
+           android:key="default_switch"
+           android:title="@string/default_switch"
+           android:summary="@string/default_switch_summary"/> -->
+       <SwitchPreference 
+		    android:title="@string/round_video"
+		    android:key="round_video"
+		    android:defaultValue="false"
+		    android:summary="@string/round_video_summary"/>
+       
+       <ListPreference 
+           android:title="@string/vedio_duration"
+           android:defaultValue="10"
+           android:entries="@array/vedio_durations"
+           android:entryValues="@array/vedio_durations_values"
+           android:key="duration"
+           android:summary="@string/vedio_duration_summary"/>
+       
+       <!-- <SwitchPreference 
+           android:title="@string/electric_anti_shake"
+           android:key="anti_shake"
+           android:summary="@string/anti_shake_summary"
+           android:defaultValue="false"/> -->
+       
+       <!-- <SwitchPreference 
+           android:title="@string/vedio_timestamp"
+           android:key="timestamp"
+           android:summary="@string/vedio_timestamp_summary"
+           android:defaultValue="false"/> -->
+       
+       <!-- <ListPreference 
+           android:title="@string/media_pixel"
+           android:key="vedio_pixel"
+           android:defaultValue="1"
+           android:entries="@array/vedio_pixel_entry"
+           android:entryValues="@array/vedio_pixel_value"
+           android:summary="@string/vedio_pixel_summary"/> -->
+	         
+		<!-- <ListPreference 
+			android:title="@string/media_pixel"
+			android:key="photo_pixel"
+			android:defaultValue="1"
+			android:entries="@array/photo_pixel_entry"
+			android:entryValues="@array/photo_pixel_value"
+			android:summary="@string/photo_pixel_summary"/> -->
+	    
+    <SwitchPreference 
+        android:title="@string/bluetooth_phone"
+        android:key="phone_on"
+        android:defaultValue="false"
+        android:summary="@string/bluetooth_phone_summary"/>
+	    
+	<com.sctek.smartglasses.ui.VolumeSeekBarPreference 
+	    android:title="@string/volume"
+	    android:key="volume"
+	    android:defaultValue="5"
+	    android:summary="@string/volume_summary"/>
+	
+	<Preference 
+	    android:title="@string/wifi_ap"
+	    android:key="wifi"
+	    android:summary="@string/wifi_ap_summary"/>
+
+</PreferenceScreen>

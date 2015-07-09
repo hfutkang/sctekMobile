@@ -1,0 +1,25 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="4dip" >
+
+    <ImageView
+        android:id="@+id/app_icon"
+        android:layout_width="35dp"
+        android:layout_height="45dp"
+        android:layout_centerHorizontal="true" 
+        >
+    </ImageView>
+
+    <TextView
+        android:id="@+id/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_below="@+id/app_icon"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal" 
+        android:maxLines="2">
+    </TextView>
+
+</RelativeLayout>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<!-- ListView的头部 -->  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"  
+    android:id="@+id/head_rootLayout"  
+    android:layout_width="fill_parent"  
+    android:layout_height="wrap_content">  
+  
+    <!-- 内容 -->  
+  
+    <RelativeLayout  
+        android:id="@+id/head_contentLayout"  
+        android:layout_width="fill_parent"  
+        android:layout_height="50dp"  
+	android:layout_centerVertical="true"
+        android:paddingLeft="30dp" >  
+  
+        <!-- 提示 -->  
+	<TextView  
+	    android:id="@+id/head_tipsTextView"  
+	    android:layout_width="wrap_content"  
+	    android:layout_height="fill_parent"
+	    android:layout_gravity="center_vertical|left"
+	    android:gravity="center_vertical|left"
+	    android:layout_centerHorizontal="true"  
+	    android:text="@string/refreshing"  
+	    android:textColor="#666666"
+	    android:textSize="17dp" />  
+
+        <!-- 箭头图像、进度条 -->  
+  
+        <FrameLayout  
+	    android:layout_width="25dp"  
+	    android:layout_height="25dp"  
+	    android:layout_toLeftOf="@id/head_tipsTextView"
+	    android:layout_marginRight="10dp"
+            android:layout_centerVertical="true" >  
+  
+            <!-- 箭头 -->  
+  
+            <ImageView  
+                android:id="@+id/head_arrowImageView"  
+                android:layout_width="wrap_content"  
+                android:layout_height="wrap_content"  
+                android:layout_gravity="center"  
+                android:contentDescription="@string/app_name"  
+                android:src="@drawable/refresh_down" />  
+            <!-- 进度条 -->  
+  
+            <ProgressBar  
+                android:id="@+id/head_progressBar"  
+		android:indeterminateDrawable="@drawable/progress_animation"
+                android:layout_width="wrap_content"  
+                android:layout_height="wrap_content"  
+                android:layout_gravity="center"  
+                android:visibility="gone" />  
+        </FrameLayout>  
+    </RelativeLayout>  
+  
+</LinearLayout>  

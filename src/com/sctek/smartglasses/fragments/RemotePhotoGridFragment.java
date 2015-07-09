@@ -1,0 +1,478 @@
+package com.sctek.smartglasses.fragments;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+
+import cn.ingenic.glasssync.MediaSyncService;
+import cn.ingenic.glasssync.R;
+
+import com.ingenic.glass.api.sync.SyncChannel.Packet;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.sctek.smartglasses.ui.PhotoActivity;
+import com.sctek.smartglasses.ui.VideoActivity;
+import com.sctek.smartglasses.utils.CustomHttpClient;
+import com.sctek.smartglasses.utils.GlassImageDownloader;
+import com.sctek.smartglasses.utils.MediaData;
+import com.sctek.smartglasses.utils.WifiUtils;
+
+import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.DialogInterface.OnKeyListener;
+import android.net.wifi.WifiConfiguration;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.telephony.TelephonyManager;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.CheckBox;
+import android.widget.RemoteViews;
+import android.widget.Toast;
+
+public class RemotePhotoGridFragment extends BaseFragment {
+	
+	public static final int FRAGMENT_INDEX = 3;
+	public static final int PHOTO_NOTIFICATION_ID = 0;
+	
+	private static final String TAG = RemotePhotoGridFragment.class.getName();
+	private static final String REMOTE_PHOTO_URL = "http://192.168.5.122:7766/sdcard/DCIM/Camera/";
+	
+	@SuppressLint("NewApi")
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.e(TAG, "onCreate");
+		
+		mediaList = new ArrayList<MediaData>();
+		preApState = WifiUtils.getWifiAPState(mWifiManager);
+		mWifiATask = new SetWifiAPTask(true, false);
+		
+		getActivity().setTitle(R.string.remote_photo);
+		
+		IntentFilter filter = new IntentFilter(WIFI_AP_STATE_CHANGED_ACTION);
+		mContext.registerReceiver(mApStateBroadcastReceiver,filter);
+		
+		initProgressDialog();
+		
+		if(preApState == WIFI_AP_STATE_ENABLED) 
+			new Handler().postDelayed(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					sendApInfoToGlass();
+				}
+			}, 0);
+		
+	}
+	
+	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		Log.e(TAG, "onStart");
+		super.onStart();
+	}
+	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		Log.e(TAG, "onResume");
+		super.onResume();
+	}
+	
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		Log.e(TAG, "onPause");
+		super.onPause();
+	}
+	
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		Log.e(TAG, "onDestroy");
+		
+		mContext.unregisterReceiver(mApStateBroadcastReceiver);
+		ImageLoader.getInstance().stop();
+		
+		super.onDestroy();
+	}
+	
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		Log.e(TAG, "onDestroyView");
+		super.onDestroyView();
+	}
+	
+	@SuppressLint("NewApi")
+	@Override
+	public void onDetach() {
+		// TODO Auto-generated method stub
+		Log.e(TAG, "onDetach");
+		super.onDetach();
+	}
+
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		Log.e(TAG, "onCreateOptionsMenu");
+		inflater.inflate(R.menu.remote_photo_fragment_menu, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Log.e(TAG, "onOptionsItemSelected");
+		switch (item.getItemId()) {
+			case R.id.download_item:
+				deleteView.setVisibility(View.VISIBLE);
+				selectAllView.setVisibility(View.VISIBLE);
+				
+				if(mediaList.size() > 0) {
+					for(CheckBox cb : checkBoxs) {
+						cb.setVisibility(View.VISIBLE);
+					}
+				}
+				
+				deleteTv.setText(R.string.download);
+				deleteTv.setOnClickListener(onPhotoDownloadClickListener);
+				return true;
+			case R.id.remote_photo_delete_item:
+
+				deleteView.setVisibility(View.VISIBLE);
+				selectAllView.setVisibility(View.VISIBLE);
+				
+				for(CheckBox cb : checkBoxs) {
+					cb.setVisibility(View.VISIBLE);
+				}
+				deleteTv.setText(R.string.delete);
+				deleteTv.setOnClickListener(onRemotePhotoDeleteClickListener);
+				return true;
+			default:
+				return true;
+		}
+	}
+	
+//	private void getImagePath(final String ip) {
+//		
+//		String uri = "http://" + ip + "/data/apache/cgi-bin/listfiles";
+//		final HttpClient httpClient = CustomHttpClient.getHttpClient();
+//		final HttpGet httpGet = new HttpGet(uri);
+//		new Thread(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				// TODO Auto-generated method stub
+//				String result = httpRequestExecute(httpClient, httpGet);
+//				
+//				if(result != null) {
+//					ArrayList<String> names = getImageNames(result);
+//					imagesName = new String[names.size()];
+//					names.toArray(imagesName);
+//					for(int i = 0; i<names.size(); i++) {
+//						String url = "http://" + ip + "/data/" + names.get(i);
+//						imageUrls.add(url);
+//					}
+//					getActivity().sendBroadcast(new Intent(GET_IMAGESURL_DONE));
+//				}
+//			}
+//		}).start();
+//		
+//	}
+//	
+	
+//	
+//	private ArrayList<String> getImageNames(String result) {
+//		try {
+//			XmlContentHandler xmlHandler = new XmlContentHandler();
+//			StringReader reader = new StringReader(result);
+//			SAXParserFactory factory = SAXParserFactory.newInstance();    
+//			SAXParser parser = factory.newSAXParser();    
+//			XMLReader xmlReader = parser.getXMLReader(); 
+//			xmlReader.setContentHandler(xmlHandler);
+//			xmlReader.parse(new InputSource(reader));
+//			
+//			return xmlHandler.getNames();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
+	
+	private OnClickListener onPhotoDownloadClickListener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			if(selectedMedias.size() != 0)
+				onPotoDownloadTvClicked();
+
+			disCheckMedia();
+			onCancelTvClicked();
+		}
+	};
+	
+	private OnClickListener onRemotePhotoDeleteClickListener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			if(selectedMedias.size() != 0) {
+				new PhotoDeleteTask().execute();
+			}
+			else {
+				disCheckMedia();
+			}
+			onCancelTvClicked();
+		}
+	};
+	
+	private BroadcastReceiver mApStateBroadcastReceiver = new BroadcastReceiver() {
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			if(WIFI_AP_STATE_CHANGED_ACTION.equals(intent.getAction())) {
+				int cstate = intent.getIntExtra(EXTRA_WIFI_AP_STATE, -1);
+				Log.e(TAG, WIFI_AP_STATE_CHANGED_ACTION + ":" + cstate);
+				if(cstate == WIFI_AP_STATE_ENABLED
+						&& preApState != WIFI_AP_STATE_ENABLED) {
+					
+					BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+					if(!adapter.isEnabled()) {
+						adapter.enable();
+					}
+					
+					sendApInfoToGlass();
+				}
+				preApState = cstate;
+			}
+		}
+		
+	};
+	
+	public void onPotoDownloadTvClicked() {
+		
+//		new PhotoDownloadTask().execute();
+		getActivity().startService(new Intent(getActivity(), MediaSyncService.class));
+		ArrayList<MediaData> data = (ArrayList<MediaData>)selectedMedias.clone();
+		((PhotoActivity)getActivity()).startPhotoSync(data);
+		
+	}
+	
+	private class PhotoDownloadTask extends AsyncTask<String, Integer, Void> {
+		
+		private ProgressDialog progressDialog;
+		private int totalcount;
+		private int downloadcount;
+		private GlassImageDownloader imageDownloader;
+		
+		private NotificationManager notificationManager;
+		private Notification notification;
+		
+		@SuppressLint("NewApi")
+		public PhotoDownloadTask() {
+			
+			progressDialog = new ProgressDialog(getActivity());
+			totalcount = selectedMedias.size();
+			downloadcount = 0;
+			
+			imageDownloader = new GlassImageDownloader();
+			
+			notificationManager =  (NotificationManager)(getActivity().getSystemService(mContext.NOTIFICATION_SERVICE));
+			notification = new Notification();
+			
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			
+			String msg = String.format("照片同步中(%d/%d)...", downloadcount, totalcount);
+			
+			notification.contentView = new RemoteViews(mContext.getPackageName(), R.layout.notification_view);
+			notification.icon = R.drawable.glass;
+			notification.contentView.setProgressBar(R.id.donwload_progress, 100, 100, true);
+			notification.contentView.setTextViewText(R.id.download_lable_tv, msg);
+			notificationManager.notify(PHOTO_NOTIFICATION_ID, notification);
+			
+			
+			progressDialog.setMessage(msg);
+			progressDialog.show();
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			progressDialog.dismiss();
+			
+			String msg = String.format("同步完成(%d/%d)", downloadcount, totalcount);
+			notification.contentView.setTextViewText(R.id.download_lable_tv, msg);
+			notification.vibrate = new long[]{0,100,200,300}; 
+			notificationManager.notify(PHOTO_NOTIFICATION_ID, notification);
+			
+			if(downloadcount != 0) {
+				refreshGallery("photos");
+			}
+			disCheckMedia();
+//			selectedMedias.clear();
+		}
+		
+		@Override
+		protected void onProgressUpdate(Integer... values) {
+			// TODO Auto-generated method stub
+			super.onProgressUpdate(values);
+			String msg = String.format("照片同步中(%d/%d)...", downloadcount, totalcount);
+			notification.contentView.setTextViewText(R.id.download_lable_tv, msg); 
+			notificationManager.notify(PHOTO_NOTIFICATION_ID, notification);
+			progressDialog.setMessage(msg);
+		}
+
+		@Override
+		protected Void doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			Log.e(TAG, "PhotoDownloadTask");
+			for(int i = 0; i < selectedMedias.size(); i++) {
+				MediaData data = selectedMedias.get(i);
+				
+				try {
+					
+					InputStream in = imageDownloader.getInputStream(data.url, 0);
+					
+					File dir = new File(PHOTO_DOWNLOAD_FOLDER);
+					if(!dir.exists())
+						dir.mkdirs();
+					
+					File file = new File(PHOTO_DOWNLOAD_FOLDER, data.name);
+					if(file.exists()) {
+						downloadcount++;
+						publishProgress();
+						in.close();
+						continue;
+					}
+					
+					byte[] buffer = new byte[1024];
+					int len = 0;
+					
+					FileOutputStream os = new FileOutputStream(file);
+					while((len = in.read(buffer)) != -1) {
+						os.write(buffer, 0, len);
+					}
+					downloadcount++;
+					publishProgress();
+					
+					os.flush();
+					os.close();
+					in.close();
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			return null;
+		}
+		
+	}
+	
+	private class PhotoDeleteTask extends AsyncTask<Void, Boolean, Void> {
+		
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			mDeleteProgressDialog.setMessage(getActivity().getResources().getText(R.string.deleting));
+			mDeleteProgressDialog.show();
+			super.onPreExecute();
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			// TODO Auto-generated method stub
+			Log.e(TAG, "onPostExecute");
+			if(mDeleteProgressDialog.isShowing())
+				mDeleteProgressDialog.cancel();
+			super.onPostExecute(result);
+		}
+		
+		@Override
+		protected void onProgressUpdate(Boolean... values) {
+			// TODO Auto-generated method stub
+			super.onProgressUpdate(values);
+			if(!values[0]) {
+				Toast.makeText(mContext, R.string.connect_error, Toast.LENGTH_LONG).show();
+				disCheckMedia();
+			}
+			else
+			{
+				onMediaDeleted();
+				Toast.makeText(mContext, R.string.delete_ok, Toast.LENGTH_LONG).show();
+			}
+		}
+		@Override
+		protected Void doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			try {
+			String urlPref = String.format("http://%s/cgi-bin/deletefiles?", glassIp);
+			StringBuffer urlBuffer = new StringBuffer(4096);
+			urlBuffer.append(urlPref);
+			urlBuffer.append("photos");
+			int count = 0;
+			for(MediaData data : selectedMedias) {
+				urlBuffer.append("&" + data.name);
+			}
+			Log.e(TAG, "delete url " + urlBuffer.toString());
+			
+			HttpClient httpClient = CustomHttpClient.getHttpClient();
+			HttpGet httpGet = new HttpGet(urlBuffer.toString());
+			if(GlassImageDownloader.deleteRequestExecute(httpClient, httpGet)) {
+				publishProgress(true);
+			}
+			else
+				publishProgress(false);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+				
+			return null;
+		}
+		
+	}
+	
+	public void initProgressDialog() {
+		
+		mConnectProgressDialog = new ProgressDialog(getActivity());
+		mConnectProgressDialog.setTitle(R.string.remote_photo);
+		mConnectProgressDialog.setCancelable(false);
+		mConnectProgressDialog.setOnKeyListener(new OnKeyListener() {
+			
+			@Override
+			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+				// TODO Auto-generated method stub
+				if(keyCode == KeyEvent.KEYCODE_BACK) {
+					dialog.cancel();
+					getActivity().onBackPressed();
+				}
+				return false;
+			}
+		});
+	}
+}

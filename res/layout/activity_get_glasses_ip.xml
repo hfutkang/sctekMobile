@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <LinearLayout 
+	    android:id="@+id/wifi_ap_hint_lo"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:visibility="gone"
+	    android:layout_marginTop="50dp"
+	    android:orientation="vertical">
+	    
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="30dp"
+	        android:text="@string/live_wifi_ap_hint"
+	        android:layout_marginLeft="20dp"
+	        android:layout_marginRight="20dp"
+	        android:gravity="center"
+	        android:layout_gravity="center_horizontal"/>
+	    
+	    <Button 
+	        android:id="@+id/wifi_ap_on_bt"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/turn_wifi_ap_on"
+	        android:layout_gravity="center"
+	        android:clickable="true"/>
+	    
+	</LinearLayout>
+
+</LinearLayout>

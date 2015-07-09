@@ -1,0 +1,77 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:background="@drawable/app_background_low"
+    tools:context="com.sctek.smartglasses.ui.MainActivity" >
+    
+    <TableLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        
+		<TableRow 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:weightSum="3">
+		    
+		    <ImageButton 
+		        android:id="@+id/photo_ib"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:background="@color/transparent"
+		        android:src="@drawable/photo_selector"
+		        android:layout_weight="1"/>
+		    
+		    <ImageButton 
+		        android:id="@+id/video_ib"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:background="@color/transparent"
+		        android:src="@drawable/video_selector"
+		        android:layout_weight="1"/>
+		    
+		    <ImageButton 
+		        android:id="@+id/live_ib"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:background="@color/transparent"
+		        android:src="@drawable/live_selector"
+		        android:layout_weight="1"/>
+		    
+		</TableRow>
+    
+		<TableRow 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:paddingTop="25dp"
+		    android:weightSum="3">
+		    
+		    <ImageButton 
+		        android:id="@+id/setting_ib"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:background="@color/transparent"
+		        android:src="@drawable/setting_selector"
+		        android:layout_weight="1"/>
+		    
+		    <ImageButton 
+		        android:id="@+id/about_ib"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:background="@color/transparent"
+		        android:src="@drawable/about_selector"
+		        android:layout_weight="1"/>
+		    
+		    <ImageButton 
+		        android:id="@+id/unbind_ib"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:background="@color/transparent"
+		        android:src="@drawable/unbind_selector"
+		        android:layout_weight="1"/>
+		</TableRow>
+    </TableLayout>
+</LinearLayout>

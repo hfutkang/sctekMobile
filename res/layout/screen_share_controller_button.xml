@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/container"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#fafafa" >
+
+    <!-- screen from glass -->
+    <LinearLayout
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:gravity="center"
+	android:orientation="vertical">
+
+    <LinearLayout
+	android:layout_width="match_parent"
+	android:layout_height="86dp"
+	android:layout_marginTop="20dp"
+	android:layout_marginLeft="3dp"
+	android:layout_marginRight="3dp"
+	android:padding="10dp"
+	android:background="@drawable/round_bind_info"
+	android:orientation="vertical">
+      <LinearLayout
+	  android:layout_width="match_parent"
+	  android:layout_height="wrap_content"
+	  android:gravity="center_vertical">
+	<TextView 
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:background="@drawable/tip"/>
+	<TextView 
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:textSize="16sp"
+	  android:text="@string/reminder"/>
+      </LinearLayout>
+      <TextView 
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:layout_marginTop="6dp"
+	  android:textSize="13sp"
+	  android:textColor="@color/text_color"  
+	  android:text="@string/controller_info"/>
+    </LinearLayout>
+    
+      <!-- <Button  -->
+      <!-- 	  android:id="@+id/screenButton" -->
+      <!-- 	  android:layout_marginTop="15dp" -->
+      <!-- 	  android:layout_width="wrap_content" -->
+      <!-- 	  android:layout_height="wrap_content" -->
+      <!-- 	  android:layout_centerInParent="true" -->
+      <!-- 	  android:background="@drawable/screen_button_selector"/> -->
+      <TextView 
+	  android:id="@+id/screenButton1"
+	  android:layout_width="match_parent"
+	  android:layout_height="50dp"
+	  android:layout_marginTop="15dp"
+	  android:layout_marginLeft="5dp"
+	  android:layout_marginRight="5dp"
+	  android:gravity="center"
+	  android:textSize="15sp"
+	  android:background="@drawable/screen_button_selector"
+	  android:text="@string/start"/>
+
+
+    <LinearLayout
+	android:layout_width="match_parent"
+	android:layout_height="86dp"
+	android:layout_marginTop="20dp"
+	android:layout_marginLeft="3dp"
+	android:layout_marginRight="3dp"
+	android:padding="10dp"
+	android:background="@drawable/round_bind_info"
+	android:orientation="vertical">
+      <LinearLayout
+	  android:layout_width="match_parent"
+	  android:layout_height="wrap_content"
+	  android:gravity="center_vertical">
+	<TextView 
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:background="@drawable/tip"/>
+	<TextView 
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:textSize="16sp"
+	  android:text="@string/reminder"/>
+      </LinearLayout>
+      <TextView 
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:layout_marginTop="6dp"
+	  android:textSize="13sp"
+	  android:textColor="@color/text_color"  
+	  android:text="@string/live_controller_info"/>
+    </LinearLayout>
+
+
+      <TextView 
+	  android:id="@+id/liveButton1"
+	  android:layout_width="match_parent"
+	  android:layout_height="50dp"
+	  android:layout_marginTop="15dp"
+	  android:layout_marginLeft="5dp"
+	  android:layout_marginRight="5dp"
+	  android:gravity="center"
+	  android:textSize="15sp"
+	  android:background="@drawable/screen_button_selector"
+	  android:text="@string/live"/>
+
+    </LinearLayout>
+    <!-- controller -->
+
+</RelativeLayout>
