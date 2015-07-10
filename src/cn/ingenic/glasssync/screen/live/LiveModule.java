@@ -42,7 +42,7 @@ public class LiveModule extends SyncModule {
 
     public static final String LIVE_CAMERA_OPENED = "live_camera_opened";
     public static final String LIVE_CAMERA_NOT_OPENED = "live_camera_not_opened";
-    
+    public static final String LIVE_CAMERA_NOT_OPENED_ERROR = "live_camera_not_opened_err";
     
     public static final int TRANSPORT_WIFI_CONNECTED = 0;
     public static final int TRANSPORT_WIFI_UNCONNECTED = 1;
@@ -116,8 +116,11 @@ public class LiveModule extends SyncModule {
 	    break;
 	case TRANSPORT_CAMERA_NOT_OPENED:
 	    if (DEBUG) Log.e(TAG, "TRANSPORT_CAMERA_NOT_OPENED");
-	    if (!mStopped)
-		    mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_RETRY, 1, 0), 2000);
+	    String err = data.getString(LIVE_CAMERA_NOT_OPENED_ERROR);
+	    if (err != null) {
+		LiveDisplayActivity.showCameraErrorDialog(err);    
+	    } else if (!mStopped)
+		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_RETRY, 1, 0), 3000);
 	    break;
 	default:
 	    break;

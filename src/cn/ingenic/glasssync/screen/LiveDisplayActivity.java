@@ -73,8 +73,8 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     private BluetoothAdapter mBluetoothAdapter;
     private boolean mDialogDismiss = false;
     private boolean mFirstOnData = false;
-    private long mStart = 0;;
-
+    private long mStart = 0;
+    private static Activity sActivity = null;
 
     private Handler mHandler = new Handler(){
     @Override
@@ -143,6 +143,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_display);
 	Log.e(TAG, "onCreate");
+	sActivity = this;
     }
 
 
@@ -434,7 +435,35 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     protected void onDestroy() {
 	if (DEBUG) Log.e(TAG, "onDestroy");
 	super.onDestroy();
+	sActivity = null;
     }
 
-    
+    public static void showCameraErrorDialog(String err) {
+        final MyDialog dialog = new MyDialog(sActivity, R.style.MyDialog, err, 
+			      sActivity.getString(R.string.live_quit_dialog_cancle), null);
+	dialog.setLeaveMeetingDialogListener(new MyDialog.LeaveMeetingDialogListener() {
+	     @Override
+	     public void onClick(View view) {
+		 switch (view.getId()) {
+		 case R.id.dialog_tv_cancel_one:
+		     dialog.cancel();
+		     sActivity.finish();
+		     break;		
+		 }
+	     }
+	});
+	dialog.setOnKeyListener(new DialogInterface.OnKeyListener(){
+	     @Override
+	     public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+		 if (keyCode == KeyEvent.KEYCODE_BACK) {
+		     dialog.cancel();
+		     sActivity.finish();
+		 }
+		 return false;
+	     }
+	});
+	dialog.setCanceledOnTouchOutside(false);
+	dialog.setCancelable(false);
+	dialog.show();
+    }    
 }

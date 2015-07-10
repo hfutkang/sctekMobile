@@ -80,6 +80,10 @@ public class MyDialog extends Dialog implements
 
 	}
 
+	public void setLeaveMeetingDialogListener(LeaveMeetingDialogListener listener) {
+		this.listener = listener;
+	}
+
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
