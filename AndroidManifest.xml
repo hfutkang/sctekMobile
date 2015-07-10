@@ -75,6 +75,7 @@
 	</activity>
         <activity
             android:name="com.sctek.smartglasses.ui.BindGlassActivity"
+	    android:theme="@android:style/Theme.NoTitleBar"
             android:launchMode="singleTop" 
 	    android:screenOrientation="nosensor" >
         </activity>

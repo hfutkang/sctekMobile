@@ -183,7 +183,7 @@ public class BindGlassActivity extends Activity {
 
 		    if (DEBUG)Log.e(TAG, "name="+scanDevice.getName()+"address="+scanDevice.getAddress()+"--Build.BOARD="+Build.BOARD);
 
-		    if(scanDevice.getName().equals("cruise")){
+		    if(scanDevice.getName().equals("WEAR")){
 			    mIsScan=true;
 			    if (!mList.contains(scanDevice)){
 				    mList.add(scanDevice);
