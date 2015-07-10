@@ -5,12 +5,11 @@
         android:id="@+id/glasses_item"
         android:title="@string/glasses"
         android:showAsAction="always"
-        android:icon="@drawable/bluetooth_icon"/>
+        android:icon="@drawable/ic_glass"/>
     
     <item 
         android:id="@+id/native_photo_delete_item"
         android:title="@string/delete"
         android:showAsAction="always"
         android:icon="@drawable/ic_delete" />
-
 </menu>

@@ -5,7 +5,7 @@
         android:id="@+id/glasses_item"
         android:title="@string/glasses"
         android:showAsAction="always"
-        android:icon="@drawable/bluetooth_icon"/>
+        android:icon="@drawable/ic_glass"/>
     
     <item 
         android:id="@+id/native_video_delete_item"

@@ -106,6 +106,8 @@ public class BaseFragment extends Fragment {
 	protected static final int WIFI_AP_STATE_DISABLED = 11;
 	protected static final int WIFI_AP_STATE_ENABLED = 13;
 	
+	public static final int RESEDN_CONNET_WIFI_MSG = 5;
+	
 	public static final String WIFI_AP_STATE_CHANGED_ACTION =
 	        "android.net.wifi.WIFI_AP_STATE_CHANGED";
 	public static final String EXTRA_WIFI_AP_STATE = "wifi_state";
@@ -281,6 +283,7 @@ public class BaseFragment extends Fragment {
 		// TODO Auto-generated method stub
 		Log.e(TAG, "onDestroy");
 		mMediaUrlTask.cancel(true);
+		mHandler.removeMessages(RESEDN_CONNET_WIFI_MSG);
 		super.onDestroy();
 	}
 	
@@ -574,6 +577,9 @@ public class BaseFragment extends Fragment {
     			if(mConnectProgressDialog.isShowing())
     				mConnectProgressDialog.cancel();
     			break;
+    		case RESEDN_CONNET_WIFI_MSG:
+    			sendApInfoToGlass();
+    			break;
     		}
     	}
     };
@@ -682,6 +688,7 @@ public class BaseFragment extends Fragment {
 			if(glassIp != null && glassIp.length() != 0&&!connected)	 {
 				
 				connected = true;
+				mHandler.removeMessages(RESEDN_CONNET_WIFI_MSG);
 				
 				if(childIndex == RemotePhotoGridFragment.FRAGMENT_INDEX)
 					mMediaUrlTask.execute(new String[]{glassIp, "photos"});
@@ -839,6 +846,8 @@ public class BaseFragment extends Fragment {
 			packet.putString("ssid", ssid);
 			packet.putString("pw", pw);
 			mChannel.sendPacket(packet);
+			
+			mHandler.sendEmptyMessageDelayed(RESEDN_CONNET_WIFI_MSG, 5000);
 		}
 		else {
 			Toast.makeText(getActivity(), R.string.bluetooth_error, Toast.LENGTH_LONG).show();

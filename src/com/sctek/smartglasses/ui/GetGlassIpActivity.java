@@ -40,6 +40,7 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -73,6 +74,8 @@ public class GetGlassIpActivity extends Activity {
 	private SyncChannel mChannel;
 	
 	private ProgressDialog mProgressDialog;
+	
+	private static final int RESEDN_CONNET_WIFI_MSG = 1;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +124,7 @@ public class GetGlassIpActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
+		mHanlder.removeMessages(RESEDN_CONNET_WIFI_MSG);
 		unregisterReceiver(mApStateBroadcastReceiver);
 		SyncApp.getInstance().removeActivity(this);
 		super.onDestroy();
@@ -226,6 +230,7 @@ public class GetGlassIpActivity extends Activity {
 			packet.putString("ssid", ssid);
 			packet.putString("pw", pw);
 			mChannel.sendPacket(packet);
+			mHanlder.sendEmptyMessageAtTime(RESEDN_CONNET_WIFI_MSG, 5000);
 			
 		}
 		else {
@@ -286,6 +291,7 @@ public class GetGlassIpActivity extends Activity {
 			
 			if(glassIp != null && glassIp.length() != 0&&!connected) {
 				mProgressDialog.cancel();
+				mHanlder.removeMessages(RESEDN_CONNET_WIFI_MSG);
 				Intent intent = new Intent(GetGlassIpActivity.this, LiveDisplayActivity.class);
 				intent.putExtra("ip", glassIp);
 				startActivity(intent);
@@ -307,4 +313,18 @@ public class GetGlassIpActivity extends Activity {
 		}
 		
 	}
+	
+	private Handler mHanlder = new Handler() {
+		
+		@Override
+		public void handleMessage(Message msg) {
+			
+			switch (msg.what) {
+			case RESEDN_CONNET_WIFI_MSG:
+				sendApInfoToGlass();
+				break;
+			}
+				
+		}
+	};
 }

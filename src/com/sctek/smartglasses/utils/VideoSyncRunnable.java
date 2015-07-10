@@ -47,7 +47,7 @@ public class VideoSyncRunnable implements Runnable {
 		totalCount = videos.size();
 		
 		mNotification.contentView = new RemoteViews(mContext.getPackageName(), R.layout.notification_view);
-		mNotification.icon = R.drawable.bluetooth_icon;
+		mNotification.icon = R.drawable.hanlang_icon;
 		mNotification.contentView.setProgressBar(R.id.donwload_progress, 100, 100, true);
 		
 		long timeLable = System.currentTimeMillis();
