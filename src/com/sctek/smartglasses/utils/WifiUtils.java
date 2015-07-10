@@ -27,7 +27,7 @@ public class WifiUtils {
 	public static void turnWifiApOn(Context mContext, WifiManager mWifiManager) {
 		
 		String defaultSsid = ((TelephonyManager)mContext
-				.getSystemService(mContext.TELEPHONY_SERVICE)).getDeviceId();
+				.getSystemService(mContext.TELEPHONY_SERVICE)).getDeviceId().substring(0, 5);
 		String ssid = PreferenceManager.
 				getDefaultSharedPreferences(mContext).getString("ssid", defaultSsid);
 		

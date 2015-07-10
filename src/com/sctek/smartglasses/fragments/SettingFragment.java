@@ -556,7 +556,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 	private void showWifiSettingDialog() {
 		
 		String defaultSsid = ((TelephonyManager)getActivity()
-				.getSystemService(getActivity().TELEPHONY_SERVICE)).getDeviceId();
+				.getSystemService(getActivity().TELEPHONY_SERVICE)).getDeviceId().substring(0, 5);
 		final String prSsid = PreferenceManager.
 				getDefaultSharedPreferences(getActivity()).getString("ssid", defaultSsid);
 		final String prPw = PreferenceManager.

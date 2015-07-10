@@ -409,7 +409,7 @@ public class VedioPlayerActivity extends Activity {
 			Packet packet = mChannel.createPacket();
 			packet.putInt("type", 1);
 			
-			String defaultSsid = ((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).getDeviceId();
+			String defaultSsid = ((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).getDeviceId().substring(0, 5);
 			String ssid = PreferenceManager.
 					getDefaultSharedPreferences(this).getString("ssid", defaultSsid);
 			String pw = PreferenceManager.getDefaultSharedPreferences(this).getString("pw", "12345678");
@@ -434,7 +434,7 @@ public class VedioPlayerActivity extends Activity {
 			Packet packet = mChannel.createPacket();
 			packet.putInt("type", 1);
 			
-			String defaultSsid = ((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).getDeviceId();
+			String defaultSsid = ((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).getDeviceId().substring(0, 5);
 			String ssid = PreferenceManager.
 					getDefaultSharedPreferences(this).getString("ssid", defaultSsid);
 			String pw = PreferenceManager.getDefaultSharedPreferences(this).getString("pw", "12345678");

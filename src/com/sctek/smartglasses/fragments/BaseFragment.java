@@ -737,7 +737,7 @@ public class BaseFragment extends Fragment {
 			packet.putInt("type", 1);
 			
 			String defaultSsid = ((TelephonyManager)mContext
-					.getSystemService(mContext.TELEPHONY_SERVICE)).getDeviceId();
+					.getSystemService(mContext.TELEPHONY_SERVICE)).getDeviceId().substring(0, 5);
 			String ssid = PreferenceManager.
 					getDefaultSharedPreferences(mContext).getString("ssid", defaultSsid);
 			String pw = PreferenceManager.getDefaultSharedPreferences(mContext).getString("pw", "12345678");
@@ -838,7 +838,7 @@ public class BaseFragment extends Fragment {
 			packet.putInt("type", 1);
 			
 			String defaultSsid = ((TelephonyManager)getActivity()
-					.getSystemService(mContext.TELEPHONY_SERVICE)).getDeviceId();
+					.getSystemService(mContext.TELEPHONY_SERVICE)).getDeviceId().substring(0, 5);
 			String ssid = PreferenceManager.
 					getDefaultSharedPreferences(mContext).getString("ssid", defaultSsid);
 			String pw = PreferenceManager.getDefaultSharedPreferences(mContext).getString("pw", "12345678");
