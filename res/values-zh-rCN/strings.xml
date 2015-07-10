@@ -26,7 +26,7 @@
     <string name="firstly"> 一 .</string>
     <string name="check_update">检查更新</string>
     <string name="secondly"> 二 .</string>
-    <string name="download">下载更新</string>
+    <string name="download">下载</string>
     <string name="thirdly"> 三 .</string>
     <string name="run_update">执行更新</string>
     <string name="not_need_update">你的版本已是最新,不需要更新</string>
