@@ -230,7 +230,7 @@ public class GetGlassIpActivity extends Activity {
 			packet.putString("ssid", ssid);
 			packet.putString("pw", pw);
 			mChannel.sendPacket(packet);
-			mHanlder.sendEmptyMessageAtTime(RESEDN_CONNET_WIFI_MSG, 5000);
+			mHanlder.sendEmptyMessageDelayed(RESEDN_CONNET_WIFI_MSG, 5000);
 			
 		}
 		else {
