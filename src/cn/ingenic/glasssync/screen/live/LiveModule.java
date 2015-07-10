@@ -56,13 +56,17 @@ public class LiveModule extends SyncModule {
     private String mNeededIP = null;
     private StringBuilder mIP = null;
 
+    // mStopped true: when LiveDisplayActivity ask glass to open camera; false: when LiveDisplayActivity ask glass to close camera
+    // if true don't response retry request from self
+    private boolean mStopped = true; 
     private final int MSG_RETRY = 0;
     private Handler mHandler = new Handler(){
 	@Override
 	public void handleMessage(Message msg){
 	    switch (msg.what) {
 	    case MSG_RETRY:
-		    sendRequestData(msg.arg1 == 1);
+		    if (!mStopped)
+			sendRequestData(msg.arg1 == 1, true);
 		    break;
 	    }
 	}
@@ -112,7 +116,8 @@ public class LiveModule extends SyncModule {
 	    break;
 	case TRANSPORT_CAMERA_NOT_OPENED:
 	    if (DEBUG) Log.e(TAG, "TRANSPORT_CAMERA_NOT_OPENED");
-	    mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_RETRY, 1, 0), 2000);
+	    if (!mStopped)
+		    mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_RETRY, 1, 0), 2000);
 	    break;
 	default:
 	    break;
@@ -133,7 +138,10 @@ public class LiveModule extends SyncModule {
 	return false;
     }
 
-    public void sendRequestData(boolean bool) {
+    private void sendRequestData(boolean bool, boolean callBySelf) {
+	// if app ask to quit, don't response connect request from self anymore
+	if (bool && callBySelf && mStopped)
+	    return;
 	SyncData data = new SyncData();
 	if (DEBUG) Log.e(TAG, "sendRequestData");
 	data.putInt(LIVE_SHARE, 1);
@@ -147,7 +155,14 @@ public class LiveModule extends SyncModule {
 	}
     }
 
+    public void sendRequestData(boolean bool) {
+	if (bool) mStopped = false;
+	sendRequestData(bool, false);
+    }
+
     public void sendQuitMessage() {
+	mStopped = true;
+	mHandler.removeMessages(MSG_RETRY);
 	SyncData data = new SyncData();
 	Log.e(TAG, "sendQuitMessage");
 	data.putInt(LIVE_SHARE, 1);
