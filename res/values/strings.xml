@@ -323,6 +323,7 @@
 	<string name="ssid">SSID:</string>
 	<string name="live_wifi_ap_hint">Turn on the Ap on your phone before living</string>
 	<string name="waiting_for_glass_connect">waiting for device connect#8230;#8230;#8230;</string>
+	<string name="waiting_for_glass_open_camera">waiting for glass open camera&#8230;</string>
 	<string name="video_live">Live</string>
 	<string name="bluetooth_phone">Bluetooth Phone</string>
 	<string name="bluetooth_phone_summary">Enable/Disable the bluetooth phone</string>

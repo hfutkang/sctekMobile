@@ -2,6 +2,8 @@ package cn.ingenic.glasssync.screen.live;
 
 import android.os.RemoteException;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.content.Context;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -54,6 +56,18 @@ public class LiveModule extends SyncModule {
     private String mNeededIP = null;
     private StringBuilder mIP = null;
 
+    private final int MSG_RETRY = 0;
+    private Handler mHandler = new Handler(){
+	@Override
+	public void handleMessage(Message msg){
+	    switch (msg.what) {
+	    case MSG_RETRY:
+		    sendRequestData(msg.arg1 == 1);
+		    break;
+	    }
+	}
+    };
+
     private LiveModule(Context context) {
 	super(LIVE_NAME, context);
 	mContext = context;
@@ -89,6 +103,7 @@ public class LiveModule extends SyncModule {
 	    if (DEBUG) Log.e(TAG, "RANSPORT_CAMERA_OPENED");
 	    LiveDisplayActivity.mRTSPOpened = true;
 	    if (isHasNeedIP()) {
+		LiveDisplayActivity.mPD.setMessage(mContext.getString(R.string.live_dialog_loading));
 		LiveDisplayActivity.mPD.show();
 		LiveDisplayActivity.mRtspClient.start(mUrl);
 	    }else{
@@ -97,6 +112,7 @@ public class LiveModule extends SyncModule {
 	    break;
 	case TRANSPORT_CAMERA_NOT_OPENED:
 	    if (DEBUG) Log.e(TAG, "TRANSPORT_CAMERA_NOT_OPENED");
+	    mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_RETRY, 1, 0), 2000);
 	    break;
 	default:
 	    break;

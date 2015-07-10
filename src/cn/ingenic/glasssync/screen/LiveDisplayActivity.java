@@ -319,7 +319,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	if (DEBUG) Log.e(TAG, "processDialog");
 	ProgressDialog pd = new ProgressDialog(LiveDisplayActivity.this); 
 	pd.setCancelable(false); 
-	pd.setMessage(LiveDisplayActivity.this.getString(R.string.live_dialog_loading)); 
+	pd.setMessage(LiveDisplayActivity.this.getString(R.string.waiting_for_glass_open_camera)); 
 	pd.setOnKeyListener(new DialogInterface.OnKeyListener(){
 			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
 				if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -385,6 +385,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 
 	if (!checkBTEnabled()) {
 	    mBluetoothConnected = false;
+	    mPD.setMessage(getString(R.string.live_dialog_loading)); 
 	    mPD.show(); 
 	    mHandler.postDelayed(runnable1, 1000);
 	    
@@ -401,6 +402,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	    mBluetoothConnected = true;
 	    //mHandler.postDelayed(runnable1, 100);
 	    mConnectedHandler.postDelayed(runnable2, 100);
+	    mPD.show();
 	    if (mLiveModule != null)
 		mLiveModule.sendRequestData(true);
 	}

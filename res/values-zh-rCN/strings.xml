@@ -312,6 +312,7 @@
 	<string name="ssid">SSID:</string>
 	<string name="live_wifi_ap_hint">直播需要开启wifi热点功能</string>
 	<string name="waiting_for_glass_connect">等待设备连接&#8230;</string>
+	<string name="waiting_for_glass_open_camera">眼镜端摄像头开启中&#8230;</string>
     <string name="video_live">直播</string>
     <string name="bluetooth_phone">蓝牙电话</string>
     <string name="bluetooth_phone_summary">开启关闭蓝牙电话功能</string>
