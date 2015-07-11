@@ -396,6 +396,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	    	url = "rtsp://" + getIntent().getStringExtra("ip") + ":8554/recorderLive";
 	    else
 	    	url = "rtsp://" + selectNeededIP() + ":8554/recorderLive";
+	    Log.e(TAG, "live url :" + url);
 	    startRtspClient(url);
 	    Log.e(TAG, "bluetooth failed url = " + url);
 	}else{

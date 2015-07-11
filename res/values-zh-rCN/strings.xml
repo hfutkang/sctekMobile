@@ -348,4 +348,6 @@
     <string name="rebind_hanlang">重新绑定</string>
     <string name="binding_hanlang">绑定悍狼&#8230;</string>
     <string name="hanlang_comment">1. 请确保悍狼在附近，并已开机。\n\n2. 应用会自动绑定信号最强的悍狼。\n\n3. 请确保悍狼没有绑定其他手机。</string>
+    <string name="sync_time">时间同步</string>
+    <string name="sync_phone_time_to_glass">开启/关闭同步手机时间</string>
 </resources>

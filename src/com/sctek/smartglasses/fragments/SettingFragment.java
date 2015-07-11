@@ -8,6 +8,7 @@ import cn.ingenic.glasssync.DefaultSyncManager;
 import cn.ingenic.glasssync.R;
 import cn.ingenic.glasssync.SyncApp;
 import cn.ingenic.glasssync.devicemanager.GlassDetect;
+import cn.ingenic.glasssync.devicemanager.TimeSyncManager;
 
 import com.ingenic.glass.api.sync.SyncChannel;
 import com.ingenic.glass.api.sync.SyncChannel.CONNECTION_STATE;
@@ -20,6 +21,7 @@ import com.sctek.smartglasses.utils.WifiUtils;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.annotation.SuppressLint;
@@ -81,18 +83,12 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 	private static final String[] keys = {"NULL", "photo_pixel", "vedio_pixel", "duration", 
 		"default_switch", "anti_shake", "timestamp"};
 	
-//	private ListPreference mPhotoPixelPreference;
-//	private ListPreference mVedioPixelPreference;
 	private ListPreference mVedioDurationPreference;
-//	private SwitchPreference mDefaultSwitchPreference;
-//	private SwitchPreference mAntiShakePreference;
-//	private SwitchPreference mTimeStampPreference;
 	private VolumeSeekBarPreference mVolumeSeekBarPreference;
 	private Preference mWifiPreference;
 	private SwitchPreference mBluetoothPhonePreference;
 	private SwitchPreference mRoundVideoPreference;
-//	private EditTextPreference mSsidEditTextPreference;
-//	private EditTextPreference mPwEditTextPreference;
+	private SwitchPreference mSyncTimePreference;
 	
 	private SharedPreferences mHeadsetPreferences;
 	
@@ -162,6 +158,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		mWifiPreference = (Preference)findPreference("wifi");
 		mBluetoothPhonePreference = (SwitchPreference)findPreference("phone_on");
 		mRoundVideoPreference = (SwitchPreference)findPreference("round_video");
+		mSyncTimePreference = (SwitchPreference)findPreference("sync_time");
 		
 		mBluetoothPhonePreference.setChecked(mHeadsetPreferences.getBoolean("last_headset_state", false));
 		
@@ -169,8 +166,20 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		mVolumeSeekBarPreference.setOnPreferenceChangeListener(this);
 		mBluetoothPhonePreference.setOnPreferenceChangeListener(this);
 		mRoundVideoPreference.setOnPreferenceChangeListener(this);
-		
 		mWifiPreference.setOnPreferenceClickListener(this);
+		
+		mSyncTimePreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				// TODO Auto-generated method stub
+				boolean syncTime = (Boolean)newValue;
+				if(syncTime) {
+					TimeSyncManager.getInstance().syncTime();
+				}
+				return true;
+			}
+		});
 		
 	}
 	
