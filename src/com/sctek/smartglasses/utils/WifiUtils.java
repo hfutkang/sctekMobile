@@ -43,16 +43,21 @@ public class WifiUtils {
 		wcfg.allowedPairwiseCiphers.clear();
 		wcfg.allowedProtocols.clear();
 		
-		wcfg.preSharedKey = pw;     
-		wcfg.hiddenSSID = true;       
-		wcfg.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);       
-		wcfg.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);                             
-		wcfg.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);     
-//		wcfg.allowedKeyManagement.set(4);
-		wcfg.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);                        
-		wcfg.allowedProtocols.set(WifiConfiguration.Protocol.WPA);      
-		wcfg.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);    
-		wcfg.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);    
+			wcfg.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN, true);
+	      wcfg.wepKeys[0] = "";    
+	      wcfg.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);    
+	      wcfg.wepTxKeyIndex = 0;
+		
+//		wcfg.preSharedKey = pw;     
+//		wcfg.hiddenSSID = true;       
+//		wcfg.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);       
+//		wcfg.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);                             
+//		wcfg.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);     
+////		wcfg.allowedKeyManagement.set(4);
+//		wcfg.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);                        
+//		wcfg.allowedProtocols.set(WifiConfiguration.Protocol.WPA);      
+//		wcfg.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);    
+//		wcfg.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);    
 		
 		try {
 			Method method = mWifiManager.getClass().getMethod("setWifiApConfiguration", wcfg.getClass());

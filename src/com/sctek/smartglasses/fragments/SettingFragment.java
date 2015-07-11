@@ -7,6 +7,7 @@ import java.util.prefs.PreferenceChangeListener;
 import cn.ingenic.glasssync.DefaultSyncManager;
 import cn.ingenic.glasssync.R;
 import cn.ingenic.glasssync.SyncApp;
+import cn.ingenic.glasssync.contactslite.ContactsLiteModule;
 import cn.ingenic.glasssync.devicemanager.GlassDetect;
 import cn.ingenic.glasssync.devicemanager.TimeSyncManager;
 
@@ -73,6 +74,9 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 	public final static int SET_PW = 10;
 	public final static int SET_WIFI_AP = 11;
 	public final static int SWITCH_ROUND_VIDEO = 12;
+	
+	public final static int MSG_SEND_FINISH = 1;
+	public final static int MSG_SEND_CONTACT_TIMEOUT = 4;
 	
 	public final static int SETTING_DELAY_TIME = 3000;
 	
@@ -380,6 +384,12 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 				editorOff.putBoolean("last_headset_state", false);
 				editorOff.commit();
 			}
+			else if(msg.what == MSG_SEND_FINISH) {
+				Toast.makeText(getActivity(), R.string.sync_contact_success, Toast.LENGTH_SHORT).show();
+			}
+			else if(msg.what == MSG_SEND_CONTACT_TIMEOUT) {
+				Toast.makeText(getActivity(), R.string.sync_contact_fail, Toast.LENGTH_SHORT).show();
+			}
 			handler.post(disableSetBackRunnable);
 		}
 	};
@@ -465,4 +475,10 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 			}
 		}
 	};
+	
+	private void syncContactToGlass(){
+		ContactsLiteModule clm = (ContactsLiteModule) ContactsLiteModule.getInstance(getActivity().getApplicationContext());
+		clm.sendSyncRequest(true,handler);
+		clm.setSyncEnable(true);
+	}
 }

@@ -12,7 +12,6 @@ import cn.ingenic.glasssync.screen.LiveDisplayActivity;
 // import cn.ingenic.glasssync.ui.BindGlassActivity;
 
 
-
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -47,7 +46,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -112,13 +110,10 @@ public class MainActivity extends FragmentActivity {
 			editor.putBoolean("last_headset_state", true);
 			editor.commit();
 		}
+		
+		TimeSyncManager.getInstance().syncTime();
+		
 		syncContactToGlass();
-		
-		
-		SharedPreferences syncTimePreference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		if(syncTimePreference.getBoolean("sync_time", false)) {
-			TimeSyncManager.getInstance().syncTime();
-		}
 	}
 
 	private void syncContactToGlass(){

@@ -65,10 +65,9 @@
 	    android:key="wifi"
 	    android:summary="@string/wifi_ap_summary"/>
 	
-	<SwitchPreference 
-        android:title="@string/sync_time"
-        android:key="sync_time"
-        android:defaultValue="false"
-        android:summary="@string/sync_phone_time_to_glass"/>
+	<Preference 
+        android:title="@string/sync_contact"
+        android:key="sync_contacts"
+        android:summary="@string/sync_contact_to_glass"/>
 
 </PreferenceScreen>
