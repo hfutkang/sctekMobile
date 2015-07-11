@@ -353,5 +353,7 @@
     <string name="sync_contact_to_glass">开启/关闭同步联系人到眼镜</string>
     <string name="sync_contact_success">联系人已同步到眼镜</string>
     <string name="sync_contact_fail">同步联系人到眼镜失败</string>
+    <string name="syncing_contact">同步中&#8230;</string>
+    <string name="no_read_contact_permission">请开启读取联系人权限</string>
     <string name="sync_phone_time_to_glass">开启/关闭同步手机时间</string>
 </resources>

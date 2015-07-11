@@ -23,6 +23,7 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.annotation.SuppressLint;
@@ -40,11 +41,15 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceFragment;
+import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -76,12 +81,15 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 	public final static int SWITCH_ROUND_VIDEO = 12;
 	
 	public final static int MSG_SEND_FINISH = 1;
-	public final static int MSG_SEND_CONTACT_TIMEOUT = 4;
+	public final static int CONTACT_READABLE = 103;
 	
 	public final static int SETTING_DELAY_TIME = 3000;
 	
 	public final int PHONE_AUDIO_CONNECT = 6;
 	public final int PHONE_AUDIO_DISCONNECT = 7;
+	
+	private boolean contactReadable = false;
+	private boolean syncContactToGlass = false;
 	
 	private static final String[] lables = {"pixel", "pixel", "pixel", "duration", "sw", "sw", "sw", "volume", "ssid", "pw", "NULL", "sw" };
 	private static final String[] keys = {"NULL", "photo_pixel", "vedio_pixel", "duration", 
@@ -92,7 +100,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 	private Preference mWifiPreference;
 	private SwitchPreference mBluetoothPhonePreference;
 	private SwitchPreference mRoundVideoPreference;
-	private SwitchPreference mSyncTimePreference;
+	private SwitchPreference mSyncContactPreference;
 	
 	private SharedPreferences mHeadsetPreferences;
 	
@@ -136,6 +144,8 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		if(!mBluetoothAdapter.isEnabled())
 			mBluetoothAdapter.enable();
 		
+		checkContactReadable();
+		
 		initPrefereceView();
 		
 	}
@@ -152,6 +162,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		getActivity().unregisterReceiver(mBroadcastReceiver);
+		handler.removeCallbacksAndMessages(null);
 		super.onDestroy();
 	}
 	
@@ -162,7 +173,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		mWifiPreference = (Preference)findPreference("wifi");
 		mBluetoothPhonePreference = (SwitchPreference)findPreference("phone_on");
 		mRoundVideoPreference = (SwitchPreference)findPreference("round_video");
-		mSyncTimePreference = (SwitchPreference)findPreference("sync_time");
+		mSyncContactPreference = (SwitchPreference)findPreference("sync_contact");
 		
 		mBluetoothPhonePreference.setChecked(mHeadsetPreferences.getBoolean("last_headset_state", false));
 		
@@ -170,20 +181,9 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		mVolumeSeekBarPreference.setOnPreferenceChangeListener(this);
 		mBluetoothPhonePreference.setOnPreferenceChangeListener(this);
 		mRoundVideoPreference.setOnPreferenceChangeListener(this);
-		mWifiPreference.setOnPreferenceClickListener(this);
+		mSyncContactPreference.setOnPreferenceChangeListener(this);
 		
-		mSyncTimePreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				// TODO Auto-generated method stub
-				boolean syncTime = (Boolean)newValue;
-				if(syncTime) {
-					TimeSyncManager.getInstance().syncTime();
-				}
-				return true;
-			}
-		});
+		mWifiPreference.setOnPreferenceClickListener(this);
 		
 	}
 	
@@ -224,6 +224,22 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 			boolean sw = (Boolean)value;
 			pk.putInt("type", SWITCH_ROUND_VIDEO);
 			pk.putBoolean("sw", sw);
+		}
+		else if("sync_contact".equals(key)) {
+			syncContactToGlass = (Boolean)value;
+			if(syncContactToGlass) {
+				if(contactReadable) {
+					syncContactToGlass(syncContactToGlass);
+				}
+				else {
+					checkContactReadable();
+					Toast.makeText(getActivity(), R.string.no_read_contact_permission, Toast.LENGTH_SHORT).show();
+				}
+			}
+			else {
+				syncContactToGlass(syncContactToGlass);
+			}
+			return ;
 		}
 		
 		mHanLangCmdChannel.sendPacket(pk);
@@ -385,10 +401,12 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 				editorOff.commit();
 			}
 			else if(msg.what == MSG_SEND_FINISH) {
-				Toast.makeText(getActivity(), R.string.sync_contact_success, Toast.LENGTH_SHORT).show();
+					setBack = true;
+					mSyncContactPreference.setChecked(syncContactToGlass);
 			}
-			else if(msg.what == MSG_SEND_CONTACT_TIMEOUT) {
-				Toast.makeText(getActivity(), R.string.sync_contact_fail, Toast.LENGTH_SHORT).show();
+			else if(msg.what == CONTACT_READABLE) {
+				setBack = true;
+				mSyncContactPreference.setChecked((Boolean)msg.obj);
 			}
 			handler.post(disableSetBackRunnable);
 		}
@@ -476,9 +494,31 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		}
 	};
 	
-	private void syncContactToGlass(){
+	private void syncContactToGlass(boolean on){
 		ContactsLiteModule clm = (ContactsLiteModule) ContactsLiteModule.getInstance(getActivity().getApplicationContext());
-		clm.sendSyncRequest(true,handler);
-		clm.setSyncEnable(true);
+		clm.sendSyncRequest(on,handler);
+		clm.setSyncEnable(on);
+	}
+	
+	private void checkContactReadable() {
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Cursor cursor = null;
+				cursor = getActivity().getApplicationContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
+				if (cursor != null && cursor.getCount() != 0) {
+					contactReadable = true;
+				}
+				else {
+					contactReadable = false;
+				}
+				
+				handler.obtainMessage(CONTACT_READABLE, contactReadable).sendToTarget();
+				cursor.close();
+			}
+		}).start();
 	}
 }

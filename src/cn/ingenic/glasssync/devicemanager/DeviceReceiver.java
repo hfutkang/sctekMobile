@@ -8,7 +8,7 @@ import android.bluetooth.BluetoothProfile;
 import android.util.Log;
 import cn.ingenic.glasssync.SyncApp;
 import cn.ingenic.glasssync.DefaultSyncManager;
-import cn.ingenic.glasssync.ui.BindGlassActivity;
+import com.sctek.smartglasses.ui.BindGlassActivity;
 import com.sctek.smartglasses.ui.MainActivity;
 import cn.ingenic.glasssync.devicemanager.GlassDetect;
 
