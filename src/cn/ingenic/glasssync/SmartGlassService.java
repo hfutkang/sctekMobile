@@ -26,6 +26,8 @@ public class SmartGlassService extends Service{
 	private TelephonyManager mTelephonyManager;
 	private int phoneState = TelephonyManager.CALL_STATE_IDLE;
 	
+	private static final String NTF_CHANNEL_NAME = "ntfchannel";
+	
 	private final static int MSG_TYPE_LOW_POWER = 2;
 	private final static int MSG_TYPE_PHONE = 1;
 
@@ -39,7 +41,7 @@ public class SmartGlassService extends Service{
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		Log.e(TAG, "onCreate");
-		mSyncChannel = SyncChannel.create("00e04c68229b1", this, mOnSyncListener);
+		mSyncChannel = SyncChannel.create(NTF_CHANNEL_NAME, this, mOnSyncListener);
 		mTelephonyManager = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
 		mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 		super.onCreate();

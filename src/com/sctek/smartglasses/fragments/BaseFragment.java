@@ -39,6 +39,7 @@ import com.sctek.smartglasses.ui.MySideNavigationCallback;
 import com.sctek.smartglasses.ui.SideNavigationView;
 import com.sctek.smartglasses.utils.CustomHttpClient;
 import com.sctek.smartglasses.utils.GetRemoteVideoThumbWorks;
+import com.sctek.smartglasses.utils.HanLangCmdChannel;
 import com.sctek.smartglasses.utils.MediaData;
 import com.sctek.smartglasses.utils.MultiMediaScanner;
 import com.sctek.smartglasses.utils.WifiUtils;
@@ -140,7 +141,7 @@ public class BaseFragment extends Fragment {
 	private int childIndex;
 	
 	public WifiManager mWifiManager;
-	public SyncChannel mChannel;
+	public HanLangCmdChannel mHanLangCmdChannel;
 	
 	public Context mContext;
 	public int preApState;
@@ -179,7 +180,8 @@ public class BaseFragment extends Fragment {
 		mDeleteProgressDialog = new ProgressDialog(getActivity());
 		
 		mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
-		mChannel = SyncChannel.create("00e04c68229b0", mContext, mOnSyncListener);
+		mHanLangCmdChannel = HanLangCmdChannel.getInstance(mContext);
+		mHanLangCmdChannel.setHandler(mChannelHandler);
 		
 	}
 	
@@ -283,7 +285,7 @@ public class BaseFragment extends Fragment {
 		// TODO Auto-generated method stub
 		Log.e(TAG, "onDestroy");
 		mMediaUrlTask.cancel(true);
-		mHandler.removeMessages(RESEDN_CONNET_WIFI_MSG);
+		mDialogHandler.removeMessages(RESEDN_CONNET_WIFI_MSG);
 		super.onDestroy();
 	}
 	
@@ -543,14 +545,14 @@ public class BaseFragment extends Fragment {
 				file.delete();
 		}
 		
-		MultiMediaScanner scanner = new MultiMediaScanner(mContext, imagesPath, null, mHandler);
+		MultiMediaScanner scanner = new MultiMediaScanner(mContext, imagesPath, null, mDialogHandler);
 		scanner.connect();
 		
 		onMediaDeleted();
 		
 	}
 	
-	public Handler mHandler = new Handler() {
+	public Handler mDialogHandler = new Handler() {
 		
     	@Override
     	public void dispatchMessage(Message msg) {
@@ -582,6 +584,29 @@ public class BaseFragment extends Fragment {
     			break;
     		}
     	}
+    };
+    
+    private Handler mChannelHandler = new Handler() {
+    	private boolean connected = false;
+    	@Override
+    	public void handleMessage(Message msg) {
+    		if(msg.what == HanLangCmdChannel.RECEIVE_MSG_FROM_GLASS) {
+    			Packet data = (Packet)msg.obj;
+    			glassIp = data.getString("ip");
+    			if(glassIp != null && glassIp.length() != 0&&!connected)	 {
+    				
+    				connected = true;
+    				mDialogHandler.removeMessages(RESEDN_CONNET_WIFI_MSG);
+    				
+    				if(childIndex == RemotePhotoGridFragment.FRAGMENT_INDEX)
+    					mMediaUrlTask.execute(new String[]{glassIp, "photos"});
+    				else if(childIndex == RemoteVideoGridFragment.FRAGMENT_INDEX)
+    					mMediaUrlTask.execute(new String[]{glassIp, "vedios"});
+    				
+    			}
+    		}
+    	}
+    	
     };
 	
 	public void onMediaDeleted() {
@@ -639,7 +664,7 @@ public class BaseFragment extends Fragment {
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
-			mHandler.sendEmptyMessage(3);
+			mDialogHandler.sendEmptyMessage(3);
 		}
 		
 		@Override
@@ -661,7 +686,7 @@ public class BaseFragment extends Fragment {
 		@Override
 		protected void onProgressUpdate(Integer ...values) {
 			// TODO Auto-generated method stub
-			mHandler.sendEmptyMessage(4);
+			mDialogHandler.sendEmptyMessage(4);
 			switch(values[0]) {
 			case 1:
 				mImageAdapter.notifyDataSetChanged();
@@ -671,44 +696,6 @@ public class BaseFragment extends Fragment {
 				break;
 			}
 			super.onProgressUpdate(values);
-		}
-		
-	}
-    
-	private MyOnSyncListener mOnSyncListener = new MyOnSyncListener();
-	private class MyOnSyncListener implements SyncChannel.onChannelListener {
-	
-		private boolean connected = false;
-		@Override
-		public void onReceive(RESULT result, Packet data) {
-			// TODO Auto-generated method stub
-			Log.e(TAG, "Channel onReceive");
-			
-			glassIp = data.getString("ip");
-			if(glassIp != null && glassIp.length() != 0&&!connected)	 {
-				
-				connected = true;
-				mHandler.removeMessages(RESEDN_CONNET_WIFI_MSG);
-				
-				if(childIndex == RemotePhotoGridFragment.FRAGMENT_INDEX)
-					mMediaUrlTask.execute(new String[]{glassIp, "photos"});
-				else if(childIndex == RemoteVideoGridFragment.FRAGMENT_INDEX)
-					mMediaUrlTask.execute(new String[]{glassIp, "vedios"});
-				
-			}
-		}
-	
-		@Override
-		public void onSendCompleted(RESULT arg0, Packet arg1) {
-			// TODO Auto-generated method stub
-			
-			Log.e(TAG, "onSendCompleted");
-		}
-	
-		@Override
-		public void onStateChanged(CONNECTION_STATE arg0) {
-			// TODO Auto-generated method stub
-			Log.e(TAG, "onStateChanged:" + arg0.toString());
 		}
 		
 	}
@@ -733,7 +720,7 @@ public class BaseFragment extends Fragment {
 		}  
 		
 		if(ip == null && !wifi_msg_received) {
-			Packet packet = mChannel.createPacket();
+			Packet packet = mHanLangCmdChannel.createPacket();
 			packet.putInt("type", 1);
 			
 			String defaultSsid = ((TelephonyManager)mContext
@@ -744,7 +731,7 @@ public class BaseFragment extends Fragment {
 			
 			packet.putString("ssid", ssid);
 			packet.putString("pw", pw);
-			mChannel.sendPacket(packet);
+			mHanLangCmdChannel.sendPacket(packet);
 		}
 		return ip;
 	} 
@@ -828,13 +815,13 @@ public class BaseFragment extends Fragment {
 	
 	public void sendApInfoToGlass() {
 		
-		if(mChannel.isConnected()) {
+		if(mHanLangCmdChannel.isConnected()) {
 			
 			mConnectProgressDialog.setMessage(getResources().getText(R.string.wait_device_connect));
 			if(!mConnectProgressDialog.isShowing())
 				mConnectProgressDialog.show();
 			
-			Packet packet = mChannel.createPacket();
+			Packet packet = mHanLangCmdChannel.createPacket();
 			packet.putInt("type", 1);
 			
 			String defaultSsid = ((TelephonyManager)getActivity()
@@ -845,9 +832,9 @@ public class BaseFragment extends Fragment {
 			
 			packet.putString("ssid", ssid);
 			packet.putString("pw", pw);
-			mChannel.sendPacket(packet);
+			mHanLangCmdChannel.sendPacket(packet);
 			
-			mHandler.sendEmptyMessageDelayed(RESEDN_CONNET_WIFI_MSG, 5000);
+			mDialogHandler.sendEmptyMessageDelayed(RESEDN_CONNET_WIFI_MSG, 5000);
 		}
 		else {
 			Toast.makeText(getActivity(), R.string.bluetooth_error, Toast.LENGTH_LONG).show();

@@ -57,7 +57,7 @@
 	<com.sctek.smartglasses.ui.VolumeSeekBarPreference 
 	    android:title="@string/volume"
 	    android:key="volume"
-	    android:defaultValue="5"
+	    android:defaultValue="7"
 	    android:summary="@string/volume_summary"/>
 	
 	<Preference 

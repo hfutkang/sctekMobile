@@ -3,7 +3,10 @@ package cn.ingenic.glasssync;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.LinkedList; 
+
 import org.xmlpull.v1.XmlPullParserException;
+
+import com.sctek.smartglasses.utils.HanLangCmdChannel;
 
 import android.app.Application;
 import android.app.Activity;
@@ -35,6 +38,7 @@ import cn.ingenic.glasssync.devicemanager.GlassDetect;
 import android.widget.Toast;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
+
 import java.util.List;
 
 public class SyncApp extends Application implements
@@ -121,6 +125,9 @@ public class SyncApp extends Application implements
 		    // GlassSyncLbsManager gslbs = GlassSyncLbsManager.getInstance(this);
 
 		    GlassDetect gdt = GlassDetect.getInstance(this);
+		    
+	//init hanlang cmd channel
+		    HanLangCmdChannel.getInstance(this);
 	}
 
 	private void loadModules(XmlResourceParser parser) {

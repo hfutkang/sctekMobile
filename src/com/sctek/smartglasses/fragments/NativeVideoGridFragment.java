@@ -175,6 +175,7 @@ public class NativeVideoGridFragment extends BaseFragment {
 			
 		}
 		
+		cursor.close();
 	}
 	
 	@SuppressLint("NewApi")

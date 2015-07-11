@@ -152,6 +152,8 @@ public class NativePhotoGridFragment extends BaseFragment {
 			mediaList.add(md);
 			
 		}
+		
+		cursor.close();
 	}
 	
 	private void showRemotePhotoFragment() {

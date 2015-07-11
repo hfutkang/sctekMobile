@@ -14,6 +14,7 @@ import com.ingenic.glass.api.sync.SyncChannel.CONNECTION_STATE;
 import com.ingenic.glass.api.sync.SyncChannel.Packet;
 import com.ingenic.glass.api.sync.SyncChannel.RESULT;
 import com.sctek.smartglasses.ui.VolumeSeekBarPreference;
+import com.sctek.smartglasses.utils.HanLangCmdChannel;
 import com.sctek.smartglasses.utils.WifiUtils;
 
 import android.preference.EditTextPreference;
@@ -93,7 +94,6 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 //	private EditTextPreference mSsidEditTextPreference;
 //	private EditTextPreference mPwEditTextPreference;
 	
-	private SyncChannel mChannel;
 	private SharedPreferences mHeadsetPreferences;
 	
 	private BluetoothAdapter mBluetoothAdapter;
@@ -103,6 +103,8 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 	private GlassDetect mGlassDetect;
 	
 	private ProgressDialog mProgressDialog;
+	
+	private HanLangCmdChannel mHanLangCmdChannel;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -118,13 +120,14 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		mHeadsetPreferences = getActivity().getApplicationContext().
 				getSharedPreferences(SyncApp.SHARED_FILE_NAME, Context.MODE_PRIVATE);
 		
-		mChannel = SyncChannel.create("00e04c68229b0", getActivity(), mOnSyncListener);
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		
 		mGlassDetect = (GlassDetect)GlassDetect.getInstance(getActivity());
 		String addr = DefaultSyncManager.getDefault().getLockedAddress();
 		mGlassDetect.setLockedAddress(addr);
 		mProgressDialog = new ProgressDialog(getActivity());
+		mHanLangCmdChannel = HanLangCmdChannel.getInstance(getActivity().getApplicationContext());
+		mHanLangCmdChannel.setHandler(handler);
 //		mGlassDetect.setCallBack(handler);
 		
 		IntentFilter filter = new IntentFilter(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED);
@@ -142,7 +145,6 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View view = super.onCreateView(inflater, container, savedInstanceState);
-//		view.setBackgroundColor(getResources().getColor(android.R.color.white));
 		return view;
 	}
 	
@@ -155,60 +157,28 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 	
 	private void initPrefereceView() {
 		
-//		mPhotoPixelPreference = (ListPreference)findPreference("photo_pixel");
-//		mVedioPixelPreference = (ListPreference)findPreference("vedio_pixel");
 		mVedioDurationPreference = (ListPreference)findPreference("duration");
-//		mDefaultSwitchPreference = (SwitchPreference)findPreference("default_switch");
-//		mAntiShakePreference = (SwitchPreference)findPreference("anti_shake");
-//		mTimeStampPreference = (SwitchPreference)findPreference("timestamp");
 		mVolumeSeekBarPreference = (VolumeSeekBarPreference)findPreference("volume");
 		mWifiPreference = (Preference)findPreference("wifi");
 		mBluetoothPhonePreference = (SwitchPreference)findPreference("phone_on");
 		mRoundVideoPreference = (SwitchPreference)findPreference("round_video");
-//		mSsidEditTextPreference = (EditTextPreference)findPreference("ssid");
-////		mPwEditTextPreference = (EditTextPreference)findPreference("appw");
 		
 		mBluetoothPhonePreference.setChecked(mHeadsetPreferences.getBoolean("last_headset_state", false));
 		
-//		mPhotoPixelPreference.setOnPreferenceChangeListener(this);
-//		mVedioPixelPreference.setOnPreferenceChangeListener(this);
 		mVedioDurationPreference.setOnPreferenceChangeListener(this);
-//		mDefaultSwitchPreference.setOnPreferenceChangeListener(this);
-//		mAntiShakePreference.setOnPreferenceChangeListener(this);
-//		mTimeStampPreference.setOnPreferenceChangeListener(this);
 		mVolumeSeekBarPreference.setOnPreferenceChangeListener(this);
 		mBluetoothPhonePreference.setOnPreferenceChangeListener(this);
 		mRoundVideoPreference.setOnPreferenceChangeListener(this);
 		
 		mWifiPreference.setOnPreferenceClickListener(this);
-//		mPhotoPixelPreference.setOnPreferenceClickListener(this);
-//		mVedioPixelPreference.setOnPreferenceClickListener(this);
-//		mVedioDurationPreference.setOnPreferenceClickListener(this);
-//		mDefaultSwitchPreference.setOnPreferenceClickListener(this);
-//		mAntiShakePreference.setOnPreferenceClickListener(this);
-//		mTimeStampPreference.setOnPreferenceClickListener(this);
 		
 	}
 	
 	private void onPreferenceChanged(Preference preference, Object value) {
 		
 		String key = preference.getKey();
-		Packet pk = mChannel.createPacket();
+		Packet pk = mHanLangCmdChannel.createPacket();
 		Log.e(TAG, "" + key);
-//		if("photo_pixel".equals(key)) {
-//			
-//			String pixel = (String)value;
-//			pk.putInt("type", SET_PHOTO_PIXEL);
-//			pk.putString("pixel", pixel);
-//			
-//		}
-//		else if("vedio_pixel".equals(key)) {
-//			
-//			String pixel = (String)value;
-//			pk.putInt("type", SET_VEDIO_PIXEL);
-//			pk.putString("pixel", pixel);
-//			
-//		}
 		if("duration".equals(key)) {
 			
 			String duration = (String)value;
@@ -216,28 +186,6 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 			pk.putString("duration", duration);
 			
 		}
-//		else if("default_switch".equals(key)) {
-//			
-//			boolean sw = (Boolean)value;
-//			pk.putInt("type", SWITCH_GLASSES);
-//			pk.putBoolean("sw", sw);
-//			
-//		}
-//		else if("anti_shake".equals(key)) {
-//			
-//			boolean sw = (Boolean)value;
-//			pk.putInt("type", SWITCH_ANTI_SHAKE);
-//			pk.putBoolean("sw", sw);
-//			
-//			
-//		}
-//		else if("timestamp".equals(key)) {
-//			
-//			boolean sw = (Boolean)value;
-//			pk.putInt("type", SWITCH_TIME_STAMP);
-//			pk.putBoolean("sw", sw);
-//			
-//		}
 		else if("volume".equals(key)) {
 			int volume = (Integer)value;
 			pk.putInt("type", SET_VOLUME);
@@ -264,25 +212,13 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 			pk.putInt("type", SWITCH_ROUND_VIDEO);
 			pk.putBoolean("sw", sw);
 		}
-//		else if("ssid".equals(key)) {
-//			String ssid = (String)value;
-//			pk.putInt("type", SET_SSID);
-//			pk.putString("ssid", ssid);
-//		}
-//		else if("appw".equals(key)) {
-//			String pw = (String)value;
-//			pk.putInt("type", SET_PW);
-//			pk.putString("pw", pw);
-//		}
 		
-		mChannel.sendPacket(pk);
-		Log.e(TAG, key);
+		mHanLangCmdChannel.sendPacket(pk);
 	}
 
 	@Override
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
 		// TODO Auto-generated method stub
-		Log.e(TAG, "onPreferenceChange:" + mChannel.isConnected());
 		
 		if(setBack) {
 			Log.e(TAG, "set back true");
@@ -292,7 +228,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		}
 		Log.e(TAG, "set back false");
 		String key = preference.getKey();
-		if(mChannel.isConnected()) {
+		if(mHanLangCmdChannel.isConnected()) {
 			onPreferenceChanged(preference, newValue);
 			return false;
 		}
@@ -312,108 +248,6 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 			showWifiSettingDialog();
 		}
 		return true;
-	}
-	
-	private MyOnSyncListener mOnSyncListener = new MyOnSyncListener();
-	private class MyOnSyncListener implements SyncChannel.onChannelListener {
-	
-		@Override
-		public void onReceive(RESULT arg0, Packet data) {
-			// TODO Auto-generated method stub
-			Log.e(TAG, "Channel onReceive");
-			
-			int type = data.getInt("type");
-			String sValue = null;
-			boolean bValue = false;
-			Message msg = null;
-			
-			Log.e(TAG, "type:" + type);
-			switch (type) {
-//			case SET_PHOTO_PIXEL:
-//				sValue = data.getString(lables[type -1]);
-//				msg = handler.obtainMessage(SET_PHOTO_PIXEL, sValue);
-//				msg.sendToTarget();
-//				break;
-//			case SET_VEDIO_PIXEL:
-//				sValue = data.getString(lables[type -1]);
-//				msg = handler.obtainMessage(SET_VEDIO_PIXEL, sValue);
-//				msg.sendToTarget();
-			case SET_VEDIO_DURATION:
-				sValue = data.getString(lables[type -1]);
-				msg = handler.obtainMessage(SET_VEDIO_DURATION, sValue);
-				msg.sendToTarget();
-				break;
-//			case SWITCH_GLASSES:
-//				bValue = data.getBoolean(lables[type - 1]);
-//				msg = handler.obtainMessage(SWITCH_GLASSES, bValue);
-//				msg.sendToTarget();
-//				break;
-//			case SWITCH_ANTI_SHAKE:
-//				bValue = data.getBoolean(lables[type - 1]);
-//				msg = handler.obtainMessage(SWITCH_ANTI_SHAKE, bValue);
-//				msg.sendToTarget();
-//				break;
-//			case SWITCH_TIME_STAMP:
-//				bValue = data.getBoolean(lables[type - 1]);
-//				msg = handler.obtainMessage(SWITCH_TIME_STAMP, bValue);
-//				msg.sendToTarget();
-//				break;
-			case SET_VOLUME:
-				int volume = data.getInt(lables[type - 1]);
-				msg = handler.obtainMessage(SET_VOLUME, volume);
-				msg.sendToTarget();
-				break;
-//			case SET_SSID:
-//				sValue = data.getString(lables[type -1]);
-//				msg = handler.obtainMessage(SET_SSID, sValue);
-//				msg.sendToTarget();
-//				break;
-//			case SET_PW:
-//				sValue = data.getString(lables[type -1]);
-//				msg = handler.obtainMessage(SET_PW, sValue);
-//				msg.sendToTarget();
-//				break;
-			case SET_WIFI_AP:
-				String ssid = data.getString("ssid");
-				String pw = data.getString("pw");
-				
-				SharedPreferences pref = PreferenceManager
-						.getDefaultSharedPreferences(getActivity());
-				Editor editor = pref.edit();
-				editor.putString("ssid", ssid);
-				editor.putString("pw", pw);
-				editor.commit();
-				
-				WifiManager wm = (WifiManager)getActivity().getSystemService(getActivity().WIFI_SERVICE);
-				if(WifiUtils.getWifiAPState(wm) == 13) {
-					WifiUtils.toggleWifi(getActivity(), wm);
-					WifiUtils.turnWifiApOn(getActivity(), wm);
-				}
-				break;
-			case SWITCH_ROUND_VIDEO:
-				bValue = data.getBoolean(lables[type - 1]);
-				msg = handler.obtainMessage(SWITCH_ROUND_VIDEO, bValue);
-				msg.sendToTarget();
-				break;
-				
-			default:
-				break;
-			}
-			
-		}
-	
-		@Override
-		public void onSendCompleted(RESULT result, Packet arg1) {
-			// TODO Auto-generated method stub
-			Log.e(TAG, "onSendCompleted:" + result.name());
-		}
-	
-		@Override
-		public void onStateChanged(CONNECTION_STATE arg0) {
-			// TODO Auto-generated method stub
-			Log.e(TAG, "onStateChanged:" + arg0.name());
-		}
-		
 	}
 	
 	private class SettingRunnable implements Runnable{
@@ -470,84 +304,72 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 			// TODO Auto-generated method stub
 			super.handleMessage(msg);
 			
-			int type = msg.what;
-			String sValue;
-			boolean bValue;
-			
-			switch (type) {
-//				case SET_PHOTO_PIXEL:
-//					setBack = true;
-//					sValue = (String)msg.obj;
-//					mPhotoPixelPreference.setValue(sValue);
-//					break;
-//				case SET_VEDIO_PIXEL:
-//					setBack = true;
-//					sValue = (String)msg.obj;
-//					mVedioPixelPreference.setValue(sValue);
-//					break;
-				case SET_VEDIO_DURATION:
-					setBack = true;
-					sValue = (String)msg.obj;
-					mVedioDurationPreference.setValue(sValue);
-					break;
-//				case SWITCH_GLASSES:
-//					setBack = true;
-//					bValue = (Boolean)msg.obj;
-//					mDefaultSwitchPreference.setChecked(bValue);
-//					break;
-//				case SWITCH_ANTI_SHAKE:
-//					setBack = true;
-//					bValue = (Boolean)msg.obj;
-//					mAntiShakePreference.setChecked(bValue);
-//					break;
-//				case SWITCH_TIME_STAMP:
-//					setBack = true;
-//					bValue = (Boolean)msg.obj;
-//					mTimeStampPreference.setChecked(bValue);
-//					break;
-				case SET_VOLUME:
-					int volume = (Integer)msg.obj;
-					mVolumeSeekBarPreference.setValue(volume);
-					break;
-				case PHONE_AUDIO_CONNECT:
-					setBack = true;
-					Log.e(TAG, "phone_on1");
-					mBluetoothPhonePreference.setChecked(true);
-					if(mProgressDialog.isShowing())
-						mProgressDialog.dismiss();
-					
-					Editor editorOn = mHeadsetPreferences.edit();
-					editorOn.putBoolean("last_headset_state", true);
-					editorOn.commit();
-					break;
-				case PHONE_AUDIO_DISCONNECT:
-					setBack = true;
-					Log.e(TAG, "phone_off1");
-					mBluetoothPhonePreference.setChecked(false);
-					if(mProgressDialog.isShowing())
-						mProgressDialog.dismiss();
-					
-					Editor editorOff = mHeadsetPreferences.edit();
-					editorOff.putBoolean("last_headset_state", false);
-					editorOff.commit();
-					break;
-				case SWITCH_ROUND_VIDEO:
-					setBack = true;
-					bValue = (Boolean)msg.obj;
-					mRoundVideoPreference.setChecked(bValue);
-					break;
-//				case SET_SSID:
-//					setBack = true;
-//					sValue = (String)msg.obj;
-//					mSsidEditTextPreference.setText(sValue);
-//					break;
-//				case SET_PW:
-//					setBack = true;
-//					sValue = (String)msg.obj;
-//					mPwEditTextPreference.setText(sValue);
-//					break;
-					default:
+			if(msg.what == HanLangCmdChannel.RECEIVE_MSG_FROM_GLASS) {
+				
+				Packet data = (Packet)msg.obj;
+				int type = data.getInt("type");
+				String sValue = null;
+				boolean bValue = false;
+				
+				switch (type) {
+				
+					case SET_VEDIO_DURATION:
+						setBack = true;
+						sValue = data.getString(lables[type -1]);
+						mVedioDurationPreference.setValue(sValue);
 						break;
+					case SET_VOLUME:
+						int volume = data.getInt(lables[type -1]);
+						mVolumeSeekBarPreference.setValue(volume);
+						break;
+					case SWITCH_ROUND_VIDEO:
+						setBack = true;
+						bValue = data.getBoolean(lables[type -1]);
+						mRoundVideoPreference.setChecked(bValue);
+						break;
+					case SET_WIFI_AP:
+						String ssid = data.getString("ssid");
+						String pw = data.getString("pw");
+						
+						SharedPreferences pref = PreferenceManager
+								.getDefaultSharedPreferences(getActivity());
+						Editor editor = pref.edit();
+						editor.putString("ssid", ssid);
+						editor.putString("pw", pw);
+						editor.commit();
+						
+						WifiManager wm = (WifiManager)getActivity().getSystemService(getActivity().WIFI_SERVICE);
+						if(WifiUtils.getWifiAPState(wm) == 13) {
+							WifiUtils.toggleWifi(getActivity(), wm);
+							WifiUtils.turnWifiApOn(getActivity(), wm);
+						}
+						break;
+						default:
+							break;
+							
+				}
+			}
+			else if(msg.what == PHONE_AUDIO_CONNECT) {
+				setBack = true;
+				Log.e(TAG, "phone_on1");
+				mBluetoothPhonePreference.setChecked(true);
+				if(mProgressDialog.isShowing())
+					mProgressDialog.dismiss();
+				
+				Editor editorOn = mHeadsetPreferences.edit();
+				editorOn.putBoolean("last_headset_state", true);
+				editorOn.commit();
+			}
+			else if(msg.what == PHONE_AUDIO_DISCONNECT) {
+				setBack = true;
+				Log.e(TAG, "phone_off1");
+				mBluetoothPhonePreference.setChecked(false);
+				if(mProgressDialog.isShowing())
+					mProgressDialog.dismiss();
+				
+				Editor editorOff = mHeadsetPreferences.edit();
+				editorOff.putBoolean("last_headset_state", false);
+				editorOff.commit();
 			}
 			handler.post(disableSetBackRunnable);
 		}
@@ -605,11 +427,11 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 				if(ssid.equals(prSsid)&&pw.equals(prPw))
 					return;
 				
-				Packet pk = mChannel.createPacket();
+				Packet pk = mHanLangCmdChannel.createPacket();
 				pk.putInt("type", SET_WIFI_AP);
 				pk.putString("ssid", ssid);
 				pk.putString("pw", pw);
-				mChannel.sendPacket(pk);
+				mHanLangCmdChannel.sendPacket(pk);
 			}
 		});
 		

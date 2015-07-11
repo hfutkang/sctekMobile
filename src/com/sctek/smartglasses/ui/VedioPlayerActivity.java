@@ -1,6 +1,7 @@
 package com.sctek.smartglasses.ui;
 
 import cn.ingenic.glasssync.R;
+import cn.ingenic.glasssync.screen.LiveDisplayActivity;
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.Vitamio;
@@ -18,6 +19,7 @@ import com.ingenic.glass.api.sync.SyncChannel;
 import com.ingenic.glass.api.sync.SyncChannel.CONNECTION_STATE;
 import com.ingenic.glass.api.sync.SyncChannel.Packet;
 import com.ingenic.glass.api.sync.SyncChannel.RESULT;
+import com.sctek.smartglasses.utils.HanLangCmdChannel;
 import com.sctek.smartglasses.utils.WifiUtils;
 
 import android.annotation.SuppressLint;
@@ -34,6 +36,7 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -72,12 +75,14 @@ public class VedioPlayerActivity extends Activity {
 	private WaitGlassConnectTask mConnectTask;
 	private WifiManager mWifiManager;
 	private String glassIp;
-	private SyncChannel mChannel;
+	private HanLangCmdChannel mHanLangCmdChannel;
 	private MediaController mMediaController;
 	
 	private String liveUrl;
 	private boolean msgReceived = false;
 	private ProgressDialog mProgressDialog;
+	
+	private static final int RESEDN_CONNET_WIFI_MSG = 1;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +104,8 @@ public class VedioPlayerActivity extends Activity {
 		mProgressBar = (ProgressBar)findViewById(R.id.video_pb);
 		
 		mWifiManager = (WifiManager)getSystemService(WIFI_SERVICE);
-		mChannel = SyncChannel.create("00e04c68229b0", this, mOnSyncListener);
+		mHanLangCmdChannel = HanLangCmdChannel.getInstance(getApplicationContext());
+		mHanLangCmdChannel.setHandler(mHanlder);
 		
 		preApState = WifiUtils.getWifiAPState(mWifiManager);
 		mConnectTask = new WaitGlassConnectTask();
@@ -174,14 +180,14 @@ public class VedioPlayerActivity extends Activity {
 				// TODO Auto-generated method stub
 				if(!playing) {
 					
-					if(!mChannel.isConnected()) {
+					if(!mHanLangCmdChannel.isConnected()) {
 						Toast.makeText(VedioPlayerActivity.this, R.string.bluetooth_error, Toast.LENGTH_LONG).show();
 						return;
 					}
 					
-					Packet pk = mChannel.createPacket();
+					Packet pk = mHanLangCmdChannel.createPacket();
 					pk.putInt("type", START_LIVE);
-					mChannel.sendPacket(pk);
+					mHanLangCmdChannel.sendPacket(pk);
 					
 					mButton.setVisibility(View.GONE);
 					mProgressBar.setVisibility(View.VISIBLE);
@@ -197,14 +203,14 @@ public class VedioPlayerActivity extends Activity {
 				}
 				else {
 					
-					if(!mChannel.isConnected()) {
+					if(!mHanLangCmdChannel.isConnected()) {
 						Toast.makeText(VedioPlayerActivity.this, R.string.bluetooth_error, Toast.LENGTH_LONG).show();
 						return;
 					}
 					
-					Packet pk = mChannel.createPacket();
+					Packet pk = mHanLangCmdChannel.createPacket();
 					pk.putInt("type", STOP_LIVE);
-					mChannel.sendPacket(pk);
+					mHanLangCmdChannel.sendPacket(pk);
 					
 					mVideoView.stopPlayback();
 					mButton.setText(R.string.start_live);
@@ -406,7 +412,7 @@ public class VedioPlayerActivity extends Activity {
 		}  
 		
 		if(ip == null&& !msgReceived) {
-			Packet packet = mChannel.createPacket();
+			Packet packet = mHanLangCmdChannel.createPacket();
 			packet.putInt("type", 1);
 			
 			String defaultSsid = ((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).getDeviceId().substring(0, 5);
@@ -416,22 +422,23 @@ public class VedioPlayerActivity extends Activity {
 			
 			packet.putString("ssid", ssid);
 			packet.putString("pw", pw);
-			mChannel.sendPacket(packet);
+			mHanLangCmdChannel.sendPacket(packet);
 			
 		}
 		
 		return ip;
 	} 
 	
-	private void sendApInfoToGlass() {
+private void sendApInfoToGlass() {
 		
-		if(mChannel.isConnected()) {
+		if(mHanLangCmdChannel.isConnected()) {
 			
-			mProgressDialog.setTitle(R.string.video_live);
+			
 			mProgressDialog.setMessage(getResources().getText(R.string.waiting_for_glass_connect));
-			mProgressDialog.show();
+			if(!mProgressDialog.isShowing())
+				mProgressDialog.show();
 			
-			Packet packet = mChannel.createPacket();
+			Packet packet = mHanLangCmdChannel.createPacket();
 			packet.putInt("type", 1);
 			
 			String defaultSsid = ((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).getDeviceId().substring(0, 5);
@@ -441,7 +448,8 @@ public class VedioPlayerActivity extends Activity {
 			
 			packet.putString("ssid", ssid);
 			packet.putString("pw", pw);
-			mChannel.sendPacket(packet);
+			mHanLangCmdChannel.sendPacket(packet);
+			mHanlder.sendEmptyMessageDelayed(RESEDN_CONNET_WIFI_MSG, 5000);
 			
 		}
 		else {
@@ -449,37 +457,29 @@ public class VedioPlayerActivity extends Activity {
 			finish();
 		}
 	}
-		
-	private MyOnSyncListener mOnSyncListener = new MyOnSyncListener();
-	private class MyOnSyncListener implements SyncChannel.onChannelListener {
 	
+private Handler mHanlder = new Handler() {
+		
 		private boolean connected = false;
 		@Override
-		public void onReceive(RESULT arg0, Packet data) {
-			// TODO Auto-generated method stub
-			Log.e(TAG, "Channel onReceive");
-			glassIp = data.getString("ip");
+		public void handleMessage(Message msg) {
 			
-			if(glassIp != null && glassIp.length() != 0&&!connected) {
-				mProgressDialog.dismiss();
-				enableApView.setVisibility(View.GONE);
-				mButton.setVisibility(View.VISIBLE);
-				mVideoView.setVisibility(View.VISIBLE);
+			if(msg.what == HanLangCmdChannel.RECEIVE_MSG_FROM_GLASS) {
+				Packet data = (Packet)msg.obj;
+				
+				glassIp = data.getString("ip");
+				
+				if(glassIp != null && glassIp.length() != 0&&!connected) {
+					mProgressDialog.dismiss();
+					enableApView.setVisibility(View.GONE);
+					mButton.setVisibility(View.VISIBLE);
+					mVideoView.setVisibility(View.VISIBLE);
+				}
 			}
+			else if(msg.what == RESEDN_CONNET_WIFI_MSG) {
+				sendApInfoToGlass();
+			}
+				
 		}
-	
-		@Override
-		public void onSendCompleted(RESULT arg0, Packet arg1) {
-			// TODO Auto-generated method stub
-			
-			Log.e(TAG, "onSendCompleted");
-		}
-	
-		@Override
-		public void onStateChanged(CONNECTION_STATE arg0) {
-			// TODO Auto-generated method stub
-			Log.e(TAG, "onStateChanged:" + arg0.toString());
-		}
-		
-	}
+	};
 }

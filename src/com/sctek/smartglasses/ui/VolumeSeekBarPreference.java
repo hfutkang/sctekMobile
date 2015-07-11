@@ -28,7 +28,7 @@ public class VolumeSeekBarPreference extends DialogPreference{
 		View view = LayoutInflater.from(mContext).inflate(R.layout.volume_seekbar, null);
 		seekbar = (SeekBar)view.findViewById(R.id.volume_seekbar);
 		
-		int progress = getSharedPreferences().getInt("volume", 5);
+		int progress = getSharedPreferences().getInt("volume", 7);
 		seekbar.setProgress(progress);
 		
 		return view;
@@ -47,7 +47,7 @@ public class VolumeSeekBarPreference extends DialogPreference{
 	
 	public void setValue(int progress) {
 		
-		int oldProg = getSharedPreferences().getInt("volume", 5);
+		int oldProg = getSharedPreferences().getInt("volume", 7);
 		
 		Editor editor = getEditor();
 		editor.putInt("volume", progress);

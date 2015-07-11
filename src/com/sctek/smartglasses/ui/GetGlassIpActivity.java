@@ -20,6 +20,7 @@ import com.ingenic.glass.api.sync.SyncChannel;
 import com.ingenic.glass.api.sync.SyncChannel.CONNECTION_STATE;
 import com.ingenic.glass.api.sync.SyncChannel.Packet;
 import com.ingenic.glass.api.sync.SyncChannel.RESULT;
+import com.sctek.smartglasses.utils.HanLangCmdChannel;
 import com.sctek.smartglasses.utils.WifiUtils;
 
 import android.annotation.SuppressLint;
@@ -71,7 +72,7 @@ public class GetGlassIpActivity extends Activity {
 	private SetWifiAPTask mWifiATask;
 	private WifiManager mWifiManager;
 	private String glassIp;
-	private SyncChannel mChannel;
+	private HanLangCmdChannel mHanLangCmdChannel;
 	
 	private ProgressDialog mProgressDialog;
 	
@@ -88,7 +89,8 @@ public class GetGlassIpActivity extends Activity {
 		getActionBar().setHomeButtonEnabled(false);
 		
 		mWifiManager = (WifiManager)getSystemService(WIFI_SERVICE);
-		mChannel = SyncChannel.create("00e04c68229b0", this, mOnSyncListener);
+		mHanLangCmdChannel = HanLangCmdChannel.getInstance(getApplicationContext());
+		mHanLangCmdChannel.setHandler(mHanlder);
 		
 		preApState = WifiUtils.getWifiAPState(mWifiManager);
 		mWifiATask = new SetWifiAPTask(true, false);
@@ -212,14 +214,14 @@ public class GetGlassIpActivity extends Activity {
 	
 	private void sendApInfoToGlass() {
 		
-		if(mChannel.isConnected()) {
+		if(mHanLangCmdChannel.isConnected()) {
 			
 			
 			mProgressDialog.setMessage(getResources().getText(R.string.waiting_for_glass_connect));
 			if(!mProgressDialog.isShowing())
 				mProgressDialog.show();
 			
-			Packet packet = mChannel.createPacket();
+			Packet packet = mHanLangCmdChannel.createPacket();
 			packet.putInt("type", 1);
 			
 			String defaultSsid = ((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).getDeviceId().substring(0, 5);
@@ -229,7 +231,7 @@ public class GetGlassIpActivity extends Activity {
 			
 			packet.putString("ssid", ssid);
 			packet.putString("pw", pw);
-			mChannel.sendPacket(packet);
+			mHanLangCmdChannel.sendPacket(packet);
 			mHanlder.sendEmptyMessageDelayed(RESEDN_CONNET_WIFI_MSG, 5000);
 			
 		}
@@ -278,51 +280,29 @@ public class GetGlassIpActivity extends Activity {
 		
 		builder.create().show();
 	}
-		
-	private MyOnSyncListener mOnSyncListener = new MyOnSyncListener();
-	private class MyOnSyncListener implements SyncChannel.onChannelListener {
-	
-		private boolean connected = false;
-		@Override
-		public void onReceive(RESULT arg0, Packet data) {
-			// TODO Auto-generated method stub
-			Log.e(TAG, "Channel onReceive");
-			glassIp = data.getString("ip");
-			
-			if(glassIp != null && glassIp.length() != 0&&!connected) {
-				mProgressDialog.cancel();
-				mHanlder.removeMessages(RESEDN_CONNET_WIFI_MSG);
-				Intent intent = new Intent(GetGlassIpActivity.this, LiveDisplayActivity.class);
-				intent.putExtra("ip", glassIp);
-				startActivity(intent);
-				finish();
-			}
-		}
-	
-		@Override
-		public void onSendCompleted(RESULT arg0, Packet arg1) {
-			// TODO Auto-generated method stub
-			
-			Log.e(TAG, "onSendCompleted");
-		}
-	
-		@Override
-		public void onStateChanged(CONNECTION_STATE arg0) {
-			// TODO Auto-generated method stub
-			Log.e(TAG, "onStateChanged:" + arg0.toString());
-		}
-		
-	}
 	
 	private Handler mHanlder = new Handler() {
 		
+		private boolean connected = false;
 		@Override
 		public void handleMessage(Message msg) {
 			
-			switch (msg.what) {
-			case RESEDN_CONNET_WIFI_MSG:
+			if(msg.what == HanLangCmdChannel.RECEIVE_MSG_FROM_GLASS) {
+				Packet data = (Packet)msg.obj;
+				
+				glassIp = data.getString("ip");
+				
+				if(glassIp != null && glassIp.length() != 0&&!connected) {
+					mProgressDialog.cancel();
+					mHanlder.removeMessages(RESEDN_CONNET_WIFI_MSG);
+					Intent intent = new Intent(GetGlassIpActivity.this, LiveDisplayActivity.class);
+					intent.putExtra("ip", glassIp);
+					startActivity(intent);
+					finish();
+				}
+			}
+			else if(msg.what == RESEDN_CONNET_WIFI_MSG) {
 				sendApInfoToGlass();
-				break;
 			}
 				
 		}
