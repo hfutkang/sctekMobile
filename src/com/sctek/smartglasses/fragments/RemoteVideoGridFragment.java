@@ -22,6 +22,7 @@ import com.sctek.smartglasses.utils.GetRemoteVideoThumbWorks;
 import com.sctek.smartglasses.utils.GlassImageDownloader;
 import com.sctek.smartglasses.utils.MediaData;
 import com.sctek.smartglasses.utils.WifiUtils;
+import com.sctek.smartglasses.utils.WifiUtils.WifiCipherType;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -34,6 +35,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.DialogInterface.OnKeyListener;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -82,7 +84,12 @@ public class RemoteVideoGridFragment extends BaseFragment {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					sendApInfoToGlass();
+					if(WifiUtils.needTurnWifiApOff(getActivity())) {
+						mWifiATask.execute(true);
+					}
+					else {
+						sendApInfoToGlass();
+					}
 				}
 			}, 0);
 		

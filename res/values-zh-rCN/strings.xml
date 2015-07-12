@@ -304,7 +304,7 @@
 	<string name="glass_ap_pw">眼镜热点密码</string>
 	<string name="glass_appw_summary">设置眼镜热点的密码</string>
 	<string name="wifi_ap">Wifi热点</string>
-	<string name="wifi_ap_summary">设置Wifi热点信息</string>
+	<string name="wifi_ap_summary">修改Wifi热点名称</string>
 	<string name="wifi_ap_setting">Wifi热点设置</string>
 	<string name="empty_ssid">请输入热点的SSID</string>
 	<string name="pw_too_short">热点密码不能少于8位</string>
@@ -333,7 +333,7 @@
     <string name="stop_live">停止</string>
     <string name="turn_wifi_ap_on_now">现在开启</string>
     <string name="turn_wifi_ap_on">开启wifi热点</string>
-    <string name="turning_wifi_ap_on">开启中&#8230;</string>
+    <string name="turning_wifi_ap_on">开启Ap中&#8230;</string>
     <string name="wait_device_connect">等待眼镜连接&#8230;</string>
     <string name="get_file_list">下载媒体列表&#8230;</string>
     <string name="connect_error">连接错误</string>

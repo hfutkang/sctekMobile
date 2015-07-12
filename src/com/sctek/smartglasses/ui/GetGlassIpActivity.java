@@ -22,6 +22,7 @@ import com.ingenic.glass.api.sync.SyncChannel.Packet;
 import com.ingenic.glass.api.sync.SyncChannel.RESULT;
 import com.sctek.smartglasses.utils.HanLangCmdChannel;
 import com.sctek.smartglasses.utils.WifiUtils;
+import com.sctek.smartglasses.utils.WifiUtils.WifiCipherType;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -112,7 +113,12 @@ public class GetGlassIpActivity extends Activity {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					sendApInfoToGlass();
+					if(WifiUtils.needTurnWifiApOff(GetGlassIpActivity.this)) {
+						mWifiATask.execute(true);
+					}
+					else {
+						sendApInfoToGlass();
+					}
 				}
 			}, 0);
 		}
@@ -178,7 +184,7 @@ public class GetGlassIpActivity extends Activity {
 		}
 	};
 	
-	public class SetWifiAPTask extends AsyncTask<Void, Void, Void> {
+	public class SetWifiAPTask extends AsyncTask<Boolean, Void, Void> {
     	
 		private boolean mMode;
 		
@@ -202,9 +208,11 @@ public class GetGlassIpActivity extends Activity {
 		}
 
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected Void doInBackground(Boolean... off) {
 			try {
-				WifiUtils.turnWifiApOn(GetGlassIpActivity.this, mWifiManager);
+				if(off[0])
+					WifiUtils.toggleWifi(GetGlassIpActivity.this, mWifiManager);
+				WifiUtils.turnWifiApOn(GetGlassIpActivity.this, mWifiManager, WifiCipherType.WIFICIPHER_NOPASS);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -224,13 +232,9 @@ public class GetGlassIpActivity extends Activity {
 			Packet packet = mHanLangCmdChannel.createPacket();
 			packet.putInt("type", 1);
 			
-			String defaultSsid = ((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).getDeviceId().substring(0, 5);
-			String ssid = PreferenceManager.
-					getDefaultSharedPreferences(this).getString("ssid", defaultSsid);
-			String pw = PreferenceManager.getDefaultSharedPreferences(this).getString("pw", "12345678");
+			String ssid = WifiUtils.getDefaultApSsid(this);
 			
 			packet.putString("ssid", ssid);
-			packet.putString("pw", pw);
 			mHanLangCmdChannel.sendPacket(packet);
 			mHanlder.sendEmptyMessageDelayed(RESEDN_CONNET_WIFI_MSG, 5000);
 			
@@ -250,7 +254,7 @@ public class GetGlassIpActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
-				mWifiATask.execute();
+				mWifiATask.execute(false);
 				dialog.cancel();
 			}
 		});

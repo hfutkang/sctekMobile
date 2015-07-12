@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpGet;
 
 import cn.ingenic.glasssync.MediaSyncService;
 import cn.ingenic.glasssync.R;
+import cn.ingenic.glasssync.devicemanager.WifiManagerApi;
 
 import com.ingenic.glass.api.sync.SyncChannel.Packet;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -21,6 +22,7 @@ import com.sctek.smartglasses.utils.CustomHttpClient;
 import com.sctek.smartglasses.utils.GlassImageDownloader;
 import com.sctek.smartglasses.utils.MediaData;
 import com.sctek.smartglasses.utils.WifiUtils;
+import com.sctek.smartglasses.utils.WifiUtils.WifiCipherType;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -34,9 +36,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.DialogInterface.OnKeyListener;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -80,7 +84,13 @@ public class RemotePhotoGridFragment extends BaseFragment {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					sendApInfoToGlass();
+					if(WifiUtils.needTurnWifiApOff(getActivity())) {
+						mWifiATask.execute(true);
+						
+					}
+					else {
+						sendApInfoToGlass();
+					}
 				}
 			}, 0);
 		
@@ -260,7 +270,9 @@ public class RemotePhotoGridFragment extends BaseFragment {
 					if(!adapter.isEnabled()) {
 						adapter.enable();
 					}
-					
+					WifiManagerApi mWifiManagerApi = new WifiManagerApi(getActivity());
+					WifiConfiguration mWifiConfiguration = mWifiManagerApi.getWifiApConfiguration();
+					Log.e(TAG, "ssid:" + mWifiConfiguration.SSID + "password:" + mWifiConfiguration.preSharedKey);
 					sendApInfoToGlass();
 				}
 				preApState = cstate;

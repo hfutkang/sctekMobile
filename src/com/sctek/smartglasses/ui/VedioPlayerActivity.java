@@ -21,6 +21,7 @@ import com.ingenic.glass.api.sync.SyncChannel.Packet;
 import com.ingenic.glass.api.sync.SyncChannel.RESULT;
 import com.sctek.smartglasses.utils.HanLangCmdChannel;
 import com.sctek.smartglasses.utils.WifiUtils;
+import com.sctek.smartglasses.utils.WifiUtils.WifiCipherType;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -337,7 +338,7 @@ public class VedioPlayerActivity extends Activity {
 		@Override
 		protected Void doInBackground(Void... params) {
 			try {
-				WifiUtils.turnWifiApOn(VedioPlayerActivity.this, mWifiManager);
+				WifiUtils.turnWifiApOn(VedioPlayerActivity.this, mWifiManager, WifiCipherType.WIFICIPHER_NOPASS);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}

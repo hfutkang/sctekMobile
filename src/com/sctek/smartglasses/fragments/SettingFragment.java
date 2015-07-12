@@ -18,6 +18,7 @@ import com.ingenic.glass.api.sync.SyncChannel.RESULT;
 import com.sctek.smartglasses.ui.VolumeSeekBarPreference;
 import com.sctek.smartglasses.utils.HanLangCmdChannel;
 import com.sctek.smartglasses.utils.WifiUtils;
+import com.sctek.smartglasses.utils.WifiUtils.WifiCipherType;
 
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -370,7 +371,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 						WifiManager wm = (WifiManager)getActivity().getSystemService(getActivity().WIFI_SERVICE);
 						if(WifiUtils.getWifiAPState(wm) == 13) {
 							WifiUtils.toggleWifi(getActivity(), wm);
-							WifiUtils.turnWifiApOn(getActivity(), wm);
+							WifiUtils.turnWifiApOn(getActivity(), wm, WifiCipherType.WIFICIPHER_NOPASS);
 						}
 						break;
 						default:
@@ -414,19 +415,12 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 	
 	private void showWifiSettingDialog() {
 		
-		String defaultSsid = ((TelephonyManager)getActivity()
-				.getSystemService(getActivity().TELEPHONY_SERVICE)).getDeviceId().substring(0, 5);
-		final String prSsid = PreferenceManager.
-				getDefaultSharedPreferences(getActivity()).getString("ssid", defaultSsid);
-		final String prPw = PreferenceManager.
-				getDefaultSharedPreferences(getActivity()).getString("pw", "12345678");
+		final String prSsid = WifiUtils.getDefaultApSsid(getActivity());
 		
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.wifi_setting, null);
 		final EditText ssidEt = (EditText)view.findViewById(R.id.ap_ssid_et);
-		final EditText pwEt = (EditText)view.findViewById(R.id.ap_pw_et);
 		
 		ssidEt.setText(prSsid);
-		pwEt.setText(prPw	);
 		
 		AlertDialog.Builder builder = new Builder(getActivity());
 		builder.setTitle(R.string.wifi_ap_setting);
@@ -450,24 +444,18 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 				
 				
 				String ssid = ssidEt.getText().toString();
-				String pw = pwEt.getText().toString();
 				
 				if(ssid.isEmpty()) {
 					Toast.makeText(getActivity(), R.string.empty_ssid, Toast.LENGTH_SHORT).show();
 					return;
 				}
-				if(pw.length() < 8) {
-					Toast.makeText(getActivity(), R.string.pw_too_short, Toast.LENGTH_SHORT).show();
-					return;
-				}
 				
-				if(ssid.equals(prSsid)&&pw.equals(prPw))
+				if(ssid.equals(prSsid))
 					return;
 				
 				Packet pk = mHanLangCmdChannel.createPacket();
 				pk.putInt("type", SET_WIFI_AP);
 				pk.putString("ssid", ssid);
-				pk.putString("pw", pw);
 				mHanLangCmdChannel.sendPacket(pk);
 			}
 		});

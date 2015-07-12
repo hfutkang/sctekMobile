@@ -2,12 +2,10 @@ package com.sctek.smartglasses.utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import android.app.ProgressDialog;
+import cn.ingenic.glasssync.devicemanager.WifiManagerApi;
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -24,12 +22,9 @@ public class WifiUtils {
 	protected static final int WIFI_AP_STATE_ENABLED = 13;
 	protected static final int WIFI_AP_STATE_FAILED = 14;
 
-	public static void turnWifiApOn(Context mContext, WifiManager mWifiManager) {
+	public static void turnWifiApOn(Context mContext, WifiManager mWifiManager, WifiCipherType Type) {
 		
-		String defaultSsid = ((TelephonyManager)mContext
-				.getSystemService(mContext.TELEPHONY_SERVICE)).getDeviceId().substring(0, 5);
-		String ssid = PreferenceManager.
-				getDefaultSharedPreferences(mContext).getString("ssid", defaultSsid);
+		String ssid = getDefaultApSsid(mContext);
 		
 		String pw = PreferenceManager.
 				getDefaultSharedPreferences(mContext).getString("pw", "12345678");
@@ -43,21 +38,25 @@ public class WifiUtils {
 		wcfg.allowedPairwiseCiphers.clear();
 		wcfg.allowedProtocols.clear();
 		
+		if(Type == WifiCipherType.WIFICIPHER_NOPASS) {
 			wcfg.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN, true);
-	      wcfg.wepKeys[0] = "";    
-	      wcfg.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);    
-	      wcfg.wepTxKeyIndex = 0;
+			wcfg.wepKeys[0] = "";    
+			wcfg.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);    
+			wcfg.wepTxKeyIndex = 0;
+		}
 		
-//		wcfg.preSharedKey = pw;     
-//		wcfg.hiddenSSID = true;       
-//		wcfg.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);       
-//		wcfg.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);                             
-//		wcfg.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);     
-////		wcfg.allowedKeyManagement.set(4);
-//		wcfg.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);                        
-//		wcfg.allowedProtocols.set(WifiConfiguration.Protocol.WPA);      
-//		wcfg.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);    
-//		wcfg.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);    
+		if(Type == WifiCipherType.WIFICIPHER_WPA) {
+			wcfg.preSharedKey = pw;     
+			wcfg.hiddenSSID = true;       
+			wcfg.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);       
+			wcfg.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);                             
+			wcfg.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);     
+	//		wcfg.allowedKeyManagement.set(4);
+			wcfg.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);                        
+			wcfg.allowedProtocols.set(WifiConfiguration.Protocol.WPA);      
+			wcfg.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);    
+			wcfg.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);    
+		}
 		
 		try {
 			Method method = mWifiManager.getClass().getMethod("setWifiApConfiguration", wcfg.getClass());
@@ -142,5 +141,34 @@ public class WifiUtils {
 		return state;
 	}
 	
+	public enum WifiCipherType {
+		WIFICIPHER_WEP, WIFICIPHER_WPA, WIFICIPHER_NOPASS, WIFICIPHER_INVALID
+	}
 	
+	public static String getDefaultApSsid(Context mContext) {
+		String defaultSsid = "WEAR" + ((TelephonyManager)mContext
+				.getSystemService(mContext.TELEPHONY_SERVICE)).getDeviceId().substring(0, 5);
+		String ssid = PreferenceManager.
+				getDefaultSharedPreferences(mContext).getString("ssid", defaultSsid);
+		
+		return ssid;
+	}
+	
+	public static boolean needTurnWifiApOff(Context mContext) {
+		String defaultSsid = WifiUtils.getDefaultApSsid(mContext);
+		WifiManagerApi mWifiManagerApi = new WifiManagerApi(mContext);
+		WifiConfiguration mWifiConfiguration = mWifiManagerApi.getWifiApConfiguration();
+		Log.e(TAG, "ssid:" + mWifiConfiguration.SSID + "password:" + mWifiConfiguration.preSharedKey);
+		if(mWifiConfiguration == null)
+			return true;
+		
+		if(!mWifiConfiguration.allowedKeyManagement.get(WifiConfiguration.KeyMgmt.NONE)) {
+			return true;
+		}
+		
+		if(!defaultSsid.equals(mWifiConfiguration.SSID)) {
+			return true;
+		}
+		return false;
+	}
 }

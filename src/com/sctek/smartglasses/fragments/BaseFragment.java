@@ -43,6 +43,7 @@ import com.sctek.smartglasses.utils.HanLangCmdChannel;
 import com.sctek.smartglasses.utils.MediaData;
 import com.sctek.smartglasses.utils.MultiMediaScanner;
 import com.sctek.smartglasses.utils.WifiUtils;
+import com.sctek.smartglasses.utils.WifiUtils.WifiCipherType;
 import com.sctek.smartglasses.utils.XmlContentHandler;
 import com.sctek.smartglasses.utils.GetRemoteVideoThumbWorks.GetRemoteVideoThumbListener;
 
@@ -483,7 +484,7 @@ public class BaseFragment extends Fragment {
 		}
 	};
 	
-	public class SetWifiAPTask extends AsyncTask<Void, Void, Void> {
+	public class SetWifiAPTask extends AsyncTask<Boolean, Void, Void> {
     	
 		private boolean mMode;
 		private boolean mFinish;
@@ -508,10 +509,12 @@ public class BaseFragment extends Fragment {
 		}
 
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected Void doInBackground(Boolean... off) {
 			Log.e(TAG, "1234");
 			try {
-				WifiUtils.turnWifiApOn(getActivity(), mWifiManager);
+				if(off[0])
+					WifiUtils.toggleWifi(getActivity(), mWifiManager);
+				WifiUtils.turnWifiApOn(getActivity(), mWifiManager, WifiCipherType.WIFICIPHER_NOPASS);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -824,14 +827,9 @@ public class BaseFragment extends Fragment {
 			Packet packet = mHanLangCmdChannel.createPacket();
 			packet.putInt("type", 1);
 			
-			String defaultSsid = ((TelephonyManager)getActivity()
-					.getSystemService(mContext.TELEPHONY_SERVICE)).getDeviceId().substring(0, 5);
-			String ssid = PreferenceManager.
-					getDefaultSharedPreferences(mContext).getString("ssid", defaultSsid);
-			String pw = PreferenceManager.getDefaultSharedPreferences(mContext).getString("pw", "12345678");
+			String ssid = WifiUtils.getDefaultApSsid(getActivity());
 			
 			packet.putString("ssid", ssid);
-			packet.putString("pw", pw);
 			mHanLangCmdChannel.sendPacket(packet);
 			
 			mDialogHandler.sendEmptyMessageDelayed(RESEDN_CONNET_WIFI_MSG, 5000);
@@ -851,7 +849,7 @@ public class BaseFragment extends Fragment {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
-				mWifiATask.execute();
+				mWifiATask.execute(false);
 				dialog.cancel();
 			}
 		});
