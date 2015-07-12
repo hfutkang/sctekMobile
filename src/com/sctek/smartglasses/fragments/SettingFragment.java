@@ -178,14 +178,16 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		
 		mBluetoothPhonePreference.setChecked(mHeadsetPreferences.getBoolean("last_headset_state", false));
 		
-		mVedioDurationPreference.setOnPreferenceChangeListener(this);
-		mVolumeSeekBarPreference.setOnPreferenceChangeListener(this);
-		mBluetoothPhonePreference.setOnPreferenceChangeListener(this);
-		mRoundVideoPreference.setOnPreferenceChangeListener(this);
-		mSyncContactPreference.setOnPreferenceChangeListener(this);
-		
-		mWifiPreference.setOnPreferenceClickListener(this);
-		
+		try {
+			mVedioDurationPreference.setOnPreferenceChangeListener(this);
+			mVolumeSeekBarPreference.setOnPreferenceChangeListener(this);
+			mBluetoothPhonePreference.setOnPreferenceChangeListener(this);
+			mRoundVideoPreference.setOnPreferenceChangeListener(this);
+			mSyncContactPreference.setOnPreferenceChangeListener(this);
+			mWifiPreference.setOnPreferenceClickListener(this);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void onPreferenceChanged(Preference preference, Object value) {
