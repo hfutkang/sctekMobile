@@ -111,7 +111,7 @@ public class VideoSyncRunnable implements Runnable {
 			}
 		}
 		
-		String msg = String.format("同步完成(%d/%d)...", doneCount, totalCount);
+		String msg = String.format("同步结束(%d/%d)...", doneCount, totalCount);
 		mNotification.contentView.setTextViewText(R.id.download_lable_tv, msg);
 		mNotification.vibrate = new long[]{0,100,200,300};
 		mNotificationManager.notify(1, mNotification); 
@@ -133,7 +133,7 @@ public class VideoSyncRunnable implements Runnable {
 	
 	private void onProgressUpdate(int progress) {
 
-		String msg = String.format("downloading(%d/%d)...", progress, totalCount);
+		String msg = String.format("视频同步中(%d/%d)...", progress, totalCount);
 		mNotification.contentView.setTextViewText(R.id.download_lable_tv, msg);
 		mNotificationManager.notify(1, mNotification);
 		

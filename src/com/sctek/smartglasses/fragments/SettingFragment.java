@@ -176,7 +176,18 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		mRoundVideoPreference = (SwitchPreference)findPreference("round_video");
 		mSyncContactPreference = (SwitchPreference)findPreference("sync_contact");
 		
-		mBluetoothPhonePreference.setChecked(mHeadsetPreferences.getBoolean("last_headset_state", false));
+		SharedPreferences mSharedPreferences = getActivity().getApplicationContext().
+				getSharedPreferences(SyncApp.SHARED_FILE_NAME, Context.MODE_PRIVATE);
+		Editor editor = mSharedPreferences.edit();
+		if(mGlassDetect.getCurrentState() == BluetoothProfile.STATE_CONNECTED) {
+			mBluetoothPhonePreference.setChecked(true);
+			editor.putBoolean("last_headset_state", true);
+		}
+		else {
+			mBluetoothPhonePreference.setChecked(false);
+			editor.putBoolean("last_headset_state", false);
+		}
+		editor.commit();
 		
 		mVedioDurationPreference.setOnPreferenceChangeListener(this);
 		mVolumeSeekBarPreference.setOnPreferenceChangeListener(this);
