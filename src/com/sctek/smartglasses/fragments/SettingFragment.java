@@ -189,14 +189,16 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		}
 		editor.commit();
 		
-		mVedioDurationPreference.setOnPreferenceChangeListener(this);
-		mVolumeSeekBarPreference.setOnPreferenceChangeListener(this);
-		mBluetoothPhonePreference.setOnPreferenceChangeListener(this);
-		mRoundVideoPreference.setOnPreferenceChangeListener(this);
-		mSyncContactPreference.setOnPreferenceChangeListener(this);
-		
-		mWifiPreference.setOnPreferenceClickListener(this);
-		
+		try {
+			mVedioDurationPreference.setOnPreferenceChangeListener(this);
+			mVolumeSeekBarPreference.setOnPreferenceChangeListener(this);
+			mBluetoothPhonePreference.setOnPreferenceChangeListener(this);
+			mRoundVideoPreference.setOnPreferenceChangeListener(this);
+			mSyncContactPreference.setOnPreferenceChangeListener(this);
+			mWifiPreference.setOnPreferenceClickListener(this);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void onPreferenceChanged(Preference preference, Object value) {
