@@ -24,7 +24,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := sync_framework \
 LOCAL_RESOURCE_DIR = \
     $(LOCAL_PATH)/res \
     frameworks/support/v7/appcompat/res \
-	packages/apps/GlassSync/sync_framework/res
+	packages/apps/GlassSync_hanlang/sync_framework/res
 
 LOCAL_AAPT_FLAGS := \
 	--auto-add-overlay \

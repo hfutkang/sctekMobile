@@ -12,6 +12,8 @@ import cn.ingenic.glasssync.screen.LiveDisplayActivity;
 // import cn.ingenic.glasssync.ui.BindGlassActivity;
 
 
+import cn.ingenic.glasssync.utils.ModuleUtils;
+
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -46,6 +48,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -106,13 +109,13 @@ public class MainActivity extends FragmentActivity {
 		
 		TimeSyncManager.getInstance().syncTime();
 		
-		syncContactToGlass();
+		syncContactToGlass(true);
 	}
 
-	private void syncContactToGlass(){
+	private void syncContactToGlass(Boolean value){
 		ContactsLiteModule clm = (ContactsLiteModule) ContactsLiteModule.getInstance(getApplicationContext());
-		clm.sendSyncRequest(true,null);
-		clm.setSyncEnable(true);
+		clm.sendSyncRequest(value,null);
+		clm.setSyncEnable(value);
 	}
 	
 	private long currentTime = System.currentTimeMillis();
@@ -218,7 +221,16 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
+				try {
+				GlassDetect glassDetect = (GlassDetect)GlassDetect.getInstance(getApplicationContext());
+				glassDetect.set_audio_disconnect();
+
+				syncContactToGlass(false);
+				disableLocalData();
 				unBond();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		
@@ -232,8 +244,6 @@ public class MainActivity extends FragmentActivity {
 		SyncApp.getInstance().exitAllActivity();
 	}
 	private void unBond() {
-		GlassDetect glassDetect = (GlassDetect)GlassDetect.getInstance(getApplicationContext());
-		glassDetect.set_audio_disconnect();
 		new Thread(new Runnable() {
 			@Override
 			    public void run() {
@@ -245,7 +255,6 @@ public class MainActivity extends FragmentActivity {
 			    }			    
 			    mSyncManager.disconnect();
 			    
-//			    mBLDServer.removeBond();
 			    Intent intent = new Intent(MainActivity.this,BindGlassActivity.class);	    
 			    startActivity(intent);
 			    finish();
@@ -255,4 +264,17 @@ public class MainActivity extends FragmentActivity {
 			}
 		    }).start();
 	    }		
+	
+	private void disableLocalData(){	
+		SharedPreferences sp = getSharedPreferences(SyncApp.SHARED_FILE_NAME
+									  ,MODE_PRIVATE);
+		Editor editor = sp.edit();    
+		editor.clear();  
+		editor.commit();
+		
+		SharedPreferences defaultSp = PreferenceManager.getDefaultSharedPreferences(this);
+		Editor defaultEditor = defaultSp.edit();
+		defaultEditor.clear();
+		defaultEditor.commit();
+    }    
 }

@@ -285,7 +285,7 @@
     <!-- <string name="default_switch">眼镜开关</string>
     <string name="default_switch_summary">开启/关闭眼镜功能</string> -->
     <string name="vedio_duration">分段时长</string>
-    <string name="vedio_duration_summary">选择普通录像分段时长</string>
+    <string name="vedio_duration_summary">选择视频分段时长</string>
     <!-- <string name="electric_anti_shake">电子防抖</string>
     <string name="anti_shake_summary">开启/关闭电子防抖功能</string>
     <string name="vedio_timestamp">时间标签</string>

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="vedio_durations">
-        <item>1分钟</item>
         <item>5分钟</item>
         <item>10分钟</item>
         <item>20分钟</item>
+        <item>30分钟</item>
     </string-array>
     
     <string-array name="vedio_durations_values">
-        <item>1</item>
         <item>5</item>
         <item>10</item>
         <item>20</item>
+        <item>30</item>
     </string-array>
     
     <string-array name="vedio_pixel_entry">
