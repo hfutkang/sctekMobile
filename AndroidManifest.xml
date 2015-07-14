@@ -71,6 +71,7 @@
 	<activity 
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
         android:name = "com.sctek.smartglasses.ui.MainActivity"
+        android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
         android:screenOrientation="nosensor">
 	</activity>
         <activity
