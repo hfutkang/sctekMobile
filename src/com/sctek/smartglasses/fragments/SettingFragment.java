@@ -164,6 +164,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		// TODO Auto-generated method stub
 		getActivity().unregisterReceiver(mBroadcastReceiver);
 		handler.removeCallbacksAndMessages(null);
+		mHanLangCmdChannel.setHandler(null);
 		super.onDestroy();
 	}
 	

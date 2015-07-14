@@ -76,7 +76,7 @@ public class BindGlassActivity extends Activity {
 		    break;
 		case BIND_TIMEOUT:
 		    mHandler.removeMessages(BIND_TIMEOUT);
-		    Toast.makeText(BindGlassActivity.this, R.string.bind_timeout,Toast.LENGTH_SHORT).show();
+		    Toast.makeText(BindGlassActivity.this, R.string.bind_timeout,Toast.LENGTH_LONG).show();
 		    cancelDialog();
 		    break;
 		case REQUEST_CONNECT:

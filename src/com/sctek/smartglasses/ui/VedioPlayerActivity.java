@@ -151,6 +151,7 @@ public class VedioPlayerActivity extends Activity {
 		mConnectTask.cancel(true);
 		if(mVideoView.isPlaying())
 			mVideoView.stopPlayback();
+		mHanLangCmdChannel.setHandler(null);
 		super.onDestroy();
 	}
 	

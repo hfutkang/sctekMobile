@@ -218,7 +218,7 @@
     <string name="dialog_ok">现在就去</string>
     <string name="dialog_cancle">退出应用</string>
     <string name="bluetooth_off">蓝牙没有开启，已退出眼睛助手应用</string>
-    <string name="bind_timeout">绑定设备超时，请重新搜索设备</string>
+    <string name="bind_timeout">绑定设备超时，请重新搜索设备或尝试重新关闭，开启手机蓝牙。</string>
 
     <!-- weibo -->    
     <string name="weibo_share_success">微博分享成功</string>
@@ -356,4 +356,5 @@
     <string name="syncing_contact">同步中&#8230;</string>
     <string name="no_read_contact_permission">请开启读取联系人权限</string>
     <string name="sync_phone_time_to_glass">开启/关闭同步手机时间</string>
+    <string name="get_glass_data_fail">获取数据失败，请重试</string>
 </resources>

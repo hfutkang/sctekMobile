@@ -57,6 +57,12 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 		initPrefereceView();
 	}
 	
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		mHanLangCmdChannel.setHandler(null);
+		super.onDestroy();
+	}
 	private Handler mChannelHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {

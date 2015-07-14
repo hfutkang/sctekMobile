@@ -135,6 +135,7 @@ public class GetGlassIpActivity extends Activity {
 		mHanlder.removeMessages(RESEDN_CONNET_WIFI_MSG);
 		unregisterReceiver(mApStateBroadcastReceiver);
 		SyncApp.getInstance().removeActivity(this);
+		mHanLangCmdChannel.setHandler(null);
 		super.onDestroy();
 	}
 	

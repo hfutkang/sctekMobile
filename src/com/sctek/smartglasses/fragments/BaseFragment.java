@@ -286,6 +286,7 @@ public class BaseFragment extends Fragment {
 		// TODO Auto-generated method stub
 		Log.e(TAG, "onDestroy");
 		mMediaUrlTask.cancel(true);
+		mHanLangCmdChannel.setHandler(null);
 		mDialogHandler.removeMessages(RESEDN_CONNET_WIFI_MSG);
 		super.onDestroy();
 	}
@@ -605,7 +606,6 @@ public class BaseFragment extends Fragment {
     					mMediaUrlTask.execute(new String[]{glassIp, "photos"});
     				else if(childIndex == RemoteVideoGridFragment.FRAGMENT_INDEX)
     					mMediaUrlTask.execute(new String[]{glassIp, "vedios"});
-    				
     			}
     		}
     	}
@@ -696,6 +696,7 @@ public class BaseFragment extends Fragment {
 				break;
 			case 2:
 				Toast.makeText(getActivity(), R.string.connect_error, Toast.LENGTH_LONG).show();
+				getActivity().onBackPressed();
 				break;
 			}
 			super.onProgressUpdate(values);
@@ -745,16 +746,14 @@ public class BaseFragment extends Fragment {
 		final HttpClient httpClient = CustomHttpClient.getHttpClient();
 		final HttpGet httpGet = new HttpGet(uri);
 		boolean ok = false;
-		try {
-			ok = httpRequestExecute(httpClient, httpGet);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		ok = httpRequestExecute(httpClient, httpGet);
 		if(ok) {
 			mediaList = getMediaData(ip);
 		}
-		if(mediaList == null)
+		if(mediaList == null && !ok) {
+			Toast.makeText(getActivity(), R.string.get_glass_data_fail, Toast.LENGTH_LONG).show();
 			return false;
+		}
 		return true;
 	}
 	
