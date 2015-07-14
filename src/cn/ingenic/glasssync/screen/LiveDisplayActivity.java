@@ -76,6 +76,10 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     private long mStart = 0;
     private static Activity sActivity = null;
 
+    private WifiManagerApi mWifiManager;
+
+    private static boolean sHasError = false;
+
     private Handler mHandler = new Handler(){
     @Override
     public void handleMessage(Message msg){
@@ -144,6 +148,8 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	setContentView(R.layout.activity_display);
 	Log.e(TAG, "onCreate");
 	sActivity = this;
+	sHasError = false;
+	initView();
     }
 
 
@@ -153,51 +159,29 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	return (info.reqGlEsVersion >= 0x20000);  
     }  
 
-    private void InitView() {
-	boolean isWifiConnected = true;
-	WifiManagerApi wifiManager = new WifiManagerApi(this);
+    private void initView() {
+	mWifiManager = new WifiManagerApi(this);
 
 	Log.e(TAG, "InitView++");
-	if (wifiManager != null) {
-	    if (wifiManager.getWifiApState() != WifiManagerApi.WIFI_AP_STATE_ENABLED) {
-		mDialog = new MyDialog(this, R.style.MyDialog,getApplication().getResources().getString(R.string.live_dialog_title), getApplication().getResources().getString(R.string.live_dialog_ok),getApplication().getResources().getString(R.string.live_dialog_cancle),new MyDialog.LeaveMeetingDialogListener() {
-		@Override
-		public void onClick(View view) {
-		    switch (view.getId()) {
-		    case R.id.dialog_tv_ok:
-			mDialog.cancel();
-			finish();
-			break;
-		    case R.id.dialog_tv_cancel_two:
-			mDialog.cancel();
-			Intent intent =  new Intent(Settings.ACTION_WIRELESS_SETTINGS);  
-			startActivity(intent);
-			finish();
-			break;
-			
-		    }
-		}});
-		mDialog.setCanceledOnTouchOutside(false);
-		mDialog.setCancelable(false);
-		mDialog.show();
-		return;
-	    }else{
-		mWifiConfiguration = wifiManager.getWifiApConfiguration();
-		if (mWifiConfiguration == null) {
-		    Log.e(TAG, "mWifiConfiguration null");
-		}else{
-		    mConnectedIP = getConnectedHotIP();
+	mDialog = new MyDialog(this, R.style.MyDialog,getApplication().getResources().getString(R.string.live_dialog_title), getApplication().getResources().getString(R.string.live_dialog_ok),getApplication().getResources().getString(R.string.live_dialog_cancle),new MyDialog.LeaveMeetingDialogListener() {
+            @Override
+	    public void onClick(View view) {
+		switch (view.getId()) {
+		case R.id.dialog_tv_ok:
+		     mDialog.cancel();
+		     finish();
+		     break;
+		case R.id.dialog_tv_cancel_two:
+		     mDialog.cancel();
+		     Intent intent =  new Intent(Settings.ACTION_WIRELESS_SETTINGS);  
+		     startActivity(intent);
+		     finish();
+		     break;		     
 		}
-
-		boolean isWifiDeviceConnected = isHasDeviceConnectedAP();
-		if (!isWifiDeviceConnected) {
-		    initQuitDialog();
-		    Log.e(TAG, "no device connected to phone");
-		    return;
-		}
-	    }		     
-	}
-	
+	    }});
+	mDialog.setCanceledOnTouchOutside(false);
+	mDialog.setCancelable(false);
+   
 	mRtspClient = new RtspClient();
 	mRtspClient.setListener(this);
 	mLiveModule = LiveModule.getInstance(this);
@@ -213,7 +197,8 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	    @Override
 	    public void surfaceCreated(SurfaceHolder arg0) {
 		Log.e(TAG, "surfaceCreated");
-		mRtspClient.setSurface(arg0);
+		if (mRtspClient != null)
+		    mRtspClient.setSurface(arg0);
 	    }
 		
 	    @Override
@@ -222,7 +207,6 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	    }
 	});
     }
-
 
     private void initQuitDialog() {
 	mQuitDialog = new MyDialog(this, R.style.MyDialog,getApplication().getResources().getString(R.string.live_not_connected_dialog_title), getApplication().getResources().getString(R.string.live_quit_dialog_cancle),new MyDialog.LeaveMeetingDialogListener() {
@@ -324,6 +308,8 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	pd.setOnKeyListener(new DialogInterface.OnKeyListener(){
 			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
 				if (keyCode == KeyEvent.KEYCODE_BACK) {
+					if (mPD != null)
+					    mPD.dismiss();
 					finish();
 				}
 				return false;
@@ -339,8 +325,10 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 
     private void initializeRtspClient(String url) {
 	if (DEBUG) Log.e(TAG, "initializeRtspClient");
-        mRtspClient = new RtspClient();
-        mRtspClient.setListener(this);
+	if (mRtspClient == null) {
+	    mRtspClient = new RtspClient();
+	    mRtspClient.setListener(this);
+	}
 	mRtspClient.start(url);
     }
 
@@ -376,13 +364,43 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	mSurfaceView.requestLayout();
     }
     
+    private boolean checkWifiAPState() {
+	if (mWifiManager != null) {
+	    if (mWifiManager.getWifiApState() != WifiManagerApi.WIFI_AP_STATE_ENABLED) {
+		mDialog.show();
+		return false;
+	    }else{
+		mWifiConfiguration = mWifiManager.getWifiApConfiguration();
+		if (mWifiConfiguration == null) {
+		    Log.e(TAG, "mWifiConfiguration null");
+		}else{
+		    mConnectedIP = getConnectedHotIP();
+		}
+
+		boolean isWifiDeviceConnected = isHasDeviceConnectedAP();
+		if (!isWifiDeviceConnected) {
+		    initQuitDialog();
+		    Log.e(TAG, "no device connected to phone");
+		    return false;
+		}
+		return true;
+	    }		     
+	}	
+	return false;
+    }
+
     @Override
     public void onStart() {
 	if (DEBUG) Log.e(TAG, "onStart");
 	super.onStart();
 
 	mWifiDeviceConnected = true;
-	InitView();
+
+	if (sHasError)
+	    return;
+
+	if (!checkWifiAPState())
+	    return;
 
 	if (!checkBTEnabled()) {
 	    mBluetoothConnected = false;
@@ -428,6 +446,9 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	if (mLiveModule != null)
 	    mLiveModule.sendQuitMessage();
 
+	if (mPD != null)
+	    mPD.dismiss();
+
 	super.onStop();
 	finish();
     }
@@ -436,10 +457,13 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     protected void onDestroy() {
 	if (DEBUG) Log.e(TAG, "onDestroy");
 	super.onDestroy();
+	mPD = null;
 	sActivity = null;
+	sHasError = false;
     }
 
     public static void showCameraErrorDialog(String err) {
+	sHasError = true;
         final MyDialog dialog = new MyDialog(sActivity, R.style.MyDialog, err, 
 			      sActivity.getString(R.string.live_quit_dialog_cancle), null);
 	dialog.setLeaveMeetingDialogListener(new MyDialog.LeaveMeetingDialogListener() {

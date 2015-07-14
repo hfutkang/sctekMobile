@@ -107,9 +107,13 @@ public class LiveModule extends SyncModule {
 	    if (DEBUG) Log.e(TAG, "RANSPORT_CAMERA_OPENED");
 	    LiveDisplayActivity.mRTSPOpened = true;
 	    if (isHasNeedIP()) {
-		LiveDisplayActivity.mPD.setMessage(mContext.getString(R.string.live_dialog_loading));
-		LiveDisplayActivity.mPD.show();
-		LiveDisplayActivity.mRtspClient.start(mUrl);
+		if (LiveDisplayActivity.mPD != null) {
+		    LiveDisplayActivity.mPD.setMessage(mContext.getString(R.string.live_dialog_loading));
+		    LiveDisplayActivity.mPD.show();
+		}
+		Log.d(TAG, "LiveDisplayActivity.mRtspClient "+LiveDisplayActivity.mRtspClient+" "+mUrl);
+		if (LiveDisplayActivity.mRtspClient != null)
+		    LiveDisplayActivity.mRtspClient.start(mUrl);
 	    }else{
 		LiveDisplayActivity.mWifiDeviceConnected = false;
 	    }
