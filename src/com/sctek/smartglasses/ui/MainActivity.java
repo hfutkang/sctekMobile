@@ -14,6 +14,7 @@ import cn.ingenic.glasssync.screen.LiveDisplayActivity;
 
 import cn.ingenic.glasssync.utils.ModuleUtils;
 
+import com.ingenic.glass.api.sync.SyncChannel.Packet;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -25,6 +26,7 @@ import com.sctek.smartglasses.fragments.NativePhotoGridFragment;
 import com.sctek.smartglasses.fragments.NativeVideoGridFragment;
 import com.sctek.smartglasses.fragments.PhotoViewPagerFragment;
 import com.sctek.smartglasses.fragments.SettingFragment;
+import com.sctek.smartglasses.utils.HanLangCmdChannel;
 
 import android.support.v4.app.FragmentActivity;
 import android.annotation.SuppressLint;
@@ -60,6 +62,8 @@ import cn.ingenic.glasssync.contactslite.ContactsLiteModule;
 public class MainActivity extends FragmentActivity {
 	
 	private  String TAG = "MainActivity";
+	
+	public final static int GET_GLASS_INFO = 17;
 	
 	private ImageButton photoIb;
 	private ImageButton videoIb;
@@ -110,12 +114,21 @@ public class MainActivity extends FragmentActivity {
 		TimeSyncManager.getInstance().syncTime();
 		
 		syncContactToGlass(true);
+		
+		getGlassInfo();
 	}
 
 	private void syncContactToGlass(Boolean value){
 		ContactsLiteModule clm = (ContactsLiteModule) ContactsLiteModule.getInstance(getApplicationContext());
 		clm.sendSyncRequest(value,null);
 		clm.setSyncEnable(value);
+	}
+	
+	private void getGlassInfo() {
+		HanLangCmdChannel channel = HanLangCmdChannel.getInstance(getApplicationContext());
+		Packet pk = channel.createPacket();
+		pk.putInt("type", GET_GLASS_INFO);
+		channel.sendPacket(pk);
 	}
 	
 	private long currentTime = System.currentTimeMillis();

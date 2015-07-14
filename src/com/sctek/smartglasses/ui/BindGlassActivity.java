@@ -245,6 +245,7 @@ public class BindGlassActivity extends Activity {
 			    mManager.setLockedAddress(addr);
 			      //unregisterReceiver(mBluetoothReceiver);
 			    mHandler.removeMessages(BIND_TIMEOUT);
+			    
 			    Intent bind_intent = new Intent(BindGlassActivity.this,
 							    MainActivity.class);
 			    startActivity(bind_intent);
@@ -321,4 +322,5 @@ public class BindGlassActivity extends Activity {
         mDialog.cancel();  
     
     }    
+    
 }

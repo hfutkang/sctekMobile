@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import com.ingenic.glass.api.sync.SyncChannel.Packet;
 import com.sctek.smartglasses.utils.HanLangCmdChannel;
 
 import android.app.Application;
@@ -43,6 +44,7 @@ import java.util.List;
 
 public class SyncApp extends Application implements
 		Enviroment.EnviromentCallback {
+	
 	public static final String SHARED_FILE_NAME = "Install";
 	private List<Activity> mActivityList = new LinkedList<Activity>();
 	public static SyncApp mInstance;
@@ -128,6 +130,7 @@ public class SyncApp extends Application implements
 		    
 	//init hanlang cmd channel
 		    HanLangCmdChannel.getInstance(this);
+		    
 	}
 
 	private void loadModules(XmlResourceParser parser) {

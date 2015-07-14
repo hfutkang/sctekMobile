@@ -6,8 +6,11 @@ import com.ingenic.glass.api.sync.SyncChannel.Packet;
 import com.ingenic.glass.api.sync.SyncChannel.RESULT;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class HanLangCmdChannel {
@@ -23,10 +26,15 @@ public class HanLangCmdChannel {
 	private Handler mHandler;
 	
 	public static final int RECEIVE_MSG_FROM_GLASS = 101;
+	
+	public final static int GET_GLASS_INFO = 17;
+	
+	private Context mContext;
 
 	private HanLangCmdChannel(Context context) {
 		
 		mChannel = SyncChannel.create(CMD_CHANNEL_NAME, context, mOnSyncListener);
+		mContext = context;
 	}
 	
 	public static HanLangCmdChannel getInstance(Context context	) {
@@ -82,7 +90,23 @@ public class HanLangCmdChannel {
 		public void onReceive(RESULT arg0, Packet data) {
 			// TODO Auto-generated method stub
 			Log.e(TAG, "Channel onReceive");
-			if(mHandler != null) {
+			
+			if(GET_GLASS_INFO == data.getInt("type")) {
+				
+				String model = data.getString("model");
+				String cpu = data.getString("cpu");
+				String version = data.getString("version");
+				String serial = data.getString("serial");
+				
+				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+				Editor editor = preferences.edit();
+				editor.putString("model", model);
+				editor.putString("cpu", cpu);
+				editor.putString("version", version);
+				editor.putString("serial", serial);
+				editor.commit();
+			}
+			else if(mHandler != null) {
 				Message msg =	mHandler.obtainMessage(RECEIVE_MSG_FROM_GLASS, data);
 				msg.sendToTarget();
 			}

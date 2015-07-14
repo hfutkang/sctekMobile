@@ -318,14 +318,14 @@
     <string name="bluetooth_phone_summary">开启关闭蓝牙电话功能</string>
     <string name="low_power">低电提醒</string>
     <string name="low_power_msg">眼镜电量过低,请及时充电</string>
-    <string name="glass_version">版本</string>
-    <string name="version_code_summary">V1.0</string>
+    <string name="glass_model">型号</string>
+    <string name="version_code_summary">HanLang V1.0</string>
     <string name="glass_serial_number">序列号</string>
     <string name="serial_number_summary">ABCD123456789</string>
-    <string name="glass_power">电量</string>
-    <string name="power_summary">点击查看眼镜当前电量</string>
-    <string name="glass_storage">存储</string>
-    <string name="storage_summary">点击查看眼镜当前存储</string>
+    <string name="glass_power">悍狼电量</string>
+    <string name="power_summary">正在获取当前电池状态&#8230;</string>
+    <string name="glass_storage">悍狼存储</string>
+    <string name="storage_summary">正在获取当前存储状态&#8230;</string>
     <string name="about_glass">关于悍狼</string>
     <string name="round_video">行车记录</string>
     <string name="round_video_summary">开启/关闭行车记录模式</string>
@@ -357,4 +357,12 @@
     <string name="no_read_contact_permission">请开启读取联系人权限</string>
     <string name="sync_phone_time_to_glass">开启/关闭同步手机时间</string>
     <string name="get_glass_data_fail">获取数据失败，请重试</string>
+    <string name="glass_cpu">处理器</string>
+    <string name="glass_ram">RAM</string>
+    <string name="glass_up_time">运行时间</string>
+    <string name="up_time_summary">正在获取运行时间&#8230;</string>
+    <string name="glass_version">系统版本</string>
+    <string name="get_power_timeout">获取电量超时</string>
+    <string name="get_storage_timeout">获取存储状态超时</string>
+    <string name="get_uptime_timeout">获取运行时间超时</string>
 </resources>
