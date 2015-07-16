@@ -97,6 +97,11 @@ public class HanLangCmdChannel {
 				String cpu = data.getString("cpu");
 				String version = data.getString("version");
 				String serial = data.getString("serial");
+				int volume = data.getInt("volume");
+				boolean round = data.getBoolean("round");
+				String duration = data.getString("duration");
+				
+				Log.e(TAG, "volume:" + volume + " round:" + round + "duration:" + duration); 
 				
 				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 				Editor editor = preferences.edit();
@@ -104,6 +109,9 @@ public class HanLangCmdChannel {
 				editor.putString("cpu", cpu);
 				editor.putString("version", version);
 				editor.putString("serial", serial);
+				editor.putInt("volume", volume);
+				editor.putBoolean("round_video", round);
+				editor.putString("duration", duration);
 				editor.commit();
 			}
 			else if(mHandler != null) {
