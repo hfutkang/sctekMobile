@@ -107,7 +107,17 @@ public class MainActivity extends FragmentActivity {
 		GlassDetect mGlassDetect = (GlassDetect)GlassDetect.getInstance(getApplicationContext());
 		mGlassDetect.setLockedAddress(mSyncManager.getLockedAddress());
 		
-		if(mGlassDetect.getCurrentState() == BluetoothProfile.STATE_DISCONNECTED) {
+		SharedPreferences pref = getSharedPreferences(SyncApp.SHARED_FILE_NAME, Context.MODE_PRIVATE);
+		
+		boolean firstBind = getIntent().getBooleanExtra("first_bind", false);
+		if(firstBind) {
+			mGlassDetect.set_audio_connect();
+			Editor editor = pref.edit();
+	    	editor.putBoolean("last_headset_state", true);
+	    	editor.commit();
+		}
+		else if(pref.getBoolean("last_headset_state", false)&&
+				(mGlassDetect.getCurrentState() == BluetoothProfile.STATE_DISCONNECTED)) {
 			mGlassDetect.set_audio_connect();
 		}
 		

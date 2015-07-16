@@ -179,16 +179,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		
 		SharedPreferences mSharedPreferences = getActivity().getApplicationContext().
 				getSharedPreferences(SyncApp.SHARED_FILE_NAME, Context.MODE_PRIVATE);
-		Editor editor = mSharedPreferences.edit();
-		if(mGlassDetect.getCurrentState() == BluetoothProfile.STATE_CONNECTED) {
-			mBluetoothPhonePreference.setChecked(true);
-			editor.putBoolean("last_headset_state", true);
-		}
-		else {
-			mBluetoothPhonePreference.setChecked(false);
-			editor.putBoolean("last_headset_state", false);
-		}
-		editor.commit();
+		mBluetoothPhonePreference.setChecked(mSharedPreferences.getBoolean("last_headset_state", false));
 		
 		try {
 			mVedioDurationPreference.setOnPreferenceChangeListener(this);
@@ -390,7 +381,6 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 						break;
 						default:
 							break;
-							
 				}
 			}
 			else if(msg.what == PHONE_AUDIO_CONNECT) {
@@ -423,7 +413,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 				setBack = true;
 				mSyncContactPreference.setChecked((Boolean)msg.obj);
 			}
-			handler.post(disableSetBackRunnable);
+			handler.postDelayed(disableSetBackRunnable, 200);
 		}
 	};
 	

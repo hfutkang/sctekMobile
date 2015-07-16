@@ -11,20 +11,18 @@ import android.R.layout;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.ProgressDialog;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
-
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,10 +31,10 @@ import android.widget.TextView;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ListAdapter;
-
 import cn.ingenic.glasssync.DefaultSyncManager;
 import cn.ingenic.glasssync.R;
-
+import cn.ingenic.glasssync.SyncApp;
+import cn.ingenic.glasssync.devicemanager.GlassDetect;
 import cn.ingenic.glasssync.ui.MyScrollView;
 	
 public class BindGlassActivity extends Activity {
@@ -245,9 +243,10 @@ public class BindGlassActivity extends Activity {
 			    mManager.setLockedAddress(addr);
 			      //unregisterReceiver(mBluetoothReceiver);
 			    mHandler.removeMessages(BIND_TIMEOUT);
-			    
+				
 			    Intent bind_intent = new Intent(BindGlassActivity.this,
 							    MainActivity.class);
+			    bind_intent.putExtra("first_bind", true);
 			    startActivity(bind_intent);
 			    finish();
 			}
