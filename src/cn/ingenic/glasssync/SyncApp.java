@@ -12,6 +12,7 @@ import com.sctek.smartglasses.utils.HanLangCmdChannel;
 import android.app.Application;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.XmlResourceParser;
 import android.util.Log;
 import cn.ingenic.glasssync.appmanager.AppManagerModule;
@@ -130,6 +131,7 @@ public class SyncApp extends Application implements
 		    
 	//init hanlang cmd channel
 		    HanLangCmdChannel.getInstance(this);
+		    startService(new Intent(this, MediaSyncService.class));
 		    
 	}
 

@@ -278,27 +278,19 @@
     <string name="native_video">本地视频</string>
     <string name="remote_video">镜端视频</string>
     <string name="delete">删除</string>
-    <string name="wifi_ap_hint">浏览手机内容需要开启wifi热点功能</string>
+    <string name="wifi_ap_hint">浏览眼镜内容需要开启wifi热点功能</string>
     <string name="download_notification_title">Coldwave</string>
     <string name="title_activity_glasses_fragment">GlassesFragmentActivity</string>
     
-    <!-- <string name="default_switch">眼镜开关</string>
-    <string name="default_switch_summary">开启/关闭眼镜功能</string> -->
     <string name="vedio_duration">分段时长</string>
     <string name="vedio_duration_summary">选择视频分段时长</string>
-    <!-- <string name="electric_anti_shake">电子防抖</string>
-    <string name="anti_shake_summary">开启/关闭电子防抖功能</string>
-    <string name="vedio_timestamp">时间标签</string>
-    <string name="vedio_timestamp_summary">开启/关闭录像时间标签功能</string> -->
     <string name="media_pixel">分辨率</string>
-    <!-- <string name="vedio_pixel_summary">选择录像的分辨率</string> -->
     <string name="photo_pixel_summary">选择拍照的分辨率</string>
     <string name="bluetooth_error">蓝牙连接错误,请重试</string>
     <string name="select_all">全选</string>
     <string name="vedio">录像</string>
     <string name="volume">媒体音量</string>
     <string name="volume_summary">眼镜媒体音量控制</string>
-    <!-- <string name="other">其他</string> -->
     <string name="glass_ssid">眼镜热点SSID</string>
 	<string name="glass_ssid_summary">设置眼镜热点的ssid</string>
 	<string name="glass_ap_pw">眼镜热点密码</string>
@@ -333,7 +325,7 @@
     <string name="stop_live">停止</string>
     <string name="turn_wifi_ap_on_now">现在开启</string>
     <string name="turn_wifi_ap_on">开启wifi热点</string>
-    <string name="turning_wifi_ap_on">开启Ap中&#8230;</string>
+    <string name="turning_wifi_ap_on">开启手机热点中&#8230;</string>
     <string name="wait_device_connect">等待眼镜连接&#8230;</string>
     <string name="get_file_list">下载媒体列表&#8230;</string>
     <string name="connect_error">连接错误</string>
@@ -365,4 +357,14 @@
     <string name="get_power_timeout">获取电量超时</string>
     <string name="get_storage_timeout">获取存储状态超时</string>
     <string name="get_uptime_timeout">获取运行时间超时</string>
+    <string name="download_task_running">有未完成的任务</string>
+    <string name="video_sync_start">"视频同步开始"</string>
+    <string name="photo_sync_start">"照片同步开始"</string>
+    <string name="syncing_photos">照片同步中(%1$d\/%2$d)&#8230;</string>
+    <string name="sync_media_done">同步结束(完成%1$d,失败%2$d)</string>
+    <string name="syncing_videos">视频同步中(%1$d/%2$d)&#8230;</string>
+    <string name="start_sync_photos">开始同步照片</string>
+    <string name="start_sync_videos">开始同步视频</string>
+    <string name="syncing_photos_done">照片同步结束</string>
+    <string name="syncing_videos_done">视频同步结束</string>
 </resources>

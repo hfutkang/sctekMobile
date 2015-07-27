@@ -3,23 +3,14 @@ package com.sctek.smartglasses.utils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
-import cn.ingenic.glasssync.R;
-
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.Uri;
+import cn.ingenic.glasssync.MediaSyncService;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
-import android.widget.RemoteViews;
 
 public class VideoSyncRunnable implements Runnable {
 	
@@ -28,61 +19,75 @@ public class VideoSyncRunnable implements Runnable {
 			Environment.getExternalStorageDirectory().toString()	+ "/SmartGlasses/vedios/";
 	
 	private ArrayList<MediaData> mVideos;
-	private Context mContext;
-	private NotificationManager mNotificationManager;
-	private Notification mNotification;
 	private GlassImageDownloader mDownloader;
 	private int doneCount = 0;
+	private int failCount = 0;
 	private int totalCount = 0;
 	
 	private boolean canceled = false;
+	private boolean running = false;
 	
-	public VideoSyncRunnable(ArrayList<MediaData> videos, Context context) {
-		mVideos = videos;
-		mContext = context;
-		
-		mNotificationManager = (NotificationManager)mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
-		mNotification = new Notification();
-		mDownloader = new GlassImageDownloader();
-		totalCount = videos.size();
-		
-		mNotification.contentView = new RemoteViews(mContext.getPackageName(), R.layout.notification_view);
-		mNotification.icon = R.drawable.hanlang_icon;
-		mNotification.contentView.setProgressBar(R.id.donwload_progress, 100, 100, true);
-		
-		long timeLable = System.currentTimeMillis();
-		Log.e(TAG, "" + timeLable);
-		Intent intent = new Intent("" + timeLable);
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-		mNotification.contentView.setOnClickPendingIntent(R.id.cancel_bt, pendingIntent);
-		
-		IntentFilter filter = new IntentFilter("" + timeLable);
-		mContext.registerReceiver(mReceiver, filter);
+	private Handler mHandler;
+	
+	private static VideoSyncRunnable instance = null;
+	
+	public static VideoSyncRunnable getInstance() {
+		if(instance == null)
+			instance = new VideoSyncRunnable();
+		return instance;
+	}
+	
+	private VideoSyncRunnable() {
+		mVideos = new ArrayList<MediaData>();
+		mDownloader =  new GlassImageDownloader();
+	}
+	
+	public void setHandler(Handler handler) {
+		mHandler = handler;
+	}
+	
+	public void setData(ArrayList<MediaData> data) {
+		mVideos = data;
+		totalCount = data.size();
+		failCount = 0;
+		doneCount = 0;
+		canceled = false;
+	}
+	
+	public boolean isRunning() {
+		return running;
+	}
+	
+	public void cancel() {
+		canceled = true;
 	}
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		
-		onProgressUpdate(0);
+		running = true;
+		onTaskStart();
 		for(MediaData data : mVideos) {
 			
 			long startPostion = 0;
+			long videoLeng = 0;
 			HttpURLConnection conn = null;
+			Log.e(TAG, data.name);
 			File file = new File(VIDEO_DOWNLOAD_FOLDER, data.name);
+			conn = mDownloader.createConnection(data.url, 0);
+			videoLeng = conn.getContentLength();
 			if(file.exists()) {
-				conn = mDownloader.createConnection(data.url, 0);
-				long videoLeng = conn.getContentLength();
 				if(file.length() < videoLeng) {
 					startPostion = file.length();
-					conn.disconnect();
 				}
 				else {
 					doneCount++;
-					onProgressUpdate(doneCount);
+					onUpdateCount(doneCount, data.name);
+					conn.disconnect();
 					continue;
 				}
 			}
+			conn.disconnect();
 			
 			File dir = new File(VIDEO_DOWNLOAD_FOLDER);
 			if(!dir.exists())
@@ -94,60 +99,68 @@ public class VideoSyncRunnable implements Runnable {
 				FileOutputStream os = new FileOutputStream(file, true);
 				byte[] buffer = new byte[4096];
 				int len = 0;
+				long downLoadedLength = startPostion;
+				long tempDownLoadLength = 0;
+				long delayTime = 0;
+				long notifyTime = System.currentTimeMillis();
 				while((len = in.read(buffer)) != -1 && !canceled) {
 					Log.e(TAG, "" + len);
+					downLoadedLength += len;
+					tempDownLoadLength += len;
 					os.write(buffer, 0, len);
+					delayTime = System.currentTimeMillis() - notifyTime;
+					if(delayTime > 2000) {
+						onUpdateProgress(downLoadedLength, videoLeng, tempDownLoadLength/2);
+						notifyTime = System.currentTimeMillis();
+						tempDownLoadLength = 0;
+					}
 				}
 				
-				if(canceled)
+				if(canceled) {
+					running = false;
+					mVideos.clear();
 					return;
+				}
 				
 				os.close();
 				in.close();
 				doneCount++;
-				onProgressUpdate(doneCount, data.name);
+				onUpdateCount(doneCount, data.name);
 			} catch (Exception e) {
+				failCount++;
+				onUpdateProgress(0, 1, 0);
 				e.printStackTrace();
 			}
 		}
 		
-		String msg = String.format("同步结束(%d/%d)...", doneCount, totalCount);
-		mNotification.contentView.setTextViewText(R.id.download_lable_tv, msg);
-		mNotification.vibrate = new long[]{0,100,200,300};
-		mNotificationManager.notify(1, mNotification); 
+		onTaskDone(); 
+		mVideos.clear();
+		running = false;
 		
 	}
 	
-	private void onProgressUpdate(int progress, String name) {
-
-		String msg = String.format("视频同步中(%d/%d)...", progress, totalCount);
-		mNotification.contentView.setTextViewText(R.id.download_lable_tv, msg);
-		mNotificationManager.notify(1, mNotification);
-		
-		String photoPath = Environment.getExternalStorageDirectory().toString()
-				+ "/SmartGlasses/vedios/" + name;
-		Intent mediaScanIntent = new Intent( Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-		mediaScanIntent.setData(Uri.fromFile(new File(photoPath)));
-		mContext.getApplicationContext().sendBroadcast(mediaScanIntent);
+	private void onTaskDone() {
+		Log.e(TAG, "onTaskDone");
+		Message msg = mHandler.obtainMessage(MediaSyncService.VIDEO_TASK_DONE, doneCount, failCount);
+		msg.sendToTarget();
 	}
 	
-	private void onProgressUpdate(int progress) {
-
-		String msg = String.format("视频同步中(%d/%d)...", progress, totalCount);
-		mNotification.contentView.setTextViewText(R.id.download_lable_tv, msg);
-		mNotificationManager.notify(1, mNotification);
-		
+	private void onUpdateCount(int count, String name) {
+		Log.e(TAG, "onUPdateCount");
+		Message msg = mHandler.obtainMessage(MediaSyncService.VIDEO_ONE_DONE, count, totalCount, name);
+		msg.sendToTarget();
 	}
 	
-	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
-			Log.e(TAG, "onReceive:" + intent.getAction());
-			canceled = true;
-			mNotificationManager.cancel(1);
-		}
-	};
+	private void onTaskStart() {
+		Log.e(TAG, "onTaskStart");
+		Message msg = mHandler.obtainMessage(MediaSyncService.VIDEO_TASK_START, totalCount, 0);
+		msg.sendToTarget();
+	}
+	
+	private void onUpdateProgress(long progress, long total, long speed) {
+		Log.e(TAG, "onProgressUpdateCount:" + progress + "/" + total);
+		Message msg = mHandler.obtainMessage(MediaSyncService.VIDEO_PROGRESS_UPDATE, (int)progress, (int)total, speed);
+		msg.sendToTarget();
+	}
 	
 }

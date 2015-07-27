@@ -86,7 +86,7 @@ public class SmartGlassService extends Service{
 				.setContentTitle(getResources().getString(R.string.low_power))
 				.setContentText(getResources().getString(R.string.low_power_msg))
 				.setVibrate(new long[]{0,100,200,300})
-				.setSmallIcon(R.drawable.ic_stub);
+				.setSmallIcon(R.drawable.hanlang_icon);
 				Notification notification = builder.build();
 				notificationManager.notify(3, notification);
 				break;

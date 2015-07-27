@@ -321,7 +321,7 @@ private class VideoDownloadTask extends AsyncTask<String, Integer, Void> {
 			String msg = String.format("视频同步中(%d/%d)...", downloadcount, totalcount);
 			
 			notification.contentView = new RemoteViews(mContext.getPackageName(), R.layout.notification_view);
-			notification.icon = R.drawable.glass;
+			notification.icon = R.drawable.ic_stub;
 			notification.contentView.setProgressBar(R.id.donwload_progress, 100, 100, true);
 			notification.contentView.setTextViewText(R.id.download_lable_tv, msg);
 			notificationManager.notify(VEDIO_NOTIFICATION_ID, notification);

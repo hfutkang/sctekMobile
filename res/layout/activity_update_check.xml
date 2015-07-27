@@ -12,7 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="200px"
             android:scaleType="centerInside"
-            android:src="@drawable/ingenic" />
+            android:src="@drawable/ic_stub" />
     </LinearLayout>
 
     <View

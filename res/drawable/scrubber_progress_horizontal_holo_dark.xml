@@ -13,15 +13,15 @@
 
     <item
         android:id="@android:id/background"
-        android:drawable="@drawable/scrubber_secondary_holo"/>
+        android:drawable="@drawable/ic_stub"/>
     <item android:id="@android:id/secondaryProgress">
         <scale
-            android:drawable="@drawable/scrubber_secondary_holo"
+            android:drawable="@drawable/ic_stub"
             android:scaleWidth="100%" />
     </item>
     <item android:id="@android:id/progress">
         <scale
-            android:drawable="@drawable/scrubber_primary_holo"
+            android:drawable="@drawable/ic_stub"
             android:scaleWidth="100%" />
     </item>
 

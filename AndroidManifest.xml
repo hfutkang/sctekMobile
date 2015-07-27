@@ -323,11 +323,6 @@
             android:windowSoftInputMode="adjustResize" />
         
         <activity
-            android:name="com.sctek.smartglasses.ui.VedioPlayActivity"
-            android:screenOrientation="nosensor">
-        </activity>
-        
-        <activity
             android:name="com.sctek.smartglasses.ui.PhotoActivity"
             android:screenOrientation="nosensor">
         </activity>

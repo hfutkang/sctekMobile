@@ -123,7 +123,6 @@ public class RemotePhotoGridFragment extends BaseFragment {
 		Log.e(TAG, "onDestroy");
 		
 		mContext.unregisterReceiver(mApStateBroadcastReceiver);
-		ImageLoader.getInstance().stop();
 		
 		super.onDestroy();
 	}
@@ -322,7 +321,7 @@ public class RemotePhotoGridFragment extends BaseFragment {
 			String msg = String.format("照片同步中(%d/%d)...", downloadcount, totalcount);
 			
 			notification.contentView = new RemoteViews(mContext.getPackageName(), R.layout.notification_view);
-			notification.icon = R.drawable.glass;
+			notification.icon = R.drawable.ic_stub;
 			notification.contentView.setProgressBar(R.id.donwload_progress, 100, 100, true);
 			notification.contentView.setTextViewText(R.id.download_lable_tv, msg);
 			notificationManager.notify(PHOTO_NOTIFICATION_ID, notification);

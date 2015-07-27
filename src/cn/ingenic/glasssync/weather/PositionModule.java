@@ -14,11 +14,6 @@ import cn.ingenic.glasssync.services.SyncData;
 import cn.ingenic.glasssync.services.SyncModule;
 import cn.ingenic.glasssync.services.SyncException;
 import cn.ingenic.glasssync.R;
-import com.baidu.location.BDLocation;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.baidu.location.LocationClientOption.LocationMode;
-import com.baidu.location.BDLocationListener;
 import android.net.ConnectivityManager;
 import android.content.Context;
 public class PositionModule extends SyncModule {
@@ -33,17 +28,17 @@ public class PositionModule extends SyncModule {
     private final int CENCEL_LOCATION=3;
     private Context mContext;
     private static PositionModule sInstance;  
-    private LocationClient mLocationClient;
-    private MyLocationListener mMyLocationListener;
-    private BDLocation mLocation;
+//    private LocationClient mLocationClient;
+//    private MyLocationListener mMyLocationListener;
+//    private BDLocation mLocation;
     private PositionModule(Context context){
 	super(TAG, context);
 	mContext = context;
-	mLocationClient = new LocationClient(context);
-	mMyLocationListener = new MyLocationListener();
-	mLocationClient.registerLocationListener(mMyLocationListener);
+//	mLocationClient = new LocationClient(context);
+//	mMyLocationListener = new MyLocationListener();
+//	mLocationClient.registerLocationListener(mMyLocationListener);
 	InitLocation();
-	mLocationClient.start();
+//	mLocationClient.start();
     }
 
     public static PositionModule getInstance(Context c) {
@@ -60,7 +55,7 @@ public class PositionModule extends SyncModule {
 		public void handleMessage(Message msg) {  
 	        switch (msg.what) {  
 		case REQUSET_LOCATION:
-		    mLocationClient.requestLocation();
+//		    mLocationClient.requestLocation();
 		    break;
 		case CENCEL_LOCATION:
 		    release();
@@ -99,50 +94,50 @@ public class PositionModule extends SyncModule {
 	if(VDBG) Log.e(TAG, "---onFileSendComplete:" + fileName+" success="+success);
     }
     private void InitLocation(){
-	LocationClientOption option = new LocationClientOption();
-	option.setLocationMode(LocationMode.Hight_Accuracy);
-	option.setCoorType("bd09ll");
-	option.setIsNeedAddress(true);// 返回的定位结果包含地址信息
-	option.setOpenGps(true);
-	mLocationClient.setLocOption(option);
+//	LocationClientOption option = new LocationClientOption();
+//	option.setLocationMode(LocationMode.Hight_Accuracy);
+//	option.setCoorType("bd09ll");
+//	option.setIsNeedAddress(true);// 返回的定位结果包含地址信息
+//	option.setOpenGps(true);
+//	mLocationClient.setLocOption(option);
     }
-    public class MyLocationListener implements BDLocationListener {
-	@Override
-	    public void onReceiveLocation(BDLocation location) {
-	    //Receive Location 
-	    Log.d(TAG,"onReceiveLocation");
-	    if(location.getLocType() == BDLocation.TypeCriteriaException
-		|| location.getLocType() == BDLocation.TypeNetWorkException
-		|| location.getLocType() > 161) {
-		getErrorMsg(location.getLocType());
-	    } else{  
-		Log.d(TAG,"--location latitude="+location.getLatitude()+" longitude="+location.getLongitude());
-		String[] strArray = new String[8];
-		strArray[0] = location.getAddrStr();
-		strArray[1] = location.getCity();
-		strArray[2] = location.getDistrict();
-		strArray[3] = String.valueOf(location.getLatitude());
-		strArray[4] = String.valueOf(location.getLocType());
-		strArray[5] = String.valueOf(location.getLongitude());
-		strArray[6] = location.getProvince();
-		strArray[7] = location.getTime();
-		sendResponse(strArray);	
-	    }	    
-	}
-    }
+//    public class MyLocationListener implements BDLocationListener {
+//	@Override
+//	    public void onReceiveLocation(BDLocation location) {
+//	    //Receive Location 
+//	    Log.d(TAG,"onReceiveLocation");
+//	    if(location.getLocType() == BDLocation.TypeCriteriaException
+//		|| location.getLocType() == BDLocation.TypeNetWorkException
+//		|| location.getLocType() > 161) {
+//		getErrorMsg(location.getLocType());
+//	    } else{  
+//		Log.d(TAG,"--location latitude="+location.getLatitude()+" longitude="+location.getLongitude());
+//		String[] strArray = new String[8];
+//		strArray[0] = location.getAddrStr();
+//		strArray[1] = location.getCity();
+//		strArray[2] = location.getDistrict();
+//		strArray[3] = String.valueOf(location.getLatitude());
+//		strArray[4] = String.valueOf(location.getLocType());
+//		strArray[5] = String.valueOf(location.getLongitude());
+//		strArray[6] = location.getProvince();
+//		strArray[7] = location.getTime();
+//		sendResponse(strArray);	
+//	    }	    
+//	}
+//    }
 
     private void release() {
-	mLocationClient.stop();
-	mLocationClient.unRegisterLocationListener(mMyLocationListener);
+//	mLocationClient.stop();
+//	mLocationClient.unRegisterLocationListener(mMyLocationListener);
     }
     private void getErrorMsg(int code) {
-	if (code == BDLocation.TypeCriteriaException)
-	    Log.e(TAG,"location error code :扫描整合定位依据失败");
-	if (code == BDLocation.TypeNetWorkException)
-	    Log.e(TAG,"location error code :网络异常，没有成功向服务器发起请求。");
-	if (code > BDLocation.TypeNetWorkLocation
-	    && code <= BDLocation.TypeServerError)
-	    Log.e(TAG,"location error code :服务端定位失败");
+//	if (code == BDLocation.TypeCriteriaException)
+//	    Log.e(TAG,"location error code :扫描整合定位依据失败");
+//	if (code == BDLocation.TypeNetWorkException)
+//	    Log.e(TAG,"location error code :网络异常，没有成功向服务器发起请求。");
+//	if (code > BDLocation.TypeNetWorkLocation
+//	    && code <= BDLocation.TypeServerError)
+//	    Log.e(TAG,"location error code :服务端定位失败");
 	if (code > 500)
 	    Log.e(TAG,"location error code :key异常");
 	Toast.makeText(mContext,mContext.getResources().getString(R.string.weather_tip2),

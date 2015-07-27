@@ -55,7 +55,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@drawable/other_bg"
+            android:background="@drawable/ic_stub"
             android:id="@+id/other">
 
             <TextView
@@ -129,7 +129,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:src="@drawable/glass" />
+                        android:src="@drawable/ic_stub" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"

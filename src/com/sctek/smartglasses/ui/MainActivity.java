@@ -189,6 +189,7 @@ public class MainActivity extends FragmentActivity {
 				.diskCache(new UnlimitedDiscCache(cacheFile))
 				.tasksProcessingOrder(QueueProcessingType.LIFO)
 				.writeDebugLogs() // Remove for release app
+				.diskCacheExtraOptions(480, 320, null)
 				.build();
 		// Initialize ImageLoader with configuration.
 		

@@ -19,7 +19,7 @@
     	android:layout_height="wrap_content"
     	android:textColor="#FFFFFF"
     	android:gravity="center_horizontal"
-    	android:background="@drawable/screen_share_failed"
+    	android:background="@drawable/ic_stub"
     	android:layout_centerInParent="true"/>
 
 
@@ -27,7 +27,7 @@
 	android:id="@+id/sign"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:background="@drawable/coldwave"
+	android:background="@drawable/ic_stub"
 	android:layout_centerInParent="true"/>
     <!-- controller -->
       <TextView 
@@ -37,7 +37,7 @@
 	  android:layout_centerInParent="true"
 	  android:layout_alignParentLeft="true"
 	  android:layout_marginLeft="30dp"
-	  android:background="@drawable/left"/>
+	  android:background="@drawable/ic_stub"/>
       
       <TextView 
 	  android:id="@+id/right"
@@ -46,7 +46,7 @@
 	  android:layout_centerInParent="true"
 	  android:layout_alignParentRight="true"
 	  android:layout_marginRight="30dp"
-	  android:background="@drawable/right"/>
+	  android:background="@drawable/ic_stub"/>
 
       <TextView 
 	  android:id="@+id/top"
@@ -55,7 +55,7 @@
 	  android:layout_centerInParent="true"
 	  android:layout_marginTop="30dp"
 	  android:layout_alignParentTop="true"
-	  android:background="@drawable/up"/>
+	  android:background="@drawable/ic_stub"/>
 
       <TextView 
 	  android:id="@+id/bottom"
@@ -64,5 +64,5 @@
 	  android:layout_centerInParent="true"
 	  android:layout_marginBottom="30dp"
 	  android:layout_alignParentBottom="true"
-	  android:background="@drawable/down"/>
+	  android:background="@drawable/ic_stub"/>
 </RelativeLayout>

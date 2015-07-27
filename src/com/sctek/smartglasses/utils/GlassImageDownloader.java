@@ -29,12 +29,9 @@ public class GlassImageDownloader {
 	
 	protected static final int MAX_REDIRECT_COUNT = 5;
 	
-	private HttpURLConnection conn;
-	
 	public InputStream getInputStream(String uri, long startP) {
 		Log.e(TAG, "getInputStream");
-		if(conn != null)
-			conn.disconnect();
+		HttpURLConnection conn = null;
 		conn = createConnection(uri, startP);
 		Log.e(TAG, "leng:" + conn.getContentLength());
 //		int redirectCount = 0;

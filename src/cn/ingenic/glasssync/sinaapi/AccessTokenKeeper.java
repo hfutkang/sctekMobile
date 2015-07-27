@@ -20,8 +20,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-import com.sina.weibo.sdk.auth.Oauth2AccessToken;
-
 /**
  * 该类定义了微博授权时所需要的参数。
  * 
@@ -41,16 +39,16 @@ public class AccessTokenKeeper {
      * @param context 应用程序上下文环境
      * @param token   Token 对象
      */
-    public static void writeAccessToken(Context context, Oauth2AccessToken token) {
+    public static void writeAccessToken(Context context, Object token) {
         if (null == context || null == token) {
             return;
         }
         
         SharedPreferences pref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
         Editor editor = pref.edit();
-        editor.putString(KEY_UID, token.getUid());
-        editor.putString(KEY_ACCESS_TOKEN, token.getToken());
-        editor.putLong(KEY_EXPIRES_IN, token.getExpiresTime());
+        editor.putString(KEY_UID, "");
+        editor.putString(KEY_ACCESS_TOKEN, "");
+        editor.putLong(KEY_EXPIRES_IN, 0);
         editor.commit();
     }
 
@@ -61,17 +59,17 @@ public class AccessTokenKeeper {
      * 
      * @return 返回 Token 对象
      */
-    public static Oauth2AccessToken readAccessToken(Context context) {
+    public static Object readAccessToken(Context context) {
         if (null == context) {
             return null;
         }
         
-        Oauth2AccessToken token = new Oauth2AccessToken();
-        SharedPreferences pref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
-        token.setUid(pref.getString(KEY_UID, ""));
-        token.setToken(pref.getString(KEY_ACCESS_TOKEN, ""));
-        token.setExpiresTime(pref.getLong(KEY_EXPIRES_IN, 0));
-        return token;
+//        Oauth2AccessToken token = new Oauth2AccessToken();
+//        SharedPreferences pref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
+//        token.setUid(pref.getString(KEY_UID, ""));
+//        token.setToken(pref.getString(KEY_ACCESS_TOKEN, ""));
+//        token.setExpiresTime(pref.getLong(KEY_EXPIRES_IN, 0));
+        return null;
     }
 
     /**

@@ -35,8 +35,6 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.sctek.smartglasses.ui.MySideNavigationCallback;
-import com.sctek.smartglasses.ui.SideNavigationView;
 import com.sctek.smartglasses.utils.CustomHttpClient;
 import com.sctek.smartglasses.utils.GetRemoteVideoThumbWorks;
 import com.sctek.smartglasses.utils.HanLangCmdChannel;
@@ -55,6 +53,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -121,11 +120,7 @@ public class BaseFragment extends Fragment {
 	
 	public ArrayList<CheckBox> checkBoxs;
 	
-	public HashMap<Long, String> downloadIdImageMap;
-	
 	private DisplayImageOptions options;
-	
-	private SideNavigationView mSideNavigationView;
 	
 	public View deleteView;
 	public View selectAllView;
@@ -175,14 +170,12 @@ public class BaseFragment extends Fragment {
 		selectedMedias = new ArrayList<MediaData>();
 		showImageCheckBox = false;
 		mImageAdapter = new ImageAdapter();
-		downloadIdImageMap = new HashMap<Long, String>();
 		checkBoxs = new ArrayList<CheckBox>();
 		mMediaUrlTask = new GetRemoteMediaUrlTask();
 		mDeleteProgressDialog = new ProgressDialog(getActivity());
 		
 		mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
 		mHanLangCmdChannel = HanLangCmdChannel.getInstance(mContext);
-		mHanLangCmdChannel.setHandler(mChannelHandler);
 		
 	}
 	
@@ -191,6 +184,8 @@ public class BaseFragment extends Fragment {
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		Log.e(TAG, "onCreateView");
+		
+		mHanLangCmdChannel.setHandler(mChannelHandler);
 		View view = inflater.inflate(R.layout.fragment_image_grid, container, false);
 		
 		selectAllView = view.findViewById(R.id.select_all_lo);
@@ -236,6 +231,7 @@ public class BaseFragment extends Fragment {
 		grid.setAdapter(mImageAdapter);
 		
 		switch (childIndex) {
+		
 			case NativePhotoGridFragment.FRAGMENT_INDEX:
 				grid.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), true, false));
 				grid.setOnItemClickListener(onPhotoImageClickedListener);
@@ -286,7 +282,6 @@ public class BaseFragment extends Fragment {
 		// TODO Auto-generated method stub
 		Log.e(TAG, "onDestroy");
 		mMediaUrlTask.cancel(true);
-		mHanLangCmdChannel.setHandler(null);
 		mDialogHandler.removeMessages(RESEDN_CONNET_WIFI_MSG);
 		super.onDestroy();
 	}
@@ -295,6 +290,8 @@ public class BaseFragment extends Fragment {
 	public void onDestroyView() {
 		// TODO Auto-generated method stub
 		Log.e(TAG, "onDestroyView");
+		mHanLangCmdChannel.setHandler(null);
+		checkBoxs.clear();
 		super.onDestroyView();
 	}
 	
@@ -337,7 +334,6 @@ public class BaseFragment extends Fragment {
 			final int mPositoin = position;
 			View view = convertView;
 			if (view == null) {
-				
 				view = inflater.inflate(R.layout.image_grid_item, parent, false);
 				view.setLayoutParams(new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 						ViewGroup.LayoutParams.MATCH_PARENT));
@@ -479,9 +475,13 @@ public class BaseFragment extends Fragment {
 			// TODO Auto-generated method stub
 			Uri uri = Uri.parse(mediaList.get(position).url);
 //			Uri uri = Uri.parse("http://192.168.5.253/pub/sct/tracker/VID_20150130_180836.mp4");
-			Intent intent = new Intent(Intent.ACTION_VIEW	);
-			intent.setData(uri);
-			startActivity(intent);
+			try {
+				Intent intent = new Intent(Intent.ACTION_VIEW	);
+				intent.setDataAndType(uri, "video/*");
+				startActivity(intent);
+			} catch (ActivityNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 	};
 	

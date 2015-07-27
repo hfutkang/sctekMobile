@@ -3,15 +3,6 @@ package com.sctek.smartglasses.ui;
 import cn.ingenic.glasssync.R;
 import cn.ingenic.glasssync.SyncApp;
 import cn.ingenic.glasssync.screen.LiveDisplayActivity;
-import io.vov.vitamio.LibsChecker;
-import io.vov.vitamio.MediaPlayer;
-import io.vov.vitamio.Vitamio;
-import io.vov.vitamio.MediaPlayer.OnErrorListener;
-import io.vov.vitamio.MediaPlayer.OnInfoListener;
-import io.vov.vitamio.MediaPlayer.OnPreparedListener;
-import io.vov.vitamio.activity.InitActivity;
-import io.vov.vitamio.widget.MediaController;
-import io.vov.vitamio.widget.VideoView;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

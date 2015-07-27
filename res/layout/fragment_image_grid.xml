@@ -45,11 +45,6 @@
 		android:cacheColorHint="#00000000"
 		android:padding="4dip" />
 	
-	<com.sctek.smartglasses.ui.SideNavigationView
-		android:id="@+id/side_navigation_view"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent" />
-	
 	<LinearLayout 
 	    android:id="@+id/delete_bt_lo"
 	    android:layout_width="match_parent"
