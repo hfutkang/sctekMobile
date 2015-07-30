@@ -360,11 +360,13 @@
     <string name="download_task_running">有未完成的任务</string>
     <string name="video_sync_start">"视频同步开始"</string>
     <string name="photo_sync_start">"照片同步开始"</string>
-    <string name="syncing_photos">照片同步中(%1$d\/%2$d)&#8230;</string>
+    <string name="syncing_photos">照片同步中(%1$d/%2$d)&#8230;</string>
     <string name="sync_media_done">同步结束(完成%1$d,失败%2$d)</string>
     <string name="syncing_videos">视频同步中(%1$d/%2$d)&#8230;</string>
     <string name="start_sync_photos">开始同步照片</string>
     <string name="start_sync_videos">开始同步视频</string>
     <string name="syncing_photos_done">照片同步结束</string>
     <string name="syncing_videos_done">视频同步结束</string>
+    <string name="share">分享</string>
+    <string name="sync_to_play">下载到本地后即可播放</string>
 </resources>

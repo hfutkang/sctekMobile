@@ -1,6 +1,7 @@
 package cn.ingenic.glasssync;
 
 import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Constructor;
 import java.util.LinkedList; 
 
@@ -132,6 +133,15 @@ public class SyncApp extends Application implements
 	//init hanlang cmd channel
 		    HanLangCmdChannel.getInstance(this);
 		    startService(new Intent(this, MediaSyncService.class));
+		    
+		    Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+				
+				@Override
+				public void uncaughtException(Thread thread, Throwable ex) {
+					// TODO Auto-generated method stub
+					ex.printStackTrace();
+				}
+			});
 		    
 	}
 

@@ -1,9 +1,17 @@
 package com.sctek.smartglasses.ui;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import cn.ingenic.glasssync.MediaSyncService;
 import cn.ingenic.glasssync.SyncApp;
+
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.sctek.smartglasses.fragments.NativeVideoGridFragment;
 import com.sctek.smartglasses.utils.MediaData;
 
@@ -11,9 +19,11 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 
@@ -25,7 +35,9 @@ public class VideoActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		SyncApp.getInstance().addActivity(this);
+//		SyncApp.getInstance().addActivity(this);
+		initImageLoader(getApplicationContext());
+		
 		new Handler().post(new Runnable() {
 			
 			@SuppressLint("NewApi")
@@ -37,12 +49,12 @@ public class VideoActivity extends FragmentActivity {
 				if(VideoGF == null) {
 					VideoGF = new NativeVideoGridFragment();
 					
+					Bundle vBundle = new Bundle();
+					vBundle.putInt("index", NativeVideoGridFragment.FRAGMENT_INDEX);
+					VideoGF.setArguments(vBundle);
+					getFragmentManager().beginTransaction()
+							.replace(android.R.id.content, VideoGF, TAG).commit();
 				}
-				Bundle vBundle = new Bundle();
-				vBundle.putInt("index", NativeVideoGridFragment.FRAGMENT_INDEX);
-				VideoGF.setArguments(vBundle);
-				getFragmentManager().beginTransaction()
-						.replace(android.R.id.content, VideoGF, TAG).commit();
 			}
 		});
 		
@@ -65,7 +77,7 @@ public class VideoActivity extends FragmentActivity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		unbindService(mConnection);
-		SyncApp.getInstance().removeActivity(this);
+//		SyncApp.getInstance().removeActivity(this);
 		super.onDestroy();
 	}
 	
@@ -88,6 +100,31 @@ public class VideoActivity extends FragmentActivity {
 	public void startVideoSync(ArrayList<MediaData> data)  {
 		Log.e(TAG, "startPhotoSync");
 		mMediaSyncService.startVideoSync(data);
+	}
+	
+	public static void initImageLoader(Context context) {
+		// This configuration tuning is custom. You can tune every option, you may tune some of them,
+		// or you can create default configuration by
+		//  ImageLoaderConfiguration.createDefault(this);
+		// method.
+		String cacheDir = Environment.getExternalStorageDirectory().getAbsolutePath()
+				+ "/.glasses_image_cache";
+		File cacheFile = StorageUtils.getOwnCacheDirectory(context, cacheDir);
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+				.threadPriority(Thread.NORM_PRIORITY - 2)
+				.threadPoolSize(3)
+				.denyCacheImageMultipleSizesInMemory()
+				.diskCacheFileNameGenerator(new Md5FileNameGenerator())
+				.diskCacheSize(50 * 1024 * 1024) // 50 Mb
+				.diskCache(new UnlimitedDiscCache(cacheFile))
+				.tasksProcessingOrder(QueueProcessingType.LIFO)
+				.writeDebugLogs() // Remove for release app
+				.diskCacheExtraOptions(480, 320, null)
+				.build();
+		// Initialize ImageLoader with configuration.
+		
+		if(!ImageLoader.getInstance().isInited())
+			ImageLoader.getInstance().init(config);
 	}
 
 }

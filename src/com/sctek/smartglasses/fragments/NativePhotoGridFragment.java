@@ -1,5 +1,6 @@
 package com.sctek.smartglasses.fragments;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import cn.ingenic.glasssync.R;
@@ -10,7 +11,9 @@ import android.annotation.SuppressLint;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -93,7 +96,6 @@ public class NativePhotoGridFragment extends BaseFragment {
 	public void onDestroyView() {
 		// TODO Auto-generated method stub
 		Log.e(TAG, "onDestroyView");
-		checkBoxs.clear();
 		selectedMedias.clear();
 		super.onDestroyView();
 	}
@@ -114,6 +116,17 @@ public class NativePhotoGridFragment extends BaseFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Log.e(TAG, "onOptionsItemSelected");
 		switch (item.getItemId()) {
+			case R.id.share_item:
+				deleteView.setVisibility(View.VISIBLE);
+				selectAllView.setVisibility(View.VISIBLE);
+				
+				for(CheckBox cb : checkBoxs) {
+					cb.setVisibility(View.VISIBLE);
+				}
+				
+				deleteTv.setText(R.string.share);
+				deleteTv.setOnClickListener(onNativePhotoShareTvClickListener);
+				return true;
 			case R.id.glasses_item:
 				showRemotePhotoFragment();
 				return true;
@@ -174,6 +187,23 @@ public class NativePhotoGridFragment extends BaseFragment {
 		transcaction.commit();
 	}
 	
+	private void onNativePhotoShareTvClicked() {
+		
+		Intent shareIntent = new Intent();
+		shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+		shareIntent.setType("image/jpeg");
+		ArrayList<Uri> photoUris = new ArrayList<Uri>();
+		
+		for(MediaData dd: selectedMedias) {
+			photoUris.add(Uri.parse(dd.url));
+		}
+		
+		shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, photoUris);
+		startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share)));
+		disCheckMedia();
+		
+	}
+	
 	private OnClickListener onNativePhotoDeleteTvClickListener = new OnClickListener() {
 		
 		@Override
@@ -181,6 +211,19 @@ public class NativePhotoGridFragment extends BaseFragment {
 			// TODO Auto-generated method stub
 			if(selectedMedias.size() != 0)
 				onNativeMediaDeleteTvClicked("photos");
+			else
+				disCheckMedia();
+			onCancelTvClicked();
+		}
+	};
+	
+	private OnClickListener onNativePhotoShareTvClickListener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			if(selectedMedias.size() != 0)
+				onNativePhotoShareTvClicked();
 			else
 				disCheckMedia();
 			onCancelTvClicked();

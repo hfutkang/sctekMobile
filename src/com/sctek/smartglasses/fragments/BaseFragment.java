@@ -148,6 +148,10 @@ public class BaseFragment extends Fragment {
 	public ProgressDialog mDeleteProgressDialog ;
 	public String glassIp;
 	
+	public MediaData shareVideo;
+	public CheckBox selectedCb;
+	public ArrayList<CheckBox> shareCheckBoxs;
+	
 	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -171,6 +175,7 @@ public class BaseFragment extends Fragment {
 		showImageCheckBox = false;
 		mImageAdapter = new ImageAdapter();
 		checkBoxs = new ArrayList<CheckBox>();
+		shareCheckBoxs = new ArrayList<CheckBox>();
 		mMediaUrlTask = new GetRemoteMediaUrlTask();
 		mDeleteProgressDialog = new ProgressDialog(getActivity());
 		
@@ -201,6 +206,8 @@ public class BaseFragment extends Fragment {
 				// TODO Auto-generated method stub
 				onCancelTvClicked();
 				disCheckMedia();
+				
+				cancelShareSelectView();
 
 			}
 		});
@@ -247,7 +254,15 @@ public class BaseFragment extends Fragment {
 				grid.setOnItemClickListener(onVideoImageClickedListener);
 				break;
 			case RemoteVideoGridFragment.FRAGMENT_INDEX:
-				grid.setOnItemClickListener(onVideoImageClickedListener);
+				grid.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
+						// TODO Auto-generated method stub
+						Toast.makeText(getActivity(), R.string.sync_to_play, Toast.LENGTH_SHORT).show();
+					}
+				});
 				if(WIFI_AP_STATE_ENABLED != WifiUtils.getWifiAPState(mWifiManager))
 					showTurnWifiApOnDialog();
 				break;
@@ -267,7 +282,11 @@ public class BaseFragment extends Fragment {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		Log.e(TAG, "onResume");
+		try {
 		super.onResume();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -292,6 +311,7 @@ public class BaseFragment extends Fragment {
 		Log.e(TAG, "onDestroyView");
 		mHanLangCmdChannel.setHandler(null);
 		checkBoxs.clear();
+		shareCheckBoxs.clear();
 		super.onDestroyView();
 	}
 	
@@ -344,14 +364,35 @@ public class BaseFragment extends Fragment {
 				holder.progressBar = (ProgressBar) view.findViewById(R.id.progress);
 				holder.imageName = (TextView)view.findViewById(R.id.image_name_tv);
 				holder.imageCb = (CheckBox)view.findViewById(R.id.image_select_cb);
+				holder.shareCb = (CheckBox)view.findViewById(R.id.video_share_cb);
 				
 				view.setTag(holder);
 				
 				checkBoxs.add(holder.imageCb);
+				shareCheckBoxs.add(holder.shareCb);
 				
 			} else {
 				holder = (ViewHolder) view.getTag();
 			}
+			
+			holder.shareCb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				private int mediaIndex = mPositoin;
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					// TODO Auto-generated method stub
+					if(isChecked) {
+						shareVideo = mediaList.get(mediaIndex);
+						if(selectedCb != null)
+							selectedCb.setChecked(false);
+						selectedCb = (CheckBox)buttonView;
+					} else {
+						if(shareVideo == mediaList.get(mediaIndex)) {
+							shareVideo = null;
+							selectedCb = null;
+						}
+					}
+				}
+			});
 			
 			holder.imageCb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				private int imageIndex = mPositoin;
@@ -376,6 +417,13 @@ public class BaseFragment extends Fragment {
 			} 
 			else {
 				holder.imageCb.setChecked(false);
+			}
+			
+			if(mediaList.get(mPositoin).equals(shareVideo)) {
+				holder.shareCb.setChecked(true);
+			}
+			else {
+				holder.shareCb.setChecked(false);
 			}
 			
 			if(childIndex != RemoteVideoGridFragment.FRAGMENT_INDEX) {
@@ -439,6 +487,7 @@ public class BaseFragment extends Fragment {
 		ProgressBar progressBar;
 		TextView imageName;
 		CheckBox imageCb;
+		CheckBox shareCb;
 	}
 	
 	private OnItemClickListener onPhotoImageClickedListener = new OnItemClickListener() {
@@ -531,6 +580,16 @@ public class BaseFragment extends Fragment {
 			cb.setVisibility(View.GONE);
 		}
 		
+	}
+	
+	public void cancelShareSelectView() {
+		
+		if(selectedCb != null)
+			selectedCb.setChecked(false);
+		
+		for(CheckBox cb : shareCheckBoxs) {
+			cb.setVisibility(View.GONE);
+		}
 	}
 	
 	public void disCheckMedia() {

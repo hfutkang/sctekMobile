@@ -42,4 +42,12 @@
         android:background="@drawable/radiobutton_background"
         android:visibility="gone"/>
 	
+	<CheckBox
+        android:id="@+id/video_share_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:background="@drawable/radiobutton_background"
+        android:visibility="gone"/>
+	
 </FrameLayout>

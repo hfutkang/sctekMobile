@@ -388,11 +388,13 @@
     <string name="video_sync_start">"Start syncing videos"</string>
     <string name="photo_sync_start">"Start syncing photos"</string>
     <string name="mediacontroller_play_pause">Play/Pause</string>
-    <string name="syncing_photos">Syncing photos(%1$d\/%2$d)&#8230;</string>
+    <string name="syncing_photos">Syncing photos(%1$d/%2$d)&#8230;</string>
     <string name="sync_media_done">Sync done(完成%1$d,失败%2$d)</string>
     <string name="syncing_videos">videos Syncing(%1$d/%2$d)&#8230;</string>
     <string name="start_sync_photos">Start syncing photos</string>
     <string name="start_sync_videos">Start syncing videos</string>
     <string name="syncing_photos_done">Syncing photos done</string>
     <string name="syncing_videos_done">Syncing videos done</string>
+    <string name="share">share</string>
+    <string name="sync_to_play">please download it and play</string>
 </resources>

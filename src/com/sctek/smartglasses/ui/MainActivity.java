@@ -102,7 +102,7 @@ public class MainActivity extends FragmentActivity {
 		aboutIb.setOnClickListener(onImageButtonClickedListener);
 		
 		mSyncManager = DefaultSyncManager.getDefault();
-		initImageLoader(this);
+		initImageLoader(getApplicationContext());
 		
 		GlassDetect mGlassDetect = (GlassDetect)GlassDetect.getInstance(getApplicationContext());
 		mGlassDetect.setLockedAddress(mSyncManager.getLockedAddress());
@@ -166,9 +166,6 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
-		ImageLoader.getInstance().clearDiskCache();
-		ImageLoader.getInstance().clearMemoryCache();
-		ImageLoader.getInstance().stop();
 		super.onPause();
 	}
 	
@@ -193,7 +190,8 @@ public class MainActivity extends FragmentActivity {
 				.build();
 		// Initialize ImageLoader with configuration.
 		
-		ImageLoader.getInstance().init(config);
+		if(!ImageLoader.getInstance().isInited())
+			ImageLoader.getInstance().init(config);
 	}
 	
 	private OnClickListener onImageButtonClickedListener = new OnClickListener() {
@@ -266,6 +264,9 @@ public class MainActivity extends FragmentActivity {
 		Log.i(TAG,"onDestroy in");
 		mInstance = null;
 		SyncApp.getInstance().exitAllActivity();
+		ImageLoader.getInstance().clearDiskCache();
+		ImageLoader.getInstance().clearMemoryCache();
+		ImageLoader.getInstance().destroy();
 	}
 	private void unBond() {
 		new Thread(new Runnable() {

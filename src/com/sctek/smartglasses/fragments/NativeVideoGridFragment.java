@@ -10,12 +10,12 @@ import android.annotation.SuppressLint;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-
-
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -115,7 +115,6 @@ public class NativeVideoGridFragment extends BaseFragment {
 	public void onDestroyView() {
 		// TODO Auto-generated method stub
 		Log.e(TAG, "onDestroyView");
-		checkBoxs.clear();
 		selectedMedias.clear();
 		super.onDestroyView();
 	}
@@ -136,6 +135,16 @@ public class NativeVideoGridFragment extends BaseFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Log.e(TAG, "onOptionsItemSelected");
 		switch (item.getItemId()) {
+			case R.id.share_item:
+				deleteView.setVisibility(View.VISIBLE);
+				selectAllView.setVisibility(View.GONE);
+				for(CheckBox cb : shareCheckBoxs) {
+					cb.setVisibility(View.VISIBLE);
+				}
+				
+				deleteTv.setText(R.string.share);
+				deleteTv.setOnClickListener(onNativeVideoShareTvClickListener);
+				return true;
 			case R.id.glasses_item:
 				showRemoteVideoFragment();
 				return true;
@@ -197,6 +206,26 @@ public class NativeVideoGridFragment extends BaseFragment {
 		transcaction.commit();
 	}
 	
+	private void onNativeVideoShareTvClicked() {
+		
+		Intent shareIntent = new Intent();
+		shareIntent.setAction(Intent.ACTION_SEND);
+		shareIntent.setType("video/mp4");
+		
+		shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(shareVideo.url));
+		Intent selectIntent = Intent.createChooser(shareIntent, getResources().getText(R.string.share));
+		startActivity(selectIntent);
+		
+		selectedCb.setChecked(false);
+		
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		Log.e(TAG, "onActivityResult");
+		super.onActivityResult(requestCode, resultCode, data);
+	}
 	private OnClickListener onNativeVideoDeleteTvClickListener = new OnClickListener() {
 		
 		@Override
@@ -209,5 +238,25 @@ public class NativeVideoGridFragment extends BaseFragment {
 			onCancelTvClicked();
 		}
 	};
+	
+	private OnClickListener onNativeVideoShareTvClickListener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			if(shareVideo != null)
+				onNativeVideoShareTvClicked();
+			onShareCancelTvClicked();
+		}
+	};
+	
+	private void onShareCancelTvClicked() {
+		
+		deleteView.setVisibility(View.GONE);
+		for(CheckBox cb : shareCheckBoxs) {
+			cb.setVisibility(View.GONE);
+		}
+		
+	}
 	
 }

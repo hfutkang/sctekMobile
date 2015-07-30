@@ -177,44 +177,6 @@ public class RemoteVideoGridFragment extends BaseFragment {
 		}
 	}
 	
-//	private void getImagePath() {
-//		
-//		imageUrls = new String[]{"http://192.168.5.253/pub/sct/tracker/VID_20150130_180836.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video/VID_20150219_000020.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video/VID_20150219_000231.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video/VID_20150219_000400.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video/VID_20150223_180915.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video1/VID_20150219_000020.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video1/VID_20150219_000231.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video1/VID_20150219_000400.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video1/VID_20150223_180915.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video2/VID_20150219_000020.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video2/VID_20150219_000231.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video2/VID_20150219_000400.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video2/VID_20150223_180915.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video3/VID_20150219_000231.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video3/VID_20150219_000400.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video3/VID_20150223_180915.mp4",
-//				"http://192.168.5.253/pub/sct/tracker/Video3/VID_20150219_000020.mp4"};
-//		
-//		imagesName = new String[imageUrls.length];
-//		for(int i = 0; i<imagesName.length; i++)
-//			imagesName[i] = "remote image test";
-//		
-//		
-//	
-//	}
-	
-//	thumbWork.getRemoteVideoThumb(imageUrls[position], new GetRemoteVideoThumbListener() {
-//		
-//		@Override
-//		public void onGetRemoteVideoThumbDone(Bitmap bitmap) {
-//			// TODO Auto-generated method stub
-//			Log.e(TAG, "5");
-//			holder.imageView.setImageBitmap(bitmap);
-//		}
-//	});
-	
 	@SuppressLint("NewApi")
 	public void onVideoDownloadTvClicked() {
 		

@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     
     <item 
+        android:id="@+id/share_item"
+        android:title="@string/share"
+        android:icon="@drawable/ic_share"
+        android:showAsAction="always"/>
+    
+    <item 
         android:id="@+id/glasses_item"
         android:title="@string/glasses"
         android:showAsAction="always"
