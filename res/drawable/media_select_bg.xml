@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">  
-    <item android:drawable="@color/sync_pressed__color" android:state_pressed="true"></item>
-    <item android:drawable="@color/sync_color"  android:state_selected="true"></item>
-    <item android:drawable="@color/sync_default__color"  android:state_selected="false" android:state_pressed="false"></item>
-    <item android:drawable="@color/sync_default__color" ></item> 
-</selector>
