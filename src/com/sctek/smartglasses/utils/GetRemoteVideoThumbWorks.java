@@ -94,7 +94,7 @@ public class GetRemoteVideoThumbWorks {
 					mMRetriever.setDataSource(url, new HashMap<String, String>());
 					
 					
-					temp = mMRetriever.getFrameAtTime();
+					temp = mMRetriever.getFrameAtTime(-1);
 					
 					temp = ThumbnailUtils.extractThumbnail(temp, 100, 100
 							, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);

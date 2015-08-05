@@ -107,7 +107,7 @@ public class BaseFragment extends Fragment {
 	protected static final int WIFI_AP_STATE_DISABLED = 11;
 	protected static final int WIFI_AP_STATE_ENABLED = 13;
 	
-	public static final int RESEDN_CONNET_WIFI_MSG = 5;
+	public static final int RESEDN_CONNECT_WIFI_MSG = 5;
 	
 	public static final String WIFI_AP_STATE_CHANGED_ACTION =
 	        "android.net.wifi.WIFI_AP_STATE_CHANGED";
@@ -301,7 +301,7 @@ public class BaseFragment extends Fragment {
 		// TODO Auto-generated method stub
 		Log.e(TAG, "onDestroy");
 		mMediaUrlTask.cancel(true);
-		mDialogHandler.removeMessages(RESEDN_CONNET_WIFI_MSG);
+		mDialogHandler.removeMessages(RESEDN_CONNECT_WIFI_MSG);
 		super.onDestroy();
 	}
 	
@@ -325,11 +325,9 @@ public class BaseFragment extends Fragment {
 	public class ImageAdapter extends BaseAdapter {
 
 		private LayoutInflater inflater;
-		private GetRemoteVideoThumbWorks thumbWork;
 
 		ImageAdapter() {
 			inflater = LayoutInflater.from(mContext);
-			thumbWork = GetRemoteVideoThumbWorks.getInstance();
 		}
 
 		@Override
@@ -426,60 +424,51 @@ public class BaseFragment extends Fragment {
 				holder.shareCb.setChecked(false);
 			}
 			
-			if(childIndex != RemoteVideoGridFragment.FRAGMENT_INDEX) {
-				ImageLoader.getInstance()
-						.displayImage(mediaList.get(position).url, holder.imageView, options, new SimpleImageLoadingListener() {
-							@Override
-							public void onLoadingStarted(String imageUri, View view) {
-								holder.progressBar.setProgress(0);
-								holder.progressBar.setVisibility(View.VISIBLE);
-								holder.imageName.setVisibility(View.GONE);
+			String url = getImageLoadUrl(position);
+			ImageLoader.getInstance()
+					.displayImage(url, holder.imageView, options, new SimpleImageLoadingListener() {
+						@Override
+						public void onLoadingStarted(String imageUri, View view) {
+							holder.progressBar.setProgress(0);
+							holder.progressBar.setVisibility(View.VISIBLE);
+							holder.imageName.setVisibility(View.GONE);
+						}
+
+						@Override
+						public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+							try {
+								holder.progressBar.setVisibility(View.GONE);
+								holder.imageName.setVisibility(View.VISIBLE);
+								holder.imageName.setText(mediaList.get(mPositoin).name);
+							} catch (IndexOutOfBoundsException e) {
 							}
-	
-							@Override
-							public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-								try {
-									holder.progressBar.setVisibility(View.GONE);
-									holder.imageName.setVisibility(View.VISIBLE);
-									holder.imageName.setText(mediaList.get(mPositoin).name);
-								} catch (IndexOutOfBoundsException e) {
-								}
+						}
+
+						@Override
+						public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+							try {
+								holder.progressBar.setVisibility(View.GONE);
+								holder.imageName.setVisibility(View.VISIBLE);
+								holder.imageName.setText(mediaList.get(mPositoin).name);
+							} catch (IndexOutOfBoundsException e) {
 							}
-	
-							@Override
-							public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-								try {
-									holder.progressBar.setVisibility(View.GONE);
-									holder.imageName.setVisibility(View.VISIBLE);
-									holder.imageName.setText(mediaList.get(mPositoin).name);
-								} catch (IndexOutOfBoundsException e) {
-								}
-							}
-						}, new ImageLoadingProgressListener() {
-							@Override
-							public void onProgressUpdate(String imageUri, View view, int current, int total) {
-								holder.progressBar.setProgress(Math.round(100.0f * current / total));
-							}
-						});
-			}
-			else {
-				holder.imageName.setText(mediaList.get(mPositoin).name);
-				holder.progressBar.setVisibility(View.GONE);
-				holder.imageView.setImageResource(R.drawable.ic_stub);
-				
-				thumbWork.getRemoteVideoThumb(mediaList.get(position).url, new GetRemoteVideoThumbListener() {
-					
-					@Override
-					public void onGetRemoteVideoThumbDone(Bitmap bitmap) {
-						// TODO Auto-generated method stub
-						Log.e(TAG, "5");
-						holder.imageView.setImageBitmap(bitmap);
-					}
-				});
-			}
+						}
+					}, new ImageLoadingProgressListener() {
+						@Override
+						public void onProgressUpdate(String imageUri, View view, int current, int total) {
+							holder.progressBar.setProgress(Math.round(100.0f * current / total));
+						}
+					});
 
 			return view;
 		}
+	}
+	
+	private String getImageLoadUrl(int position) {
+		if(childIndex != RemoteVideoGridFragment.FRAGMENT_INDEX)
+			return mediaList.get(position).url;
+		else 
+			return mediaList.get(position).url.replace("vedios", ".videothumbnails");
 	}
 
 	static class ViewHolder {
@@ -642,7 +631,7 @@ public class BaseFragment extends Fragment {
     			if(mConnectProgressDialog.isShowing())
     				mConnectProgressDialog.cancel();
     			break;
-    		case RESEDN_CONNET_WIFI_MSG:
+    		case RESEDN_CONNECT_WIFI_MSG:
     			sendApInfoToGlass();
     			break;
     		}
@@ -659,7 +648,7 @@ public class BaseFragment extends Fragment {
     			if(glassIp != null && glassIp.length() != 0&&!connected)	 {
     				
     				connected = true;
-    				mDialogHandler.removeMessages(RESEDN_CONNET_WIFI_MSG);
+    				mDialogHandler.removeMessages(RESEDN_CONNECT_WIFI_MSG);
     				
     				if(childIndex == RemotePhotoGridFragment.FRAGMENT_INDEX)
     					mMediaUrlTask.execute(new String[]{glassIp, "photos"});
@@ -890,7 +879,7 @@ public class BaseFragment extends Fragment {
 			packet.putString("ssid", ssid);
 			mHanLangCmdChannel.sendPacket(packet);
 			
-			mDialogHandler.sendEmptyMessageDelayed(RESEDN_CONNET_WIFI_MSG, 5000);
+			mDialogHandler.sendEmptyMessageDelayed(RESEDN_CONNECT_WIFI_MSG, 5000);
 		}
 		else {
 			Toast.makeText(getActivity(), R.string.bluetooth_error, Toast.LENGTH_LONG).show();

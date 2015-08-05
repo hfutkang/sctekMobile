@@ -183,7 +183,6 @@ public class MediaSyncService extends Service{
 		mVideoNotification.contentView.setTextViewText(R.id.download_lable_tv, msg);
 		mVideoNotification.contentView.setTextViewText(R.id.speed_tv, speed);
 		mVideoNotification.contentView.setProgressBar(R.id.donwload_progress, 100, 0, false);
-		mVideoNotification.tickerText = getResources().getText(R.string.syncing_videos_done);
 		mNotificationManager.notify(VIDOE_NOTIFICATION_ID, mVideoNotification);
 		
 		String photoPath = Environment.getExternalStorageDirectory().toString()
@@ -199,6 +198,7 @@ public class MediaSyncService extends Service{
 		mVideoNotification.contentView.setTextViewText(R.id.download_lable_tv, msg);
 		mVideoNotification.contentView.setProgressBar(R.id.donwload_progress, 1, 1, false);
 		mVideoNotification.contentView.setTextViewText(R.id.speed_tv, "");
+		mVideoNotification.tickerText = getResources().getText(R.string.syncing_videos_done);
 		mVideoNotification.vibrate = new long[]{0,100,200,300};
 		mNotificationManager.notify(VIDOE_NOTIFICATION_ID, mVideoNotification);
 	}
