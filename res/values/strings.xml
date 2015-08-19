@@ -213,8 +213,10 @@
     <string name="live_dialog_loading">Getting Video, waiting...</string>
 
     <string name="live_not_connected_dialog_title">glass has not connected phone yet</string>
+    <string name="live_stream_disconnect_dialog_title">Live connect failed</string>
     <string name="live_quit_dialog_title">live failed because of network error or other unknown reason</string>
     <string name="live_quit_dialog_cancle">Exit the live</string>
+    <string name="live_wait_network_data">Network is poor, data loading ...</string>
 
 
     <string name="bluetooth_off">Bluetooth is off, has quit the Glass Aide application</string>
@@ -397,4 +399,5 @@
     <string name="syncing_videos_done">Syncing videos done</string>
     <string name="share">share</string>
     <string name="sync_to_play">please download it and play</string>
+    <string name="delete_fail_count">%1$d files not be deleted</string>
 </resources>

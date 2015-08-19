@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -405,7 +406,7 @@ public class RemotePhotoGridFragment extends BaseFragment {
 		
 	}
 	
-	private class PhotoDeleteTask extends AsyncTask<Void, Boolean, Void> {
+	private class PhotoDeleteTask extends AsyncTask<Void, Integer, Void> {
 		
 		@Override
 		protected void onPreExecute() {
@@ -425,44 +426,60 @@ public class RemotePhotoGridFragment extends BaseFragment {
 		}
 		
 		@Override
-		protected void onProgressUpdate(Boolean... values) {
+		protected void onProgressUpdate(Integer... values) {
 			// TODO Auto-generated method stub
 			super.onProgressUpdate(values);
-			if(!values[0]) {
+			if(values[1] == 0) {
 				Toast.makeText(mContext, R.string.connect_error, Toast.LENGTH_LONG).show();
 				disCheckMedia();
 			}
 			else
 			{
 				onMediaDeleted();
-				Toast.makeText(mContext, R.string.delete_ok, Toast.LENGTH_LONG).show();
+				if(values[0] == 0)
+					Toast.makeText(mContext, R.string.delete_ok, Toast.LENGTH_LONG).show();
+				else {
+					String msg = String.format((String)getActivity().getResources().getText(R.string.delete_fail_count), values[0]);
+					Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+				}
 			}
 		}
 		@Override
 		protected Void doInBackground(Void... params) {
 			// TODO Auto-generated method stub
-			try {
-			String urlPref = String.format("http://%s/cgi-bin/deletefiles?", glassIp);
-			StringBuffer urlBuffer = new StringBuffer(4096);
-			urlBuffer.append(urlPref);
-			urlBuffer.append("photos");
-			int count = 0;
-			for(MediaData data : selectedMedias) {
-				urlBuffer.append("&" + data.name);
-			}
-			Log.e(TAG, "delete url " + urlBuffer.toString());
-			
-			HttpClient httpClient = CustomHttpClient.getHttpClient();
-			HttpGet httpGet = new HttpGet(urlBuffer.toString());
-			if(GlassImageDownloader.deleteRequestExecute(httpClient, httpGet)) {
-				publishProgress(true);
-			}
-			else
-				publishProgress(false);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			Iterator<MediaData> mediaIterator = selectedMedias.iterator();
+			int errors = 0;
+			int dones = 0;
+			while(mediaIterator.hasNext()) {
 				
+				String urlPref = String.format("http://%s/cgi-bin/deletefiles?", glassIp);
+				StringBuffer urlBuffer = new StringBuffer(1024);
+				urlBuffer.append(urlPref);
+				urlBuffer.append("photos");
+				
+				int i = 0;
+				for(; i<200&&mediaIterator.hasNext(); i++) {
+					MediaData data = mediaIterator.next();
+					urlBuffer.append("&" + data.name);
+				}
+				
+				Log.e(TAG, "delete url " + urlBuffer.toString());
+				
+				HttpClient httpClient = CustomHttpClient.getHttpClient();
+				HttpGet httpGet = new HttpGet(urlBuffer.toString());
+				int error = GlassImageDownloader.deleteRequestExecute(httpClient, httpGet);
+				
+				if(error < 0) {
+					errors += i;
+				}
+				else {
+					errors += error;
+					dones += (i - error);
+				}
+				
+			}
+			Log.e(TAG, "=======errors:" + errors + " =======dones:" + dones);
+			publishProgress(errors, dones);
 			return null;
 		}
 		

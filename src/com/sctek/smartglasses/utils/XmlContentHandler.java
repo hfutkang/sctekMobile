@@ -84,6 +84,7 @@ public class XmlContentHandler extends DefaultHandler {
 	}
 	
 	public ArrayList<MediaData> getMedias() {
+		Log.e(TAG, "========================media count:" + mediaList.size());
 		return mediaList;
 	}
 

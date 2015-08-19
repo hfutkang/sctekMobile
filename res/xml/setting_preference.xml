@@ -54,11 +54,11 @@
         android:defaultValue="false"
         android:summary="@string/bluetooth_phone_summary"/>
 	    
-	<com.sctek.smartglasses.ui.VolumeSeekBarPreference 
+	<!-- <com.sctek.smartglasses.ui.VolumeSeekBarPreference 
 	    android:title="@string/volume"
 	    android:key="volume"
 	    android:defaultValue="7"
-	    android:summary="@string/volume_summary"/>
+	    android:summary="@string/volume_summary"/> -->
 	
 	<Preference 
 	    android:title="@string/wifi_ap"

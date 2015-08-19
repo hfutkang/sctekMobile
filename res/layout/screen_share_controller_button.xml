@@ -5,12 +5,12 @@
 		android:layout_height="match_parent"
 		android:background="#fafafa" >
 
-    <!-- screen from glass -->
-    <LinearLayout
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	android:gravity="center"
-	android:orientation="vertical">
+  <!-- screen from glass -->
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:orientation="vertical">
 
     <LinearLayout
 	android:layout_width="match_parent"
@@ -26,14 +26,14 @@
 	  android:layout_height="wrap_content"
 	  android:gravity="center_vertical">
 	<TextView 
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:background="@drawable/ic_stub"/>
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:background="@drawable/ic_stub"/>
 	<TextView 
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:textSize="16sp"
-	  android:text="@string/reminder"/>
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textSize="16sp"
+	    android:text="@string/reminder"/>
       </LinearLayout>
       <TextView 
 	  android:layout_width="wrap_content"
@@ -44,24 +44,17 @@
 	  android:text="@string/controller_info"/>
     </LinearLayout>
     
-      <!-- <Button  -->
-      <!-- 	  android:id="@+id/screenButton" -->
-      <!-- 	  android:layout_marginTop="15dp" -->
-      <!-- 	  android:layout_width="wrap_content" -->
-      <!-- 	  android:layout_height="wrap_content" -->
-      <!-- 	  android:layout_centerInParent="true" -->
-      <!-- 	  android:background="@drawable/screen_button_selector"/> -->
-      <TextView 
-	  android:id="@+id/screenButton1"
-	  android:layout_width="match_parent"
-	  android:layout_height="50dp"
-	  android:layout_marginTop="15dp"
-	  android:layout_marginLeft="5dp"
-	  android:layout_marginRight="5dp"
-	  android:gravity="center"
-	  android:textSize="15sp"
-	  android:background="@drawable/ic_stub"
-	  android:text="@string/start"/>
+    <TextView 
+	android:id="@+id/screenButton"
+	android:layout_width="match_parent"
+	android:layout_height="50dp"
+	android:layout_marginTop="15dp"
+	android:layout_marginLeft="5dp"
+	android:layout_marginRight="5dp"
+	android:gravity="center"
+	android:textSize="15sp"
+	android:background="@drawable/ic_stub"
+	android:text="@string/start"/>
 
 
     <LinearLayout
@@ -78,14 +71,14 @@
 	  android:layout_height="wrap_content"
 	  android:gravity="center_vertical">
 	<TextView 
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:background="@drawable/ic_stub"/>
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:background="@drawable/ic_stub"/>
 	<TextView 
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:textSize="16sp"
-	  android:text="@string/reminder"/>
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textSize="16sp"
+	    android:text="@string/reminder"/>
       </LinearLayout>
       <TextView 
 	  android:layout_width="wrap_content"
@@ -97,19 +90,19 @@
     </LinearLayout>
 
 
-      <TextView 
-	  android:id="@+id/liveButton1"
-	  android:layout_width="match_parent"
-	  android:layout_height="50dp"
-	  android:layout_marginTop="15dp"
-	  android:layout_marginLeft="5dp"
-	  android:layout_marginRight="5dp"
-	  android:gravity="center"
-	  android:textSize="15sp"
-	  android:background="@drawable/ic_stub"
-	  android:text="@string/live"/>
+    <TextView 
+	android:id="@+id/liveButton"
+	android:layout_width="match_parent"
+	android:layout_height="50dp"
+	android:layout_marginTop="15dp"
+	android:layout_marginLeft="5dp"
+	android:layout_marginRight="5dp"
+	android:gravity="center"
+	android:textSize="15sp"
+	android:background="@drawable/ic_stub"
+	android:text="@string/live"/>
 
-    </LinearLayout>
-    <!-- controller -->
+  </LinearLayout>
+  <!-- controller -->
 
 </RelativeLayout>

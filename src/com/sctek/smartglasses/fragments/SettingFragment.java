@@ -97,7 +97,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		"default_switch", "anti_shake", "timestamp"};
 	
 	private ListPreference mVedioDurationPreference;
-	private VolumeSeekBarPreference mVolumeSeekBarPreference;
+//	private VolumeSeekBarPreference mVolumeSeekBarPreference;
 	private Preference mWifiPreference;
 	private SwitchPreference mBluetoothPhonePreference;
 	private SwitchPreference mRoundVideoPreference;
@@ -171,7 +171,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 	private void initPrefereceView() {
 		
 		mVedioDurationPreference = (ListPreference)findPreference("duration");
-		mVolumeSeekBarPreference = (VolumeSeekBarPreference)findPreference("volume");
+//		mVolumeSeekBarPreference = (VolumeSeekBarPreference)findPreference("volume");
 		mWifiPreference = (Preference)findPreference("wifi");
 		mBluetoothPhonePreference = (SwitchPreference)findPreference("phone_on");
 		mRoundVideoPreference = (SwitchPreference)findPreference("round_video");
@@ -183,7 +183,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		
 		try {
 			mVedioDurationPreference.setOnPreferenceChangeListener(this);
-			mVolumeSeekBarPreference.setOnPreferenceChangeListener(this);
+//			mVolumeSeekBarPreference.setOnPreferenceChangeListener(this);
 			mBluetoothPhonePreference.setOnPreferenceChangeListener(this);
 			mRoundVideoPreference.setOnPreferenceChangeListener(this);
 			mSyncContactPreference.setOnPreferenceChangeListener(this);
@@ -353,10 +353,10 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 						sValue = data.getString(lables[type -1]);
 						mVedioDurationPreference.setValue(sValue);
 						break;
-					case SET_VOLUME:
-						int volume = data.getInt(lables[type -1]);
-						mVolumeSeekBarPreference.setValue(volume);
-						break;
+//					case SET_VOLUME:
+//						int volume = data.getInt(lables[type -1]);
+//						mVolumeSeekBarPreference.setValue(volume);
+//						break;
 					case SWITCH_ROUND_VIDEO:
 						setBack = true;
 						bValue = data.getBoolean(lables[type -1]);

@@ -60,7 +60,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     public static RtspClient mRtspClient;
     private String mMediaUrl = null;
     private SurfaceView mSurfaceView = null;
-    public static Dialog mDialog, mQuitDialog, mUnConnectedDialog;
+    public static Dialog mDialog, mQuitDialog, mUnConnectedDialog, mStreamDown;
     public static ProgressDialog mPD = null;
     public static boolean mBluetoothConnected = true;
     public static boolean mWifiDeviceConnected = true;
@@ -153,11 +153,11 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     }
 
 
-    public static boolean detectOpenGLES20(Context context) {  
-	ActivityManager am = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);  
-	ConfigurationInfo info = am.getDeviceConfigurationInfo();  
-	return (info.reqGlEsVersion >= 0x20000);  
-    }  
+    // public static boolean detectOpenGLES20(Context context) {  
+    // 	ActivityManager am = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);  
+    // 	ConfigurationInfo info = am.getDeviceConfigurationInfo();  
+    // 	return (info.reqGlEsVersion >= 0x20000);  
+    // }  
 
     private void initView() {
 	mWifiManager = new WifiManagerApi(this);
@@ -182,7 +182,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	mDialog.setCanceledOnTouchOutside(false);
 	mDialog.setCancelable(false);
    
-	mRtspClient = new RtspClient();
+	mRtspClient = new RtspClient(this);
 	mRtspClient.setListener(this);
 	mLiveModule = LiveModule.getInstance(this);
 
@@ -326,7 +326,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     private void initializeRtspClient(String url) {
 	if (DEBUG) Log.e(TAG, "initializeRtspClient");
 	if (mRtspClient == null) {
-	    mRtspClient = new RtspClient();
+	    mRtspClient = new RtspClient(this);
 	    mRtspClient.setListener(this);
 	}
 	mRtspClient.start(url);
@@ -339,6 +339,24 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	    mRtspClient.close();
             mRtspClient = null;
         }
+    }
+
+    @Override
+    public void onStreamDown() {
+	mStreamDown = new MyDialog(this, R.style.MyDialog,getApplication().getResources().getString(R.string.live_stream_disconnect_dialog_title), getApplication().getResources().getString(R.string.live_quit_dialog_cancle),new MyDialog.LeaveMeetingDialogListener() {
+	@Override
+        public void onClick(View view) {
+	    switch (view.getId()) {
+	    case R.id.dialog_tv_cancel_one:
+		mStreamDown.cancel();
+		finish();
+		break;
+		
+	    }
+	}});
+	mStreamDown.setCanceledOnTouchOutside(false);
+	mStreamDown.setCancelable(false);
+	mStreamDown.show();
     }
 
     @Override

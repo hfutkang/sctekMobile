@@ -51,7 +51,7 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
    
-    <permission android:name="android.permission.BAIDU_LOCATION_SERVICE" /> 
+    <!-- <permission android:name="android.permission.BAIDU_LOCATION_SERVICE" /> --> 
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> 
 
     <uses-feature android:glEsVersion="0x00020000" android:required="true" />
@@ -348,12 +348,11 @@
         
          <service android:name="cn.ingenic.glasssync.MediaSyncService"></service>
          
-         <activity
-            android:name="io.vov.vitamio.activity.InitActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:launchMode="singleTop"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+         <receiver android:name="com.sctek.smartglasses.utils.WifiApStateBroadcastReceiver">
+            <intent-filter >
+                <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED"/>
+            </intent-filter>
+        </receiver>
         
 </application>
 </manifest>

@@ -81,9 +81,10 @@ public class GlassImageDownloader {
 		
 	}
 	
-	public static boolean deleteRequestExecute(HttpClient httpclient, HttpGet httpget) {
+	public static int deleteRequestExecute(HttpClient httpclient, HttpGet httpget) {
 		
 		BufferedReader in = null;
+		int errors = 0;
 		
 		try{
 			
@@ -98,12 +99,19 @@ public class GlassImageDownloader {
 				result.append(line);
 			}
 			in.close();
-			if(result != null)
+			if(result != null) {
+				
+				int start = result.indexOf("<error>");
+				int end = result.indexOf("</error>");
+				
+				if(start > 0 && end >0)
+					errors = Integer.parseInt(result.substring(start + 7, end));
+			}
 				Log.e(TAG, result.toString());
-			return true;
+			return errors;
 		}catch (Exception e) {
 			e.printStackTrace();
-			return false;
+			return -1;
 		}
 	}
 

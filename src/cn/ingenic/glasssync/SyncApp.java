@@ -133,6 +133,7 @@ public class SyncApp extends Application implements
 	//init hanlang cmd channel
 		    HanLangCmdChannel.getInstance(this);
 		    startService(new Intent(this, MediaSyncService.class));
+		    startService(new Intent(this, SmartGlassService.class));
 		    
 		    Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 				

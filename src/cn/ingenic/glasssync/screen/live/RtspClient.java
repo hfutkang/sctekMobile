@@ -1,14 +1,19 @@
 package cn.ingenic.glasssync.screen.live;
 
+import java.lang.ref.WeakReference;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import java.lang.ref.WeakReference;
-
+import android.content.Context;
+import android.view.View;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import cn.ingenic.glasssync.R;
+import cn.ingenic.glasssync.screen.LiveDisplayActivity;
 
 public class RtspClient {
 
@@ -23,7 +28,7 @@ public class RtspClient {
     private int mNativeContext = 0;
     private OnRtspClientListener mOnRtspClientListener = null;
     private EventHandler mEventHandler = null;
-
+    private Context mContext = null;
 
     private static native final void native_init();
     private native final void native_setup(Object rtspclient_this);
@@ -33,7 +38,7 @@ public class RtspClient {
     private native final void native_set_surface(Surface surfaace);
     
 
-    public RtspClient() {
+    public RtspClient(Context context) {
 	Looper looper;
 	if ((looper = Looper.myLooper()) != null) {
 	    mEventHandler = new EventHandler(this, looper);
@@ -43,6 +48,7 @@ public class RtspClient {
 	    mEventHandler = null;
 	}
 
+	mContext = context;
 	native_setup(new WeakReference<RtspClient>(this));
     }
 
@@ -61,6 +67,7 @@ public class RtspClient {
     public void release() {
     	Log.e(TAG, "release");
     	native_release();
+	mContext = null;
     }
 
     public void reset() {
@@ -76,6 +83,7 @@ public class RtspClient {
     public interface OnRtspClientListener {
 	public void onData(RtspClient rc, int what, int extra);
 	public void onVideoSizeChanged(int width, int height);
+	public void onStreamDown();
     }
     
     public void setListener(OnRtspClientListener listener) {
@@ -92,9 +100,9 @@ public class RtspClient {
 	
 	private static final int NATIVE_MSG_NOTIFY_EVENT_ERROR = 0;
 	private static final int NATIVE_MSG_NOTIFY_VIDEO_SIZE = 1;
-	private static final int NATIVE_MSG_NOTIFY_SET_LISTENER_DONE = 2;
-	private static final int NATIVE_MSG_NOTIFY_DECODER_DONE = 3;
-	
+	private static final int NATIVE_MSG_NOTIFY_DECODER_DONE = 2;
+	private static final int NATIVE_MSG_NOTIFY_CONNECT_STATE = 3;
+	private static final int NATIVE_MSG_NOTIFY_STREAM_DOWN = 4;
 	
 	@Override
 	public void handleMessage(Message msg) {
@@ -111,6 +119,23 @@ public class RtspClient {
 		Log.e(TAG, "NATIVE_MSG_NOTIFY_DECODER_DONE");
 		if (mOnRtspClientListener != null)
 		    mOnRtspClientListener.onData(mRtspClient, msg.arg1, msg.arg2);
+		break;
+	    case NATIVE_MSG_NOTIFY_CONNECT_STATE:
+		Log.e(TAG, "NATIVE_MSG_NOTIFY_CONNECT_STATE = " + msg.arg1);
+		if (msg.arg1 == 0) {
+		    if (LiveDisplayActivity.mPD != null) {
+			LiveDisplayActivity.mPD.setMessage(mContext.getString(R.string.live_wait_network_data));
+			LiveDisplayActivity.mPD.show();
+		    }
+		} else if (msg.arg1 == 1) {
+		    if (LiveDisplayActivity.mPD != null)
+			LiveDisplayActivity.mPD.dismiss();
+		}
+		break;
+	    case NATIVE_MSG_NOTIFY_STREAM_DOWN:
+		Log.e(TAG, "NATIVE_MSG_NOTIFY_STREAM_DOWN");
+		if (mOnRtspClientListener != null)
+		    mOnRtspClientListener.onStreamDown();
 		break;
 	    default:
 		Log.e(TAG, "Unknown message type " + msg.what);
