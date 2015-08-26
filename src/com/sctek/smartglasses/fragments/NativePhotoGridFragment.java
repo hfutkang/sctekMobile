@@ -179,6 +179,7 @@ public class NativePhotoGridFragment extends BaseFragment {
 			remotePhotoFm = new RemotePhotoGridFragment();
 			Bundle bundle = new Bundle();
 			bundle.putInt("index", RemotePhotoGridFragment.FRAGMENT_INDEX);
+			bundle.putParcelableArrayList("photos", mediaList);
 			remotePhotoFm.setArguments(bundle);
 		}
 		

@@ -22,6 +22,7 @@ import com.sctek.smartglasses.utils.CustomHttpClient;
 import com.sctek.smartglasses.utils.GetRemoteVideoThumbWorks;
 import com.sctek.smartglasses.utils.GlassImageDownloader;
 import com.sctek.smartglasses.utils.MediaData;
+import com.sctek.smartglasses.utils.RemoteMediaDeleteTask;
 import com.sctek.smartglasses.utils.WifiUtils;
 import com.sctek.smartglasses.utils.WifiUtils.WifiCipherType;
 
@@ -68,6 +69,7 @@ public class RemoteVideoGridFragment extends BaseFragment {
 		super.onCreate(savedInstanceState);
 		
 		mediaList = new ArrayList<MediaData>();
+		nativeMediaList = getArguments().getParcelableArrayList("videos");
 		preApState =  WifiUtils.getWifiAPState(mWifiManager);
 		mWifiATask = new SetWifiAPTask(true, false);
 		
@@ -187,6 +189,12 @@ public class RemoteVideoGridFragment extends BaseFragment {
 		((VideoActivity)getActivity()).startVideoSync(data);
 	}
 	
+	public void onVideoDeleteTvClicked() {
+		ArrayList<MediaData> data = (ArrayList<MediaData>)selectedMedias.clone();
+		new RemoteMediaDeleteTask(getActivity(), 
+				mediaList, data, mImageAdapter).execute(new String[]{"vedios", glassIp});
+	}
+	
 	private OnClickListener onPhotoDownloadClickListener = new OnClickListener() {
 		
 		@Override
@@ -228,11 +236,10 @@ public class RemoteVideoGridFragment extends BaseFragment {
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			if(selectedMedias.size() != 0) {
-				new RemoteVedioDeleteTask().execute();
+				onVideoDeleteTvClicked();
 			}
-			else {
-				disCheckMedia();
-			}
+			
+			disCheckMedia();
 			onCancelTvClicked();
 		}
 	};

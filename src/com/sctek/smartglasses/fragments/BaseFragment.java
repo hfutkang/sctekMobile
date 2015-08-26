@@ -35,11 +35,14 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.sctek.smartglasses.ui.PhotoActivity;
+import com.sctek.smartglasses.ui.VideoActivity;
 import com.sctek.smartglasses.utils.CustomHttpClient;
 import com.sctek.smartglasses.utils.GetRemoteVideoThumbWorks;
 import com.sctek.smartglasses.utils.HanLangCmdChannel;
 import com.sctek.smartglasses.utils.MediaData;
 import com.sctek.smartglasses.utils.MultiMediaScanner;
+import com.sctek.smartglasses.utils.RemoteMediaDeleteTask;
 import com.sctek.smartglasses.utils.WifiUtils;
 import com.sctek.smartglasses.utils.WifiUtils.WifiCipherType;
 import com.sctek.smartglasses.utils.XmlContentHandler;
@@ -84,8 +87,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -117,6 +122,8 @@ public class BaseFragment extends Fragment {
 	public ArrayList<MediaData> mediaList;
 	
 	public ArrayList<MediaData> selectedMedias;
+	
+	public ArrayList<MediaData> nativeMediaList;
 	
 	public ArrayList<CheckBox> checkBoxs;
 	
@@ -254,15 +261,7 @@ public class BaseFragment extends Fragment {
 				grid.setOnItemClickListener(onVideoImageClickedListener);
 				break;
 			case RemoteVideoGridFragment.FRAGMENT_INDEX:
-				grid.setOnItemClickListener(new OnItemClickListener() {
-
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						// TODO Auto-generated method stub
-						Toast.makeText(getActivity(), R.string.sync_to_play, Toast.LENGTH_SHORT).show();
-					}
-				});
+				grid.setOnItemClickListener(onVideoImageClickedListener);
 				if(WIFI_AP_STATE_ENABLED != WifiUtils.getWifiAPState(mWifiManager))
 					showTurnWifiApOnDialog();
 				break;
@@ -363,6 +362,7 @@ public class BaseFragment extends Fragment {
 				holder.imageName = (TextView)view.findViewById(R.id.image_name_tv);
 				holder.imageCb = (CheckBox)view.findViewById(R.id.image_select_cb);
 				holder.shareCb = (CheckBox)view.findViewById(R.id.video_share_cb);
+				holder.downloadedTv = (TextView)view.findViewById(R.id.downloaded_tv);
 				
 				view.setTag(holder);
 				
@@ -424,6 +424,16 @@ public class BaseFragment extends Fragment {
 				holder.shareCb.setChecked(false);
 			}
 			
+			if(childIndex == RemotePhotoGridFragment.FRAGMENT_INDEX ||
+					childIndex == RemoteVideoGridFragment.FRAGMENT_INDEX) {
+				if(isDownloaded(mediaList.get(position).name)) {
+					holder.downloadedTv.setText(R.string.media_downloaded);
+				}
+				else {
+					holder.downloadedTv.setText("");
+				}
+			}
+			
 			String url = getImageLoadUrl(position);
 			ImageLoader.getInstance()
 					.displayImage(url, holder.imageView, options, new SimpleImageLoadingListener() {
@@ -477,6 +487,7 @@ public class BaseFragment extends Fragment {
 		TextView imageName;
 		CheckBox imageCb;
 		CheckBox shareCb;
+		TextView downloadedTv;
 	}
 	
 	private OnItemClickListener onPhotoImageClickedListener = new OnItemClickListener() {
@@ -486,21 +497,12 @@ public class BaseFragment extends Fragment {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			// TODO Auto-generated method stub
-			FragmentManager fragManager = getActivity().getFragmentManager();
-			FragmentTransaction transcaction = fragManager.beginTransaction();
-			String tag = PhotoViewPagerFragment.class.getName();
-			PhotoViewPagerFragment photoFm = (PhotoViewPagerFragment)fragManager.findFragmentByTag(tag);
-			if(photoFm == null)
-				photoFm = new PhotoViewPagerFragment();
-			
-			Bundle bundle = new Bundle();
-			bundle.putInt("position", position);
-			bundle.putParcelableArrayList("data", mediaList);
-			photoFm.setArguments(bundle);
-			
-			transcaction.replace(android.R.id.content, photoFm, tag);
-			transcaction.addToBackStack(null);
-			transcaction.commit();
+			if(childIndex == NativePhotoGridFragment.FRAGMENT_INDEX) {
+				shownOnNativePhotoClickedDialog(position);
+			}
+			else if(childIndex == RemotePhotoGridFragment.FRAGMENT_INDEX) {
+				shownOnRemotePhotoClickedDialog(position);
+			}
 		}
 		
 	};
@@ -511,14 +513,11 @@ public class BaseFragment extends Fragment {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			// TODO Auto-generated method stub
-			Uri uri = Uri.parse(mediaList.get(position).url);
-//			Uri uri = Uri.parse("http://192.168.5.253/pub/sct/tracker/VID_20150130_180836.mp4");
-			try {
-				Intent intent = new Intent(Intent.ACTION_VIEW	);
-				intent.setDataAndType(uri, "video/*");
-				startActivity(intent);
-			} catch (ActivityNotFoundException e) {
-				e.printStackTrace();
+			if(childIndex == NativeVideoGridFragment.FRAGMENT_INDEX) {
+				ShowOnNativeVideoClickedDialog(position);
+			}
+			else if(childIndex == RemoteVideoGridFragment.FRAGMENT_INDEX){
+				ShowOnRemoteVideoClickedDialog(position);
 			}
 		}
 	};
@@ -925,5 +924,250 @@ public class BaseFragment extends Fragment {
 		});
 		
 		builder.create().show();
+	}
+	
+	public boolean isDownloaded(String name) {
+		for(MediaData md : nativeMediaList) {
+			if(md.name.equals(name))
+				return true;
+		}
+		return false;
+	}
+	
+public void ShowOnRemoteVideoClickedDialog(final int mPosition) {
+		
+		View view = getActivity().getLayoutInflater().inflate(R.layout.remote_video_dialog, null);
+		ListView listView = (ListView)view.findViewById(R.id.option_lv);
+		String[] options1 = getActivity().getResources().getStringArray(R.array.remote_video_option_1);
+		String[] options2 = getActivity().getResources().getStringArray(R.array.remote_video_option_2);
+		
+		AlertDialog.Builder builder = new Builder(getActivity());
+		builder.setTitle(mediaList.get(mPosition).name);
+		builder.setView(view);
+		final AlertDialog dialog = builder.create();
+		dialog.show();
+		
+		if(isDownloaded(mediaList.get(mPosition).name)) {
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), 
+					R.layout.remote_video_option_item, R.id.option_tv, options2);
+			listView.setAdapter(adapter);
+			listView.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					// TODO Auto-generated method stub
+					switch (position) {
+					case 0:
+						String path = VIDEO_DOWNLOAD_FOLDER + "/" + mediaList.get(mPosition).name;
+						Uri uri = Uri.fromFile(new File(path));
+						Log.e(TAG, uri.toString());
+						Intent intent = new Intent(Intent.ACTION_VIEW	);
+						intent.setData(uri);
+						intent.setType("video/mp4");
+						startActivity(intent);
+						break;
+					case 1:
+						ArrayList<MediaData> temp = new ArrayList<MediaData>();
+						temp.add(mediaList.get(mPosition));
+						new RemoteMediaDeleteTask(getActivity(), 
+								mediaList, temp, mImageAdapter).execute(new String[]{"vedios", glassIp});
+					default:
+						break;
+					}
+					dialog.dismiss();
+				}
+			});
+		}
+		else {
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), 
+					R.layout.remote_video_option_item, R.id.option_tv, options1);
+			listView.setAdapter(adapter);
+			
+			listView.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					// TODO Auto-generated method stub
+					ArrayList<MediaData> temp = new ArrayList<MediaData>();
+					temp.add(mediaList.get(mPosition));
+					switch (position) {
+					case 0:
+						((VideoActivity)getActivity()).startVideoSync(temp);
+						break;
+					case 1:
+						new RemoteMediaDeleteTask(getActivity(), 
+								mediaList, temp, mImageAdapter).execute(new String[]{"vedios", glassIp});
+					default:
+						break;
+					}
+					dialog.dismiss();
+				}
+			});
+		}
+		
+	}
+
+	public void ShowOnNativeVideoClickedDialog(final int mPosition) {
+		
+		View view = getActivity().getLayoutInflater().inflate(R.layout.remote_video_dialog, null);
+		ListView listView = (ListView)view.findViewById(R.id.option_lv);
+		String[] options = getActivity().getResources().getStringArray(R.array.native_video_option);
+		
+		AlertDialog.Builder builder = new Builder(getActivity());
+		builder.setTitle(mediaList.get(mPosition).name);
+		builder.setView(view);
+		final AlertDialog dialog = builder.create();
+		dialog.show();
+		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), 
+				R.layout.remote_video_option_item, R.id.option_tv, options);
+		listView.setAdapter(adapter);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				switch (position) {
+				case 0:
+					Uri uri = Uri.parse(mediaList.get(mPosition).url);
+					Log.e(TAG, uri.toString());
+					Intent intent = new Intent(Intent.ACTION_VIEW	);
+					intent.setData(uri);
+					intent.setType("video/mp4");
+					startActivity(intent);
+					break;
+				case 1:
+					Intent shareIntent = new Intent();
+					shareIntent.setAction(Intent.ACTION_SEND);
+					shareIntent.setType("video/mp4");
+					
+					shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mediaList.get(mPosition).url));
+					Intent selectIntent = Intent.createChooser(shareIntent, getResources().getText(R.string.share));
+					startActivity(selectIntent);
+					break;
+				case 2:
+					selectedMedias.add(mediaList.get(mPosition));
+					onNativeMediaDeleteTvClicked("vedios");
+				default:
+					break;
+				}
+				dialog.dismiss();
+			}
+		});
+		
+	}
+	
+	public void viewPhotos(int position) {
+		
+		FragmentManager fragManager = getActivity().getFragmentManager();
+		FragmentTransaction transcaction = fragManager.beginTransaction();
+		String tag = PhotoViewPagerFragment.class.getName();
+		PhotoViewPagerFragment photoFm = (PhotoViewPagerFragment)fragManager.findFragmentByTag(tag);
+		if(photoFm == null)
+			photoFm = new PhotoViewPagerFragment();
+		
+		Bundle bundle = new Bundle();
+		bundle.putInt("position", position);
+		bundle.putParcelableArrayList("data", mediaList);
+		photoFm.setArguments(bundle);
+		
+		transcaction.replace(android.R.id.content, photoFm, tag);
+		transcaction.addToBackStack(null);
+		transcaction.commit();
+		
+	}
+	
+	public void shownOnNativePhotoClickedDialog(final int mPosition) {
+		
+		View view = getActivity().getLayoutInflater().inflate(R.layout.remote_video_dialog, null);
+		ListView listView = (ListView)view.findViewById(R.id.option_lv);
+		String[] options = getActivity().getResources().getStringArray(R.array.native_photo_option);
+		
+		AlertDialog.Builder builder = new Builder(getActivity());
+		builder.setTitle(mediaList.get(mPosition).name);
+		builder.setView(view);
+		final AlertDialog dialog = builder.create();
+		dialog.show();
+		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), 
+				R.layout.remote_video_option_item, R.id.option_tv, options);
+		listView.setAdapter(adapter);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				switch (position) {
+				case 0:
+					viewPhotos(mPosition);
+					break;
+				case 1:
+					Intent shareIntent = new Intent();
+					shareIntent.setAction(Intent.ACTION_SEND);
+					shareIntent.setType("image/jpeg");
+					
+					shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mediaList.get(mPosition).url));
+					Intent selectIntent = Intent.createChooser(shareIntent, getResources().getText(R.string.share));
+					startActivity(selectIntent);
+					break;
+				case 2:
+					selectedMedias.add(mediaList.get(mPosition));
+					onNativeMediaDeleteTvClicked("photos");
+				default:
+					break;
+				}
+				dialog.dismiss();
+			}
+		});
+		
+	}
+	
+	public void shownOnRemotePhotoClickedDialog(final int mPosition) {
+		
+		View view = getActivity().getLayoutInflater().inflate(R.layout.remote_video_dialog, null);
+		ListView listView = (ListView)view.findViewById(R.id.option_lv);
+		String[] options = getActivity().getResources().getStringArray(R.array.remote_photo_option);
+		
+		AlertDialog.Builder builder = new Builder(getActivity());
+		builder.setTitle(mediaList.get(mPosition).name);
+		builder.setView(view);
+		final AlertDialog dialog = builder.create();
+		dialog.show();
+		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), 
+				R.layout.remote_video_option_item, R.id.option_tv, options);
+		listView.setAdapter(adapter);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				switch (position) {
+				case 0:
+					viewPhotos(mPosition);
+					break;
+				case 1:
+					ArrayList<MediaData> temp1 = new ArrayList<MediaData>();
+					temp1.add(mediaList.get(mPosition));
+					((PhotoActivity)getActivity()).startPhotoSync(temp1);
+					break;
+				case 2:
+					ArrayList<MediaData> temp2 = new ArrayList<MediaData>();
+					temp2.add(mediaList.get(mPosition));
+					new RemoteMediaDeleteTask(getActivity(), 
+							mediaList, temp2, mImageAdapter).execute(new String[]{"photos", glassIp});
+					break;
+				default:
+					break;
+				}
+				dialog.dismiss();
+			}
+		});
+		
 	}
 }

@@ -21,9 +21,9 @@ public class GlassImageDownloader {
 	
 	public static final String TAG = "GlassImageDownloader";
 	
-	public static final int DEFAULT_HTTP_CONNECT_TIMEOUT = 5 * 1000; // milliseconds
+	public static final int DEFAULT_HTTP_CONNECT_TIMEOUT = 20 * 1000; // milliseconds
 	
-	public static final int DEFAULT_HTTP_READ_TIMEOUT = 10 * 1000; // milliseconds
+	public static final int DEFAULT_HTTP_READ_TIMEOUT = 60 * 1000; // milliseconds
 	
 	protected static final String ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%";
 	

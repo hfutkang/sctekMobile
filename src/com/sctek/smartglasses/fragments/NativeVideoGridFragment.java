@@ -198,6 +198,7 @@ public class NativeVideoGridFragment extends BaseFragment {
 			remoteVideoFm = new RemoteVideoGridFragment();
 			Bundle bundle = new Bundle();
 			bundle.putInt("index", RemoteVideoGridFragment.FRAGMENT_INDEX);
+			bundle.putParcelableArrayList("videos", mediaList);
 			remoteVideoFm.setArguments(bundle);
 		}
 		

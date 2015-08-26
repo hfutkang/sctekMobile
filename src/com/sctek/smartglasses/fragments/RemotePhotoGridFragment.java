@@ -22,6 +22,7 @@ import com.sctek.smartglasses.ui.VideoActivity;
 import com.sctek.smartglasses.utils.CustomHttpClient;
 import com.sctek.smartglasses.utils.GlassImageDownloader;
 import com.sctek.smartglasses.utils.MediaData;
+import com.sctek.smartglasses.utils.RemoteMediaDeleteTask;
 import com.sctek.smartglasses.utils.WifiUtils;
 import com.sctek.smartglasses.utils.WifiUtils.WifiCipherType;
 
@@ -69,6 +70,7 @@ public class RemotePhotoGridFragment extends BaseFragment {
 		Log.e(TAG, "onCreate");
 		
 		mediaList = new ArrayList<MediaData>();
+		nativeMediaList = getArguments().getParcelableArrayList("photos");
 		preApState = WifiUtils.getWifiAPState(mWifiManager);
 		mWifiATask = new SetWifiAPTask(true, false);
 		
@@ -233,7 +235,7 @@ public class RemotePhotoGridFragment extends BaseFragment {
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			if(selectedMedias.size() != 0)
-				onPotoDownloadTvClicked();
+				onPhotoDownloadTvClicked();
 
 			disCheckMedia();
 			onCancelTvClicked();
@@ -246,11 +248,10 @@ public class RemotePhotoGridFragment extends BaseFragment {
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			if(selectedMedias.size() != 0) {
-				new PhotoDeleteTask().execute();
+				onPhotoDeleteTvClicked();
 			}
-			else {
-				disCheckMedia();
-			}
+			
+			disCheckMedia();
 			onCancelTvClicked();
 		}
 	};
@@ -281,13 +282,19 @@ public class RemotePhotoGridFragment extends BaseFragment {
 		
 	};
 	
-	public void onPotoDownloadTvClicked() {
+	public void onPhotoDownloadTvClicked() {
 		
 //		new PhotoDownloadTask().execute();
 		getActivity().startService(new Intent(getActivity(), MediaSyncService.class));
 		ArrayList<MediaData> data = (ArrayList<MediaData>)selectedMedias.clone();
 		((PhotoActivity)getActivity()).startPhotoSync(data);
 		
+	}
+	
+	public void onPhotoDeleteTvClicked() {
+		ArrayList<MediaData> data = (ArrayList<MediaData>)selectedMedias.clone();
+		new RemoteMediaDeleteTask(getActivity(), 
+				mediaList, data, mImageAdapter).execute(new String[]{"photos", glassIp});
 	}
 	
 	private class PhotoDownloadTask extends AsyncTask<String, Integer, Void> {

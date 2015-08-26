@@ -34,6 +34,13 @@
 		style="@style/Widget.AppCompat.ProgressBar.Horizontal" />
 	<!-- style="@style/Widget.AppCompat.ProgressBar.Horizontal" -->
 	
+	<TextView 
+	    android:id="@+id/downloaded_tv"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="top|left"
+	    android:textSize="10dp"/>
+	
 	<CheckBox
         android:id="@+id/image_select_cb"
         android:layout_width="wrap_content"

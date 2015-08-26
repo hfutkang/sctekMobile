@@ -372,4 +372,5 @@
     <string name="share">分享</string>
     <string name="sync_to_play">下载到本地后即可播放</string>
     <string name="delete_fail_count">有%1$d个文件删除失败</string>
+    <string name="media_downloaded">已下载</string>
 </resources>

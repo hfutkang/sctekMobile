@@ -400,4 +400,5 @@
     <string name="share">share</string>
     <string name="sync_to_play">please download it and play</string>
     <string name="delete_fail_count">%1$d files not be deleted</string>
+    <string name="media_downloaded">downloaded</string>
 </resources>
