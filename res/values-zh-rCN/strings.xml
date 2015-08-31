@@ -173,7 +173,7 @@
     <string name="progress">正在同步数据</string>
     <string name="reflush">点击刷新</string>
     <!-- main_menu -->
-    <string name="setting">同步设置</string>
+    <string name="setting">设置</string>
     <string name="media">媒体浏览</string>
     <string name="bind_Glass">绑定眼镜</string>
     <string name="unbond">解除当前绑定</string>
@@ -359,6 +359,7 @@
     <string name="get_power_timeout">获取电量超时</string>
     <string name="get_storage_timeout">获取存储状态超时</string>
     <string name="get_uptime_timeout">获取运行时间超时</string>
+    <string name="get_state_timeout">获取捍狼状态超时</string>
     <string name="download_task_running">有未完成的任务</string>
     <string name="video_sync_start">"视频同步开始"</string>
     <string name="photo_sync_start">"照片同步开始"</string>
@@ -373,4 +374,10 @@
     <string name="sync_to_play">下载到本地后即可播放</string>
     <string name="delete_fail_count">有%1$d个文件删除失败</string>
     <string name="media_downloaded">已下载</string>
+    <string name="media_path">本地文件路径</string>
+    <string name="media_path_summary">SD卡/SmartGlasses/</string>
+    <string name="glass_state">悍狼状态</string>
+    <string name="glass_state_summary">正在获取悍狼状态&#8230;</string>
+    <string name="turn_wifi_ap_off">关闭热点</string>
+    <string name="wifi_ap_hint_off">是否关闭手机热点</string>
 </resources>

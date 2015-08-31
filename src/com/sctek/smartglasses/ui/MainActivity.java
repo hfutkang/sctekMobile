@@ -27,8 +27,12 @@ import com.sctek.smartglasses.fragments.NativeVideoGridFragment;
 import com.sctek.smartglasses.fragments.PhotoViewPagerFragment;
 import com.sctek.smartglasses.fragments.SettingFragment;
 import com.sctek.smartglasses.utils.HanLangCmdChannel;
+import com.sctek.smartglasses.utils.PhotosSyncRunnable;
+import com.sctek.smartglasses.utils.VideoSyncRunnable;
+import com.sctek.smartglasses.utils.WifiUtils;
 
 import android.support.v4.app.FragmentActivity;
+import android.text.style.SuperscriptSpan;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -45,13 +49,19 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnKeyListener;
 import android.content.SharedPreferences.Editor;
+import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -139,6 +149,7 @@ public class MainActivity extends FragmentActivity {
 		Packet pk = channel.createPacket();
 		pk.putInt("type", GET_GLASS_INFO);
 		channel.sendPacket(pk);
+		
 	}
 	
 	private long currentTime = System.currentTimeMillis();
@@ -159,7 +170,7 @@ public class MainActivity extends FragmentActivity {
 				currentTime = tempTime;
 				return;
 			}
-			super.onBackPressed();
+			turnApOff();
 		}
 	}
 	
@@ -302,4 +313,70 @@ public class MainActivity extends FragmentActivity {
 		defaultEditor.clear();
 		defaultEditor.commit();
     }    
+	
+	private void turnApOff() {
+		PhotosSyncRunnable photosSyncRunnable = PhotosSyncRunnable.getInstance();
+		VideoSyncRunnable videoSyncRunnable = VideoSyncRunnable.getInstance();
+		WifiManager wifimanager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+		if(!photosSyncRunnable.isRunning()&&!videoSyncRunnable.isRunning()&&
+				WifiUtils.getWifiAPState(wifimanager) == 13) {
+			showTurnApOffDialog();
+		}
+		else {
+			quit();
+		}
+	}
+	
+	private void showTurnApOffDialog() {
+		
+		AlertDialog.Builder builder = new Builder(this);
+		builder.setTitle(R.string.turn_wifi_ap_off);
+		builder.setMessage(R.string.wifi_ap_hint_off);
+		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				new AsyncTask<Void, Void, Void>() {
+
+					@Override
+					protected Void doInBackground(Void... params) {
+						// TODO Auto-generated method stub
+						WifiManager wifimanager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+						WifiUtils.setWifiApEnabled(false, wifimanager);
+						return null;
+					}
+				}.execute();
+				
+				dialog.cancel();
+				quit();
+			}
+		});
+		
+		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.cancel();
+				quit();
+			}
+		});
+		
+		AlertDialog dialog = builder.create();
+		dialog.setOnDismissListener(new OnDismissListener() {
+			
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				// TODO Auto-generated method stub
+				quit();
+			}
+		});
+		dialog.show();
+	}
+	
+	private void quit() {
+		super.onBackPressed();
+	}
+	
 }

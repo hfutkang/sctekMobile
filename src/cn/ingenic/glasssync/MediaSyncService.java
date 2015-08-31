@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.sctek.smartglasses.ui.MainActivity;
 import com.sctek.smartglasses.utils.MediaData;
 import com.sctek.smartglasses.utils.PhotosSyncRunnable;
 import com.sctek.smartglasses.utils.VideoSyncRunnable;
+import com.sctek.smartglasses.utils.WifiUtils;
 
 import cn.ingenic.glasssync.R;
 import android.app.Notification;
@@ -20,6 +22,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.audiofx.AudioEffect.OnControlStatusChangeListener;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Environment;
 import android.os.Handler;
@@ -201,6 +205,10 @@ public class MediaSyncService extends Service{
 		mVideoNotification.tickerText = getResources().getText(R.string.syncing_videos_done);
 		mVideoNotification.vibrate = new long[]{0,100,200,300};
 		mNotificationManager.notify(VIDOE_NOTIFICATION_ID, mVideoNotification);
+		
+		if(!VideoSyncRunnable.getInstance().isRunning()&&MainActivity.getInstance() == null) {
+			turnWifiApOff();
+		}
 	}
 	
 	private void onPhotoTaskStart(int total) {
@@ -232,6 +240,10 @@ public class MediaSyncService extends Service{
 		mPhotoNotification.vibrate = new long[]{0,100,200,300};
 		mPhotoNotification.tickerText = getResources().getText(R.string.syncing_photos_done);
 		mNotificationManager.notify(PHOTO_NOTIFICATION_ID, mPhotoNotification);
+		
+		if(!PhotosSyncRunnable.getInstance().isRunning()&&MainActivity.getInstance() == null) {
+			turnWifiApOff();
+		}
 	}
 	
 	private void initVideoNotification() {
@@ -291,5 +303,18 @@ private void initPhotoNotification() {
 			}
 		}
 	};
+	
+	private void turnWifiApOff() {
+		new AsyncTask<Void, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				// TODO Auto-generated method stub
+				WifiManager wifimanager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+				WifiUtils.setWifiApEnabled(false, wifimanager);
+				return null;
+			}
+		}.execute();
+	}
 
 }

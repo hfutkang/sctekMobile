@@ -386,6 +386,7 @@
     <string name="get_power_timeout">Get glasses power time out</string>
     <string name="get_storage_timeout">Get glasses storage time out</string>
     <string name="get_uptime_timeout">Get running time time out</string>
+    <string name="get_state_timeout">Get state time out</string>
     <string name="download_task_running">Having running task</string>
     <string name="video_sync_start">"Start syncing videos"</string>
     <string name="photo_sync_start">"Start syncing photos"</string>
@@ -401,4 +402,10 @@
     <string name="sync_to_play">please download it and play</string>
     <string name="delete_fail_count">%1$d files not be deleted</string>
     <string name="media_downloaded">downloaded</string>
+    <string name="media_path">Native files path</string>
+    <string name="media_path_summary">SD Card/SmartGlasses/</string>
+    <string name="glass_state">HanLang state</string>
+    <string name="glass_state_summary">Getting HanLang state&#8230;</string>
+    <string name="turn_wifi_ap_off">Tunr Ap Off</string>
+    <string name="wifi_ap_hint_off">Would you like to turn ap off</string>
 </resources>

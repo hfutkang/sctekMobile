@@ -29,5 +29,12 @@
     <Preference android:title="@string/glass_up_time"
         android:key="uptime"
         android:summary="@string/up_time_summary"/>
+    
+    <Preference android:title="@string/media_path"
+        android:key="media_path"/>
+    
+    <Preference android:title="@string/glass_state"
+        android:key="state"
+        android:summary="@string/glass_state_summary"/>
 
 </PreferenceScreen>

@@ -176,6 +176,7 @@ public class NativePhotoGridFragment extends BaseFragment {
 		String tag = RemotePhotoGridFragment.class.getName();
 		RemotePhotoGridFragment remotePhotoFm = (RemotePhotoGridFragment)fragManager.findFragmentByTag(tag);
 		if(remotePhotoFm == null) {
+			
 			remotePhotoFm = new RemotePhotoGridFragment();
 			Bundle bundle = new Bundle();
 			bundle.putInt("index", RemotePhotoGridFragment.FRAGMENT_INDEX);

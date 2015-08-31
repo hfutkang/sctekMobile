@@ -881,6 +881,8 @@ public class BaseFragment extends Fragment {
 			mDialogHandler.sendEmptyMessageDelayed(RESEDN_CONNECT_WIFI_MSG, 5000);
 		}
 		else {
+			if(mConnectProgressDialog.isShowing())
+				mConnectProgressDialog.dismiss();
 			Toast.makeText(getActivity(), R.string.bluetooth_error, Toast.LENGTH_LONG).show();
 			getActivity().onBackPressed();
 		}

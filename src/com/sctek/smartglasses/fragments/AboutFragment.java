@@ -14,6 +14,7 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
@@ -32,10 +33,12 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 	private final static int GET_STORAGE_INFO = 14;
 	private final static int GET_UP_TIME = 16;
 	private final static int GET_GLASS_INFO = 17;
+	private final static int GET_STATE = 19;
 	
 	private final static int GET_POWER_TIMEOUT = 1;
 	private final static int GET_STORAGE_TIMEOUT = 2;
 	private final static int GET_UPTIME_TIMEOUT = 3;
+	private final static int GET_STATE_TIMEOUT = 4;
 	
 	private HanLangCmdChannel mHanLangCmdChannel;
 	private BluetoothAdapter mBluetoothAdapter;
@@ -48,6 +51,8 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 	private Preference mPowerPreference;
 	private Preference mStoragePreference;
 	private Preference mUptimePreference;
+	private Preference mStatePreference;
+	private Preference mMediaPathPreference;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -99,7 +104,11 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 					mUptimePreference.setSummary(parseUpTime(upTime));
 					removeMessages(GET_UPTIME_TIMEOUT);
 					break;
-					
+				case GET_STATE:
+					int state = data.getInt("state");
+					mStatePreference.setSummary(parseState(state));
+					removeMessages(GET_STATE_TIMEOUT);
+					break;
 				}
 			}
 			else if(msg.what == GET_POWER_TIMEOUT) {
@@ -110,6 +119,9 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 			}
 			else if(msg.what == GET_UPTIME_TIMEOUT) {
 				mUptimePreference.setSummary(R.string.get_uptime_timeout);
+			}
+			else if(msg.what == GET_STATE_TIMEOUT) {
+				mStatePreference.setSummary(R.string.get_state_timeout);
 			}
 		}
 	};
@@ -124,6 +136,8 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 		mPowerPreference = findPreference("power");
 		mStoragePreference = findPreference("storage");
 		mUptimePreference = findPreference("uptime");
+		mStatePreference = findPreference("state");
+		mMediaPathPreference = findPreference("media_path");
 		
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		mModelPreference.setSummary(sharedPreferences.getString("model", "HanLang T10-C22"));
@@ -131,6 +145,7 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 		mRamPrefrence.setSummary(sharedPreferences.getString("ram", "512M"));
 		mVersionPreference.setSummary(sharedPreferences.getString("version", "4.3"));
 		mSerialPreference.setSummary(sharedPreferences.getString("serial", "1234567ABCDEF"));
+		mMediaPathPreference.setSummary(Environment.getExternalStorageDirectory().toString() + "/SmartGlasses");
 		
 		getPower();
 		
@@ -144,6 +159,9 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 		
 		mChannelHandler.sendEmptyMessageDelayed(GET_UPTIME_TIMEOUT, 5000);
 		
+		getState();
+		
+		mChannelHandler.sendEmptyMessageDelayed(GET_STATE_TIMEOUT, 5000);
 	}
 	
 	private String parseUpTime(long time) {
@@ -165,6 +183,30 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 		}
 		return result;
 		
+	}
+	
+	private String parseState(int state) {
+		
+		String result = null;
+		if(state == 0)
+			result = getActivity().getResources().getString(R.string.idle);
+		else {
+			long totalSecond = state/1000;
+			int upSecond = (int) (totalSecond%60);
+			int upMinute = (int) ((totalSecond/60)%60);
+			int upHour = (int) ((totalSecond/60/60));
+			
+			if(upHour > 0 ) {
+				result = String.format("录像中(%d小时%d分%d秒)", upHour, upMinute, upSecond);
+			}
+			else if(upMinute > 0) {
+				result = String.format("录像中(%d分%d秒)", upMinute, upSecond);
+			}
+			else {
+				result = String.format("录像中(%d秒)", upSecond);
+			}
+		}
+		return result;
 	}
 
 	@Override
@@ -204,6 +246,12 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 	private void getUptime() {
 		Packet pk = mHanLangCmdChannel.createPacket();
 		pk.putInt("type", GET_UP_TIME);
+		mHanLangCmdChannel.sendPacket(pk);
+	}
+	
+	private void getState() {
+		Packet pk = mHanLangCmdChannel.createPacket();
+		pk.putInt("type", GET_STATE);
 		mHanLangCmdChannel.sendPacket(pk);
 	}
 	
