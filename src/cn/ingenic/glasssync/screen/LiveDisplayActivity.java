@@ -60,7 +60,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     public static RtspClient mRtspClient;
     private String mMediaUrl = null;
     private SurfaceView mSurfaceView = null;
-    public static Dialog mDialog, mQuitDialog, mUnConnectedDialog, mStreamDown;
+    public static Dialog mDialog, mQuitDialog, mUnConnectedDialog, mStreamDown, mStreamDisconnect;
     public static ProgressDialog mPD = null;
     public static boolean mBluetoothConnected = true;
     public static boolean mWifiDeviceConnected = true;
@@ -72,7 +72,6 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     private DefaultSyncManager mManager;
     private BluetoothAdapter mBluetoothAdapter;
     private boolean mDialogDismiss = false;
-    private boolean mFirstOnData = false;
     private long mStart = 0;
     private static Activity sActivity = null;
 
@@ -112,7 +111,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	Log.e(TAG, "runnable1");
 	if (!mBluetoothConnected) {
 	    long end = System.currentTimeMillis() - mStart;
-	    if ((end > 20000000) && (!mFirstOnData)) {
+	    if ((end > 20000000)) {
 		Log.e(TAG, "1111111");
 		Message message = Message.obtain();
 		message.what = UNCONNECTED_DIALOG_DISMISS;
@@ -342,6 +341,23 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     }
 
     @Override
+    public void onStreamDisconnect() {
+	mStreamDisconnect = new MyDialog(this, R.style.MyDialog,getApplication().getResources().getString(R.string.live_network_disconnect), getApplication().getResources().getString(R.string.live_dialog_cancle),new MyDialog.LeaveMeetingDialogListener() {
+		@Override
+		public void onClick(View view) {
+		    switch (view.getId()) {
+		    case R.id.dialog_tv_cancel_one:
+			mStreamDisconnect.cancel();
+			finish();
+			break;
+		    }
+		}});
+	mStreamDisconnect.setCanceledOnTouchOutside(false);
+	mStreamDisconnect.setCancelable(false);
+	mStreamDisconnect.show();
+    }
+
+    @Override
     public void onStreamDown() {
 	mStreamDown = new MyDialog(this, R.style.MyDialog,getApplication().getResources().getString(R.string.live_stream_disconnect_dialog_title), getApplication().getResources().getString(R.string.live_quit_dialog_cancle),new MyDialog.LeaveMeetingDialogListener() {
 	@Override
@@ -357,19 +373,6 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	mStreamDown.setCanceledOnTouchOutside(false);
 	mStreamDown.setCancelable(false);
 	mStreamDown.show();
-    }
-
-    @Override
-    public void onData(RtspClient rl, int what, int extra) {
-	mDialogDismiss = true;
-	if (DEBUG) Log.e(TAG, "onData mDialogDismiss = " + mDialogDismiss + " mFirstOnData = " + mFirstOnData);
-	if (!mFirstOnData) {
-	    Message message = Message.obtain();
-	    message.what = DIALOG_DISMISS;
-	    mHandler.sendMessage(message);
-	    mFirstOnData = true;
-	}
-
     }
 
     @Override
@@ -447,7 +450,6 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 
 	mStart = System.currentTimeMillis();
 	mDialogDismiss = false;
-	mFirstOnData = false;
     }
 
     @Override
@@ -455,7 +457,6 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	Log.e(TAG, "onStop");
 	closeRtspClient();
 	mDialogDismiss = false;
-	mFirstOnData = false;
 
 	mHandler.removeCallbacks(runnable1);	
         mConnectedHandler.removeCallbacks(runnable2);	

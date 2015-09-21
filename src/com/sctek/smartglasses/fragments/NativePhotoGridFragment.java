@@ -6,14 +6,22 @@ import java.util.ArrayList;
 import cn.ingenic.glasssync.R;
 
 import com.sctek.smartglasses.utils.MediaData;
+import com.sctek.smartglasses.utils.WifiUtils;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.AlertDialog.Builder;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnDismissListener;
 import android.database.Cursor;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -206,16 +214,67 @@ public class NativePhotoGridFragment extends BaseFragment {
 		
 	}
 	
+	private void showTurnApOffWhenSharePhotosDialog() {
+		
+		AlertDialog.Builder builder = new Builder(getActivity());
+		builder.setTitle(R.string.turn_wifi_ap_off);
+		builder.setMessage(R.string.wifi_ap_hint_off);
+		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				new AsyncTask<Void, Void, Void>() {
+
+					@Override
+					protected Void doInBackground(Void... params) {
+						// TODO Auto-generated method stub
+						WifiManager wifimanager = (WifiManager)getActivity().getSystemService(Context.WIFI_SERVICE);
+						WifiUtils.setWifiApEnabled(false, wifimanager);
+						return null;
+					}
+				}.execute();
+				
+				onNativePhotoShareTvClicked();
+				
+				dialog.cancel();
+			}
+		});
+		
+		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				
+				onNativePhotoShareTvClicked();
+				
+				dialog.cancel();
+			}
+		});
+		
+		AlertDialog dialog = builder.create();
+		dialog.setOnDismissListener(new OnDismissListener() {
+			
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				// TODO Auto-generated method stub
+				onNativePhotoShareTvClicked();
+				
+			}
+		});
+		dialog.show();
+	}
+	
 	private OnClickListener onNativePhotoDeleteTvClickListener = new OnClickListener() {
 		
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			if(selectedMedias.size() != 0)
-				onNativeMediaDeleteTvClicked("photos");
+				showDeleteConfirmDialog();
 			else
 				disCheckMedia();
-			onCancelTvClicked();
 		}
 	};
 	
@@ -224,12 +283,43 @@ public class NativePhotoGridFragment extends BaseFragment {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			if(selectedMedias.size() != 0)
-				onNativePhotoShareTvClicked();
-			else
+			if(selectedMedias.size() != 0) {
+				if(WifiUtils.getWifiAPState(mWifiManager) == WIFI_AP_STATE_ENABLED)
+					showTurnApOffWhenSharePhotosDialog();
+				else 
+					onNativePhotoShareTvClicked();
+			} else
 				disCheckMedia();
 			onCancelTvClicked();
 		}
 	};
 	
+	private void showDeleteConfirmDialog() {
+		
+		AlertDialog.Builder builder = new Builder(getActivity());
+		builder.setTitle(R.string.delete);
+		builder.setMessage(R.string.delete_message);
+		builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				onNativeMediaDeleteTvClicked("photos");
+				
+				onCancelTvClicked();
+			}
+		});
+		
+		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		builder.create().show();
+		
+	}
 }

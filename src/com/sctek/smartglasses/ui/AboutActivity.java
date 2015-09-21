@@ -28,5 +28,18 @@ public class AboutActivity extends FragmentActivity {
 			}
 		});
 	}
+	
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		int stackCount = getFragmentManager().getBackStackEntryCount();
+		if(stackCount != 0) {
+			if(stackCount == 1)
+				getFragmentManager().popBackStack();
+		} 
+		else {
+			super.onBackPressed();
+		}
+	}
 
 }

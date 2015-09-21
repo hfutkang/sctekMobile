@@ -14,6 +14,9 @@
     <Preference android:title="@string/glass_version"
         android:key="version"/>
     
+    <Preference android:title="@string/app_version"
+        android:key="app_version"/>
+    
     <Preference 
         android:title="@string/glass_serial_number"
         android:key="serial"/>
@@ -36,5 +39,9 @@
     <Preference android:title="@string/glass_state"
         android:key="state"
         android:summary="@string/glass_state_summary"/>
+    
+    <Preference android:title="@string/user_guide"
+        android:key="guide"
+        android:summary="@string/user_guide_summary"/>
 
 </PreferenceScreen>

@@ -8,8 +8,11 @@ import android.bluetooth.BluetoothProfile;
 import android.util.Log;
 import cn.ingenic.glasssync.SyncApp;
 import cn.ingenic.glasssync.DefaultSyncManager;
+
 import com.sctek.smartglasses.ui.BindGlassActivity;
+import com.sctek.smartglasses.ui.BindHanlangActivity;
 import com.sctek.smartglasses.ui.MainActivity;
+
 import cn.ingenic.glasssync.devicemanager.GlassDetect;
 
 public class DeviceReceiver extends DeviceAdminReceiver {
@@ -65,7 +68,7 @@ public class DeviceReceiver extends DeviceAdminReceiver {
 		    manager.disconnect();
 		    
 		    if(MainActivity.getInstance() != null){
-		        Intent intent = new Intent(MainActivity.getInstance(),BindGlassActivity.class);	    
+		        Intent intent = new Intent(MainActivity.getInstance(),BindHanlangActivity.class);	    
 			MainActivity.getInstance().startActivity(intent);
 			MainActivity.getInstance().finish();
 		    }

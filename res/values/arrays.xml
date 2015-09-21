@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="vedio_durations">
-        <item>5分钟</item>
-        <item>10分钟</item>
-        <item>20分钟</item>
-        <item>30分钟</item>
+        <item>5 minutes</item>
+        <item>10 minutes</item>
+        <item>20 minutes</item>
+        <item>30 minutes</item>
     </string-array>
     
     <string-array name="vedio_durations_values">

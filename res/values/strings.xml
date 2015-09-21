@@ -217,6 +217,7 @@
     <string name="live_quit_dialog_title">live failed because of network error or other unknown reason</string>
     <string name="live_quit_dialog_cancle">Exit the live</string>
     <string name="live_wait_network_data">Network is poor, data loading ...</string>
+    <string name="live_network_disconnect">Network disconnect</string>
 
 
     <string name="bluetooth_off">Bluetooth is off, has quit the Glass Aide application</string>
@@ -382,7 +383,7 @@
     <string name="glass_ram">RAM</string>
     <string name="glass_up_time">Running time</string>
     <string name="up_time_summary">Getting running time&#8230;</string>
-    <string name="glass_version">System version</string>
+    <string name="glass_version">HanLang version</string>
     <string name="get_power_timeout">Get glasses power time out</string>
     <string name="get_storage_timeout">Get glasses storage time out</string>
     <string name="get_uptime_timeout">Get running time time out</string>
@@ -408,4 +409,19 @@
     <string name="glass_state_summary">Getting HanLang state&#8230;</string>
     <string name="turn_wifi_ap_off">Tunr Ap Off</string>
     <string name="wifi_ap_hint_off">Would you like to turn ap off</string>
+    <string name="delete_message">Do you want to delete selected itmes</string>
+    <string name="scan_device_timeout">Dont found device</string>
+    <string name="bind_fail">Fail to bind</string>
+    <string name="bluetooth_paring">paring&#8230;</string>
+    <string name="operation_timeout">Operation timeout</string>
+    <string name="scan_qrcode_hint">Scan Qrcode</string>
+    <string name="scan_qrcode">Put Qrcode in the Scanning frame</string>
+    <string name="not_hanlang_glass">Dont found device</string>
+    <string name="search_bind">Search and Bind</string>
+    <string name="qr_bind">QrCode Bind</string>
+    <string name="msg_camera_framework_bug">Sorry, the Android camera encountered a problem. You may need to restart the device.</string>
+			<string name="user_guide"	>User guide</string>
+    	<string name="user_guide_summary">Click to view the HanLang operation guide</string>
+    	<string name="no_available_player">Find no available player,you can open in gallery</string>
+    	<string name="app_version">App version</string>
 </resources>

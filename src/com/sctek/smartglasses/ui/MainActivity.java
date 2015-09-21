@@ -291,7 +291,7 @@ public class MainActivity extends FragmentActivity {
 			    }			    
 			    mSyncManager.disconnect();
 			    
-			    Intent intent = new Intent(MainActivity.this,BindGlassActivity.class);	    
+			    Intent intent = new Intent(MainActivity.this,BindHanlangActivity.class);	    
 			    startActivity(intent);
 			    finish();
 			    } catch (Exception e) {

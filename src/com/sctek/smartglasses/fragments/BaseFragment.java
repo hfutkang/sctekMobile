@@ -60,6 +60,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.DialogInterface.OnKeyListener;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -936,7 +937,7 @@ public class BaseFragment extends Fragment {
 		return false;
 	}
 	
-public void ShowOnRemoteVideoClickedDialog(final int mPosition) {
+	public void ShowOnRemoteVideoClickedDialog(final int mPosition) {
 		
 		View view = getActivity().getLayoutInflater().inflate(R.layout.remote_video_dialog, null);
 		ListView listView = (ListView)view.findViewById(R.id.option_lv);
@@ -964,16 +965,17 @@ public void ShowOnRemoteVideoClickedDialog(final int mPosition) {
 						String path = VIDEO_DOWNLOAD_FOLDER + "/" + mediaList.get(mPosition).name;
 						Uri uri = Uri.fromFile(new File(path));
 						Log.e(TAG, uri.toString());
-						Intent intent = new Intent(Intent.ACTION_VIEW	);
-						intent.setData(uri);
-						intent.setType("video/mp4");
+						Intent intent = new Intent(Intent.ACTION_VIEW);
+						intent.setDataAndType(uri, "video/mp4");
 						startActivity(intent);
+						if(intent.resolveActivity(getActivity().getPackageManager()) != null)
+							startActivity(intent);
+						else
+							Toast.makeText(getActivity(), R.string.no_available_player, Toast.LENGTH_LONG).show();
 						break;
 					case 1:
-						ArrayList<MediaData> temp = new ArrayList<MediaData>();
-						temp.add(mediaList.get(mPosition));
-						new RemoteMediaDeleteTask(getActivity(), 
-								mediaList, temp, mImageAdapter).execute(new String[]{"vedios", glassIp});
+						showDeleteConfirmDialog(childIndex, mPosition);
+						break;
 					default:
 						break;
 					}
@@ -999,8 +1001,8 @@ public void ShowOnRemoteVideoClickedDialog(final int mPosition) {
 						((VideoActivity)getActivity()).startVideoSync(temp);
 						break;
 					case 1:
-						new RemoteMediaDeleteTask(getActivity(), 
-								mediaList, temp, mImageAdapter).execute(new String[]{"vedios", glassIp});
+						showDeleteConfirmDialog(childIndex, mPosition);
+						break;
 					default:
 						break;
 					}
@@ -1034,25 +1036,26 @@ public void ShowOnRemoteVideoClickedDialog(final int mPosition) {
 				// TODO Auto-generated method stub
 				switch (position) {
 				case 0:
-					Uri uri = Uri.parse(mediaList.get(mPosition).url);
+					String path = VIDEO_DOWNLOAD_FOLDER + "/" + mediaList.get(mPosition).name;
+					Uri uri = Uri.fromFile(new File(path));
 					Log.e(TAG, uri.toString());
-					Intent intent = new Intent(Intent.ACTION_VIEW	);
-					intent.setData(uri);
-					intent.setType("video/mp4");
+					Intent intent = new Intent(Intent.ACTION_VIEW);
+					intent.setDataAndType(uri, "video/mp4");
 					startActivity(intent);
+					if(intent.resolveActivity(getActivity().getPackageManager()) != null)
+						startActivity(intent);
+					else
+						Toast.makeText(getActivity(), R.string.no_available_player, Toast.LENGTH_LONG).show();
 					break;
 				case 1:
-					Intent shareIntent = new Intent();
-					shareIntent.setAction(Intent.ACTION_SEND);
-					shareIntent.setType("video/mp4");
-					
-					shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mediaList.get(mPosition).url));
-					Intent selectIntent = Intent.createChooser(shareIntent, getResources().getText(R.string.share));
-					startActivity(selectIntent);
+					if(WifiUtils.getWifiAPState(mWifiManager) == WIFI_AP_STATE_ENABLED)
+						showTurnApOffWhenShareDialog(childIndex, mPosition);
+					else
+						shareMedia(childIndex, mPosition);
 					break;
 				case 2:
-					selectedMedias.add(mediaList.get(mPosition));
-					onNativeMediaDeleteTvClicked("vedios");
+					showDeleteConfirmDialog(childIndex, mPosition);
+					break;
 				default:
 					break;
 				}
@@ -1108,17 +1111,14 @@ public void ShowOnRemoteVideoClickedDialog(final int mPosition) {
 					viewPhotos(mPosition);
 					break;
 				case 1:
-					Intent shareIntent = new Intent();
-					shareIntent.setAction(Intent.ACTION_SEND);
-					shareIntent.setType("image/jpeg");
-					
-					shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mediaList.get(mPosition).url));
-					Intent selectIntent = Intent.createChooser(shareIntent, getResources().getText(R.string.share));
-					startActivity(selectIntent);
+					if(WifiUtils.getWifiAPState(mWifiManager) == WIFI_AP_STATE_ENABLED)
+						showTurnApOffWhenShareDialog(childIndex, mPosition);
+					else
+						shareMedia(childIndex, mPosition);
 					break;
 				case 2:
-					selectedMedias.add(mediaList.get(mPosition));
-					onNativeMediaDeleteTvClicked("photos");
+					showDeleteConfirmDialog(childIndex, mPosition);
+					break;
 				default:
 					break;
 				}
@@ -1159,10 +1159,7 @@ public void ShowOnRemoteVideoClickedDialog(final int mPosition) {
 					((PhotoActivity)getActivity()).startPhotoSync(temp1);
 					break;
 				case 2:
-					ArrayList<MediaData> temp2 = new ArrayList<MediaData>();
-					temp2.add(mediaList.get(mPosition));
-					new RemoteMediaDeleteTask(getActivity(), 
-							mediaList, temp2, mImageAdapter).execute(new String[]{"photos", glassIp});
+					showDeleteConfirmDialog(childIndex, mPosition);
 					break;
 				default:
 					break;
@@ -1170,6 +1167,119 @@ public void ShowOnRemoteVideoClickedDialog(final int mPosition) {
 				dialog.dismiss();
 			}
 		});
+	}
+	
+	private void showDeleteConfirmDialog(final int type, final int position) {
 		
+		AlertDialog.Builder builder = new Builder(getActivity());
+		builder.setTitle(R.string.delete);
+		builder.setMessage(R.string.delete_message);
+		builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				switch(type) {
+				case NativePhotoGridFragment.FRAGMENT_INDEX:
+					selectedMedias.add(mediaList.get(position));
+					onNativeMediaDeleteTvClicked("photos");
+					break;
+				case NativeVideoGridFragment.FRAGMENT_INDEX:
+					selectedMedias.add(mediaList.get(position));
+					onNativeMediaDeleteTvClicked("vedios");
+					break;
+				case RemotePhotoGridFragment.FRAGMENT_INDEX:
+					ArrayList<MediaData> temp2 = new ArrayList<MediaData>();
+					temp2.add(mediaList.get(position));
+					new RemoteMediaDeleteTask(getActivity(), 
+							mediaList, temp2, mImageAdapter).execute(new String[]{"photos", glassIp});
+					break;
+				case RemoteVideoGridFragment.FRAGMENT_INDEX:
+					ArrayList<MediaData> temp = new ArrayList<MediaData>();
+					temp.add(mediaList.get(position));
+					new RemoteMediaDeleteTask(getActivity(), 
+							mediaList, temp, mImageAdapter).execute(new String[]{"vedios", glassIp});
+					break;
+				}
+				
+			}
+		});
+		
+		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		builder.create().show();
+		
+	}
+	
+	private void showTurnApOffWhenShareDialog(final int type, final int mPosition) {
+		
+		AlertDialog.Builder builder = new Builder(getActivity());
+		builder.setTitle(R.string.turn_wifi_ap_off);
+		builder.setMessage(R.string.wifi_ap_hint_off);
+		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				new AsyncTask<Void, Void, Void>() {
+
+					@Override
+					protected Void doInBackground(Void... params) {
+						// TODO Auto-generated method stub
+						WifiManager wifimanager = (WifiManager)getActivity().getSystemService(Context.WIFI_SERVICE);
+						WifiUtils.setWifiApEnabled(false, wifimanager);
+						return null;
+					}
+				}.execute();
+				
+				shareMedia(type, mPosition);
+				
+				dialog.cancel();
+			}
+		});
+		
+		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				
+				shareMedia(type, mPosition);
+				
+				dialog.cancel();
+			}
+		});
+		
+		AlertDialog dialog = builder.create();
+		dialog.setOnDismissListener(new OnDismissListener() {
+			
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				// TODO Auto-generated method stub
+				shareMedia(type, mPosition);
+				
+			}
+		});
+		dialog.show();
+	}
+	
+	private void shareMedia(int type, int position) {
+		Intent shareIntent = new Intent();
+		shareIntent.setAction(Intent.ACTION_SEND);
+		if(type == NativePhotoGridFragment.FRAGMENT_INDEX)
+			shareIntent.setType("image/jpeg");
+		else if(type == NativeVideoGridFragment.FRAGMENT_INDEX)
+			shareIntent.setType("video/mp4");
+		
+		shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mediaList.get(position).url));
+		Intent selectIntent = Intent.createChooser(shareIntent, getResources().getText(R.string.share));
+		startActivity(selectIntent);
 	}
 }

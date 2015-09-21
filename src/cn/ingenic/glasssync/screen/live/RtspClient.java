@@ -53,37 +53,37 @@ public class RtspClient {
     }
 
     public void start(String url) {
-	Log.e(TAG, "start");
+	if (DEBUG) Log.e(TAG, "start");
 	native_start(url);
     }
 
     public void close() {
-	Log.e(TAG, "close");
+	if (DEBUG) Log.e(TAG, "close");
 	reset();
 	native_close();
 	release();
     }
 
     public void release() {
-    	Log.e(TAG, "release");
+    	if (DEBUG) Log.e(TAG, "release");
     	native_release();
 	mContext = null;
     }
 
     public void reset() {
-	Log.e(TAG, "reset");
+	if (DEBUG) Log.e(TAG, "reset");
         mEventHandler.removeCallbacksAndMessages(null);
     }
 
     public void setSurface(SurfaceHolder holder) {
-    	Log.e(TAG, "setSurface");
+    	if (DEBUG) Log.e(TAG, "setSurface");
 	native_set_surface(holder.getSurface());
     }
 
     public interface OnRtspClientListener {
-	public void onData(RtspClient rc, int what, int extra);
 	public void onVideoSizeChanged(int width, int height);
 	public void onStreamDown();
+	public void onStreamDisconnect();
     }
     
     public void setListener(OnRtspClientListener listener) {
@@ -98,45 +98,41 @@ public class RtspClient {
 	    mRtspClient = rc;
 	}
 	
-	private static final int NATIVE_MSG_NOTIFY_EVENT_ERROR = 0;
-	private static final int NATIVE_MSG_NOTIFY_VIDEO_SIZE = 1;
-	private static final int NATIVE_MSG_NOTIFY_DECODER_DONE = 2;
-	private static final int NATIVE_MSG_NOTIFY_CONNECT_STATE = 3;
-	private static final int NATIVE_MSG_NOTIFY_STREAM_DOWN = 4;
+	private final int NATIVE_MSG_NOTIFY_FRAME_STATE = 0;
+	private final int NATIVE_MSG_NOTIFY_STREAM_DOWN = 1;
+	private final int NATIVE_MSG_NOTIFY_VIDEO_SIZE = 2;
 	
 	@Override
 	public void handleMessage(Message msg) {
 	    switch(msg.what) {
-	    case NATIVE_MSG_NOTIFY_EVENT_ERROR:
-		break;
-
 	    case NATIVE_MSG_NOTIFY_VIDEO_SIZE:
-		Log.e(TAG,"msg.arg1=" + msg.arg1 + " msg.arg2" + msg.arg2);
+		if (DEBUG) Log.e(TAG, "NATIVE_MSG_NOTIFY_VIDEO_SIZE : " + msg.arg1 + "x" + msg.arg2);
 		if (mOnRtspClientListener != null) 
 		    mOnRtspClientListener.onVideoSizeChanged(msg.arg1, msg.arg2);
 		break;
-	    case NATIVE_MSG_NOTIFY_DECODER_DONE:
-		Log.e(TAG, "NATIVE_MSG_NOTIFY_DECODER_DONE");
+
+	    case NATIVE_MSG_NOTIFY_STREAM_DOWN:
+		if (DEBUG) Log.e(TAG, "NATIVE_MSG_NOTIFY_STREAM_DOWN");
 		if (mOnRtspClientListener != null)
-		    mOnRtspClientListener.onData(mRtspClient, msg.arg1, msg.arg2);
+		    mOnRtspClientListener.onStreamDown();
 		break;
-	    case NATIVE_MSG_NOTIFY_CONNECT_STATE:
-		Log.e(TAG, "NATIVE_MSG_NOTIFY_CONNECT_STATE = " + msg.arg1);
-		if (msg.arg1 == 0) {
+
+	    case NATIVE_MSG_NOTIFY_FRAME_STATE:
+		if (DEBUG) Log.e(TAG, "NATIVE_MSG_NOTIFY_FRAME_STATE : " + msg.arg1);
+		if (msg.arg1 == 0) { // FRAME_MISS
 		    if (LiveDisplayActivity.mPD != null) {
 			LiveDisplayActivity.mPD.setMessage(mContext.getString(R.string.live_wait_network_data));
 			LiveDisplayActivity.mPD.show();
 		    }
-		} else if (msg.arg1 == 1) {
+		} else if (msg.arg1 == 1) { // FRAME_GOT
 		    if (LiveDisplayActivity.mPD != null)
 			LiveDisplayActivity.mPD.dismiss();
+		} else if (msg.arg1 == 2) { // FRAME_DISCONNECT
+		    if (mOnRtspClientListener != null)
+			mOnRtspClientListener.onStreamDisconnect();
 		}
 		break;
-	    case NATIVE_MSG_NOTIFY_STREAM_DOWN:
-		Log.e(TAG, "NATIVE_MSG_NOTIFY_STREAM_DOWN");
-		if (mOnRtspClientListener != null)
-		    mOnRtspClientListener.onStreamDown();
-		break;
+
 	    default:
 		Log.e(TAG, "Unknown message type " + msg.what);
 		break;

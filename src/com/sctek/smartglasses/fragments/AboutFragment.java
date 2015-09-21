@@ -11,14 +11,19 @@ import com.sctek.smartglasses.utils.HanLangCmdChannel;
 
 import cn.ingenic.glasssync.R;
 import android.annotation.SuppressLint;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothAdapter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -53,6 +58,8 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 	private Preference mUptimePreference;
 	private Preference mStatePreference;
 	private Preference mMediaPathPreference;
+	private Preference mGuidePreference;
+	private Preference mAppVersionPreference;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -138,14 +145,36 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 		mUptimePreference = findPreference("uptime");
 		mStatePreference = findPreference("state");
 		mMediaPathPreference = findPreference("media_path");
+		mGuidePreference = findPreference("guide");
+		mAppVersionPreference = findPreference("app_version");
 		
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		mModelPreference.setSummary(sharedPreferences.getString("model", "HanLang T10-C22"));
 		mCpuPreference.setSummary(sharedPreferences.getString("cpu", "Ingenic Xburst V4.15"));
 		mRamPrefrence.setSummary(sharedPreferences.getString("ram", "512M"));
-		mVersionPreference.setSummary(sharedPreferences.getString("version", "4.3"));
+		mVersionPreference.setSummary(sharedPreferences.getString("version", "2.4"));
 		mSerialPreference.setSummary(sharedPreferences.getString("serial", "1234567ABCDEF"));
 		mMediaPathPreference.setSummary(Environment.getExternalStorageDirectory().toString() + "/SmartGlasses");
+		mAppVersionPreference.setSummary(getAppVersion());
+		
+		mGuidePreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				// TODO Auto-generated method stub
+				FragmentManager fragManager = getActivity().getFragmentManager();
+				FragmentTransaction transcaction = fragManager.beginTransaction();
+				String tag = GuideViewPagerFragment.class.getName();
+				GuideViewPagerFragment photoFm = (GuideViewPagerFragment)fragManager.findFragmentByTag(tag);
+				if(photoFm == null)
+					photoFm = new GuideViewPagerFragment();
+				
+				transcaction.replace(android.R.id.content, photoFm, tag);
+				transcaction.addToBackStack(null);
+				transcaction.commit();
+				return false;
+			}
+		});
 		
 		getPower();
 		
@@ -253,6 +282,17 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 		Packet pk = mHanLangCmdChannel.createPacket();
 		pk.putInt("type", GET_STATE);
 		mHanLangCmdChannel.sendPacket(pk);
+	}
+	
+	private String getAppVersion() {
+		try {
+			PackageManager pm = getActivity().getPackageManager();
+			PackageInfo pi = pm.getPackageInfo(getActivity().getPackageName(), 0);
+			return pi.versionName;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
 	}
 	
 }

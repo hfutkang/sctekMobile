@@ -5,6 +5,8 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import com.sctek.smartglasses.ui.BindHanlangActivity;
 import com.sctek.smartglasses.ui.MainActivity;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -121,7 +123,7 @@ public class WelcomeActivity extends Activity {
 					finish();
 				} else {
 					Intent intent = new Intent(WelcomeActivity.this,
-							BindGlassActivity.class);
+							BindHanlangActivity.class);
 					startActivity(intent);
 					finish();
 				}

@@ -27,6 +27,8 @@ import com.sctek.smartglasses.utils.WifiUtils;
 import com.sctek.smartglasses.utils.WifiUtils.WifiCipherType;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -248,11 +250,9 @@ public class RemotePhotoGridFragment extends BaseFragment {
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			if(selectedMedias.size() != 0) {
-				onPhotoDeleteTvClicked();
+				showDeleteConfirmDialog();
 			}
 			
-			disCheckMedia();
-			onCancelTvClicked();
 		}
 	};
 	
@@ -509,5 +509,35 @@ public class RemotePhotoGridFragment extends BaseFragment {
 				return false;
 			}
 		});
+	}
+	
+	private void showDeleteConfirmDialog() {
+		
+		AlertDialog.Builder builder = new Builder(getActivity());
+		builder.setTitle(R.string.delete);
+		builder.setMessage(R.string.delete_message);
+		builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				onPhotoDeleteTvClicked();
+				
+				disCheckMedia();
+				onCancelTvClicked();
+			}
+		});
+		
+		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		builder.create().show();
+		
 	}
 }
