@@ -798,7 +798,7 @@ public class BaseFragment extends Fragment {
 		if(ok) {
 			mediaList = getMediaData(ip);
 		}
-		if(mediaList == null && !ok) {
+		if(mediaList == null || !ok) {
 			Toast.makeText(getActivity(), R.string.get_glass_data_fail, Toast.LENGTH_LONG).show();
 			return false;
 		}
@@ -855,7 +855,7 @@ public class BaseFragment extends Fragment {
 				fo.close();
 				in.close();
 				
-				return true;
+				return true;	
 			}catch (Exception e) {
 				e.printStackTrace();
 			}

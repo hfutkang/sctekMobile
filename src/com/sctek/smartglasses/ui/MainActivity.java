@@ -133,7 +133,7 @@ public class MainActivity extends FragmentActivity {
 		
 		TimeSyncManager.getInstance().syncTime();
 		
-		syncContactToGlass(true);
+//		syncContactToGlass(true);
 		
 		getGlassInfo();
 	}
@@ -258,7 +258,7 @@ public class MainActivity extends FragmentActivity {
 				GlassDetect glassDetect = (GlassDetect)GlassDetect.getInstance(getApplicationContext());
 				glassDetect.set_audio_disconnect();
 
-				syncContactToGlass(false);
+//				syncContactToGlass(false);
 				disableLocalData();
 				unBond();
 				} catch (Exception e) {

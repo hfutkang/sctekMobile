@@ -391,7 +391,7 @@
     <string name="bind_fail">绑定失败</string>
     <string name="bluetooth_paring">配对中&#8230;</string>
     <string name="operation_timeout">操作超时</string>
-    <string name="msg_camera_framework_bug">对不起，摄像头出错，你需要重启设备</string>
+    <string name="msg_camera_framework_bug">打开摄像头失败，请检查使用摄像头权限是否被禁止。</string>
     	<string name="user_guide"	>操作说明</string>
     	<string name="user_guide_summary">点击查看悍狼操作说明</string>
     	<string name="no_available_player">未找到可用播放器，请通过图库打开</string>

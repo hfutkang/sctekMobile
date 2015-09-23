@@ -7,10 +7,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.content.Context;
-import android.view.View;
 import android.view.Surface;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 
 import cn.ingenic.glasssync.R;
 import cn.ingenic.glasssync.screen.LiveDisplayActivity;
@@ -19,24 +17,21 @@ public class RtspClient {
 
     static {
 	System.loadLibrary("live_jni");
-	native_init();
     }
 
     private static final String TAG = "RtspClient";
-    private static final boolean DEBUG = true;
+    private final boolean DEBUG = true;
     
-    private int mNativeContext = 0;
     private OnRtspClientListener mOnRtspClientListener = null;
-    private EventHandler mEventHandler = null;
+    private static EventHandler mEventHandler = null;
     private Context mContext = null;
 
-    private static native final void native_init();
-    private native final void native_setup(Object rtspclient_this);
-    private native final void native_start(String url);
-    private native final void native_close();
-    private native final void native_release();
-    private native final void native_set_surface(Surface surfaace);
-    
+	// used by native
+    private int mNativeContext = 0;
+    private int mNativeWindow = 0;
+    private native final void native_start(Object rtspclient_this, String url);
+    private native final void native_stop();
+    private native final void native_set_surface(Surface surfaace);    
 
     public RtspClient(Context context) {
 	Looper looper;
@@ -49,30 +44,16 @@ public class RtspClient {
 	}
 
 	mContext = context;
-	native_setup(new WeakReference<RtspClient>(this));
     }
 
     public void start(String url) {
 	if (DEBUG) Log.e(TAG, "start");
-	native_start(url);
+	native_start(new WeakReference<RtspClient>(this), url);
     }
 
     public void close() {
 	if (DEBUG) Log.e(TAG, "close");
-	reset();
-	native_close();
-	release();
-    }
-
-    public void release() {
-    	if (DEBUG) Log.e(TAG, "release");
-    	native_release();
-	mContext = null;
-    }
-
-    public void reset() {
-	if (DEBUG) Log.e(TAG, "reset");
-        mEventHandler.removeCallbacksAndMessages(null);
+	native_stop();
     }
 
     public void setSurface(SurfaceHolder holder) {
@@ -120,9 +101,13 @@ public class RtspClient {
 	    case NATIVE_MSG_NOTIFY_FRAME_STATE:
 		if (DEBUG) Log.e(TAG, "NATIVE_MSG_NOTIFY_FRAME_STATE : " + msg.arg1);
 		if (msg.arg1 == 0) { // FRAME_MISS
+			
 		    if (LiveDisplayActivity.mPD != null) {
+		    	Log.e(TAG, "======================111111================:" + LiveDisplayActivity.mPD);
 			LiveDisplayActivity.mPD.setMessage(mContext.getString(R.string.live_wait_network_data));
+			Log.e(TAG, "======================22222================:" + LiveDisplayActivity.mPD);
 			LiveDisplayActivity.mPD.show();
+			Log.e(TAG, "======================33333================:" + LiveDisplayActivity.mPD);
 		    }
 		} else if (msg.arg1 == 1) { // FRAME_GOT
 		    if (LiveDisplayActivity.mPD != null)
@@ -140,15 +125,12 @@ public class RtspClient {
 	}
     }
     
-    private static void postEventFromNative(Object rtspclient_ref,
-                                            int what, int arg1, int arg2, Object obj) {
-    	Log.e(TAG, "postEventFromNative");
+    private static void postEventFromNative(Object rtspclient_ref, int what, int arg1, int arg2, Object obj) {
+    	Log.e(TAG, "==============" + what + "  " + arg1 + "    " + arg2 + "  " + obj);
     	RtspClient rc = (RtspClient)((WeakReference)rtspclient_ref).get();
-    	if (rc == null) {
-    	    return;
-    	}
-	
-    	if (rc.mEventHandler != null) {
+    	Log.e(TAG, "============rc1=====" + rc);
+    	if (rc != null && rc.mEventHandler != null) {
+    		Log.e(TAG, "============rc2=====" + rc);
     	    Message m = rc.mEventHandler.obtainMessage(what, arg1, arg2, obj);
     	    rc.mEventHandler.sendMessage(m);
     	}

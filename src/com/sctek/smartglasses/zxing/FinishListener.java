@@ -18,6 +18,7 @@ package com.sctek.smartglasses.zxing;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 
 /**
  * Simple listener used to exit the app in a few cases.
@@ -43,7 +44,10 @@ public final class FinishListener implements DialogInterface.OnClickListener, Di
   }
 
   private void run() {
-    activityToFinish.finish();
+		Intent intent = new Intent();
+		intent.putExtra("name", "");
+		activityToFinish.setResult(Activity.RESULT_CANCELED, intent);
+		activityToFinish.finish();
   }
 
 }

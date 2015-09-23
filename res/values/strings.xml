@@ -419,7 +419,7 @@
     <string name="not_hanlang_glass">Dont found device</string>
     <string name="search_bind">Search and Bind</string>
     <string name="qr_bind">QrCode Bind</string>
-    <string name="msg_camera_framework_bug">Sorry, the Android camera encountered a problem. You may need to restart the device.</string>
+    <string name="msg_camera_framework_bug">Sorry, Fail to open camera. please check camera permissiion is granted.</string>
 			<string name="user_guide"	>User guide</string>
     	<string name="user_guide_summary">Click to view the HanLang operation guide</string>
     	<string name="no_available_player">Find no available player,you can open in gallery</string>
