@@ -126,6 +126,7 @@ public class MainActivity extends FragmentActivity {
 		boolean firstBind = getIntent().getBooleanExtra("first_bind", false);
 		if(firstBind) {
 			mGlassDetect.set_audio_connect();
+			syncContactToGlass(true);
 			Editor editor = pref.edit();
 	    	editor.putBoolean("last_headset_state", true);
 	    	editor.commit();
@@ -135,9 +136,7 @@ public class MainActivity extends FragmentActivity {
 			mGlassDetect.set_audio_connect();
 		}
 		
-		TimeSyncManager.getInstance().syncTime();
-		
-		syncContactToGlass(true);
+		TimeSyncManager.getInstance().syncTime();		
 		
 		getGlassInfo();
 	}
@@ -262,7 +261,6 @@ public class MainActivity extends FragmentActivity {
 				GlassDetect glassDetect = (GlassDetect)GlassDetect.getInstance(getApplicationContext());
 				glassDetect.set_audio_disconnect();
 
-//				syncContactToGlass(false);
 				disableLocalData();
 				unBond();
 				} catch (Exception e) {

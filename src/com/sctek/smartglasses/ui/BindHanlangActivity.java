@@ -52,7 +52,7 @@ public class BindHanlangActivity extends Activity {
     public final static int BT_BOND_FAILED = 7;
     public final static int BIND_FAIL = 8;
 
-    private int BIND_TIMEOUT_DELAY = 10*1000;
+    private int BIND_TIMEOUT_DELAY = 20*1000;
     private final static int CANCEL_SCAN_DELAY_TIME = 15*1000;
 
     private static final boolean DEBUG = true;
@@ -76,14 +76,15 @@ public class BindHanlangActivity extends Activity {
     private Handler mHandler = new Handler(){  
 	    @Override  
 	    public void handleMessage(Message msg) {  
-	    	mHandler.removeMessages(BIND_TIMEOUT);
+	    	// mHandler.removeMessages(BIND_TIMEOUT);
 		switch(msg.what){
-		case BIND_TIMEOUT:
-			 bindHanLangFail(R.string.operation_timeout);
-		    break;
+		// case BIND_TIMEOUT:
+		// 	 bindHanLangFail(R.string.operation_timeout);
+		//     break;
 		case REQUEST_CONNECT:
 		     mAdapter.cancelDiscovery();
 		     BluetoothDevice device = (BluetoothDevice)msg.obj;
+		     Log.d(TAG,"--REQUEST_CONNECT bond state="+device.getBondState());
 		     if(device.getBondState() == BluetoothDevice.BOND_BONDED){
 			try {
 				mBindHintTv.setText(R.string.binding_hanlang);
@@ -92,6 +93,9 @@ public class BindHanlangActivity extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			Message msgB = mHandler.obtainMessage();
+			msgB.what = BIND_FAIL;
+			mHandler.sendMessageDelayed(msgB,BIND_TIMEOUT_DELAY);
 			
 		     }else{
 		    	 mBindHintTv.setText(R.string.bluetooth_paring);
@@ -103,10 +107,10 @@ public class BindHanlangActivity extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		     }
 			Message msgB = mHandler.obtainMessage();
-			msgB.what = BIND_TIMEOUT;
+			msgB.what = BT_BOND_FAILED;
 			mHandler.sendMessageDelayed(msgB,BIND_TIMEOUT_DELAY);
+		     }
 		    break;
 		case REQUEST_CANCEL_SCAN_DEVICE:
 			mAdapter.cancelDiscovery();
@@ -114,6 +118,7 @@ public class BindHanlangActivity extends Activity {
 			break;
 		case BT_BOND_FAILED:
 			bindHanLangFail(R.string.pair_fail);
+			restartBluetooth();
 			break;
 		case BIND_FAIL:
 			bindHanLangFail(R.string.bind_fail);
@@ -178,10 +183,10 @@ public class BindHanlangActivity extends Activity {
     private final BroadcastReceiver mBluetoothReceiver = new BroadcastReceiver() {
 	    @Override
 		public void onReceive(Context context, Intent intent) {
-//		if (DEBUG)
-		    Log.e(TAG, "rcv " + intent.getAction());
+		    Log.i(TAG, "rcv " + intent.getAction());
 		if(DefaultSyncManager.RECEIVER_ACTION_DISCONNECTED.equals(intent.getAction())){
-		    mHandler.removeMessages(BIND_TIMEOUT);
+			//mHandler.removeMessages(BIND_TIMEOUT);
+			mHandler.removeMessages(BIND_FAIL);
 		}
 		if (BluetoothDevice.ACTION_FOUND.equals(intent.getAction())) {
 		    BluetoothDevice scanDevice = intent
@@ -189,23 +194,21 @@ public class BindHanlangActivity extends Activity {
 
 		    if(scanDevice == null || scanDevice.getName() == null) return;
 
-		    if (DEBUG)Log.e(TAG, "name="+scanDevice.getName()+"address="+scanDevice.getAddress()+"--Build.BOARD="+Build.BOARD);
+		    if (DEBUG)Log.d(TAG, "name="+scanDevice.getName()+"address="+scanDevice.getAddress()+"--Build.BOARD="+Build.BOARD);
 
 		    if(deviceName == null && scanDevice.getName().startsWith(HANLANG_BT_NAME)){
 		    	mHandler.removeMessages(REQUEST_CANCEL_SCAN_DEVICE);
 		    	Message requestpairMsg = mHandler.obtainMessage();
 		    	requestpairMsg.what = REQUEST_CONNECT;
 		    	requestpairMsg.obj = scanDevice;
-				mHandler.sendMessage(requestpairMsg);
-			    mAdapter.cancelDiscovery();
+			mHandler.sendMessage(requestpairMsg);
 		    }
 		    else if(deviceName != null && scanDevice.getName().endsWith(deviceName)) {
 		    	mHandler.removeMessages(REQUEST_CANCEL_SCAN_DEVICE);
 		    	Message requestpairMsg = mHandler.obtainMessage();
 		    	requestpairMsg.what = REQUEST_CONNECT;
 		    	requestpairMsg.obj = scanDevice;
-				mHandler.sendMessage(requestpairMsg);
-			    mAdapter.cancelDiscovery();
+			mHandler.sendMessage(requestpairMsg);
 		    }
 		}else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(intent
 									   .getAction())) {
@@ -220,7 +223,7 @@ public class BindHanlangActivity extends Activity {
 			    case BluetoothDevice.BOND_BONDED:
 				// if(device.getAddress().equals(mPairingDevice.getAddress()))
 			    mHandler.removeMessages(REQUEST_CANCEL_SCAN_DEVICE);
-			    mHandler.removeMessages(BIND_TIMEOUT);
+			    mHandler.removeMessages(BT_BOND_FAILED);
 				Message requestBindMsg = mHandler.obtainMessage();
 				requestBindMsg.what = REQUEST_CONNECT;
 				requestBindMsg.obj = device;
@@ -233,11 +236,13 @@ public class BindHanlangActivity extends Activity {
 		    }
 		}else if (DefaultSyncManager.RECEIVER_ACTION_STATE_CHANGE
 			 .equals(intent.getAction())) {
+
 		    int state = intent.getIntExtra(DefaultSyncManager.EXTRA_STATE,
 						   DefaultSyncManager.IDLE);
 		    boolean isConnect = (state == DefaultSyncManager.CONNECTED) ? true : false;
 		    Log.e(TAG, DefaultSyncManager.RECEIVER_ACTION_STATE_CHANGE + ":" + isConnect);
 		    if (DEBUG) Log.e(TAG, isConnect + "    isConnect");
+		    mHandler.removeMessages(BIND_FAIL);
 		    if (isConnect) {
 			String addr = mManager.getLockedAddress();
 			if(addr.equals("")){
@@ -248,7 +253,7 @@ public class BindHanlangActivity extends Activity {
 			}else{
 			    mManager.setLockedAddress(addr);
 			      //unregisterReceiver(mBluetoothReceiver);
-			    mHandler.removeMessages(BIND_TIMEOUT);
+			    //mHandler.removeMessages(BIND_TIMEOUT);
 			    Intent bind_intent = new Intent(BindHanlangActivity.this,
 							    MainActivity.class);
 			    bind_intent.putExtra("first_bind", true);
@@ -374,5 +379,8 @@ public class BindHanlangActivity extends Activity {
     	}
     	
     	return null;
+    }
+    private void restartBluetooth(){
+	    Log.d(TAG,"restartBluetooth");
     }
 }
