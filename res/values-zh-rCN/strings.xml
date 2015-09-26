@@ -396,4 +396,5 @@
     	<string name="user_guide_summary">点击查看悍狼操作说明</string>
     	<string name="no_available_player">未找到可用播放器，请通过图库打开</string>
     	<string name="app_version">App版本</string>
+    	<string name="unbonding">正在解绑&#8230;</string>
 </resources>

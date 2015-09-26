@@ -48,11 +48,11 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 	private HanLangCmdChannel mHanLangCmdChannel;
 	private BluetoothAdapter mBluetoothAdapter;
 	
-	private Preference mModelPreference;
+//	private Preference mModelPreference;
 	private Preference mCpuPreference;
 	private Preference mRamPrefrence;
 	private Preference mVersionPreference;
-	private Preference mSerialPreference;
+//	private Preference mSerialPreference;
 	private Preference mPowerPreference;
 	private Preference mStoragePreference;
 	private Preference mUptimePreference;
@@ -135,11 +135,11 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 	
 	private void initPrefereceView() {
 		
-		mModelPreference = findPreference("model");
+//		mModelPreference = findPreference("model");
 		mCpuPreference = findPreference("cpu");
 		mRamPrefrence = findPreference("ram");
 		mVersionPreference = findPreference("version");
-		mSerialPreference = findPreference("serial");
+//		mSerialPreference = findPreference("serial");
 		mPowerPreference = findPreference("power");
 		mStoragePreference = findPreference("storage");
 		mUptimePreference = findPreference("uptime");
@@ -149,11 +149,11 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 		mAppVersionPreference = findPreference("app_version");
 		
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		mModelPreference.setSummary(sharedPreferences.getString("model", "HanLang T10-C22"));
+//		mModelPreference.setSummary(sharedPreferences.getString("model", "HanLang T10-C22"));
 		mCpuPreference.setSummary(sharedPreferences.getString("cpu", "Ingenic Xburst V4.15"));
 		mRamPrefrence.setSummary(sharedPreferences.getString("ram", "512M"));
 		mVersionPreference.setSummary(sharedPreferences.getString("version", "2.4"));
-		mSerialPreference.setSummary(sharedPreferences.getString("serial", "1234567ABCDEF"));
+//		mSerialPreference.setSummary(sharedPreferences.getString("serial", "1234567ABCDEF"));
 		mMediaPathPreference.setSummary(Environment.getExternalStorageDirectory().toString() + "/SmartGlasses");
 		mAppVersionPreference.setSummary(getAppVersion());
 		

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <Preference 
+<!--     <Preference 
         android:title="@string/glass_model"
-        android:key="model"/>
+        android:key="model"/> -->
     
     <Preference android:title="@string/glass_cpu"
         android:key="cpu"/>
@@ -17,9 +17,9 @@
     <Preference android:title="@string/app_version"
         android:key="app_version"/>
     
-    <Preference 
+    <!-- <Preference 
         android:title="@string/glass_serial_number"
-        android:key="serial"/>
+        android:key="serial"/> -->
     
     <Preference android:title="@string/glass_power"
         android:key="power"

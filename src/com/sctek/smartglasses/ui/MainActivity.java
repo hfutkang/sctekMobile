@@ -36,6 +36,7 @@ import android.text.style.SuperscriptSpan;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -66,6 +67,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import cn.ingenic.glasssync.contactslite.ContactsLiteModule;
 
@@ -114,6 +116,8 @@ public class MainActivity extends FragmentActivity {
 		mSyncManager = DefaultSyncManager.getDefault();
 		initImageLoader(getApplicationContext());
 		
+		dialog = new ProgressDialog(MainActivity.this);
+		
 		GlassDetect mGlassDetect = (GlassDetect)GlassDetect.getInstance(getApplicationContext());
 		mGlassDetect.setLockedAddress(mSyncManager.getLockedAddress());
 		
@@ -133,7 +137,7 @@ public class MainActivity extends FragmentActivity {
 		
 		TimeSyncManager.getInstance().syncTime();
 		
-//		syncContactToGlass(true);
+		syncContactToGlass(true);
 		
 		getGlassInfo();
 	}
@@ -279,10 +283,29 @@ public class MainActivity extends FragmentActivity {
 		ImageLoader.getInstance().clearMemoryCache();
 		ImageLoader.getInstance().destroy();
 	}
+	
+	ProgressDialog dialog;
+	Handler handler = new Handler() {
+		
+		public void handleMessage(android.os.Message msg) {
+			switch(msg.what) {
+			case 1:
+				dialog.setMessage(getResources().getText(R.string.unbonding));
+				dialog.show();
+				break;
+			case 2:
+				if(dialog.isShowing())
+					dialog.cancel();
+				break;
+			}
+		}
+	};
+	
 	private void unBond() {
 		new Thread(new Runnable() {
 			@Override
 			    public void run() {
+				handler.sendEmptyMessage(1);
 				try {
 			    mSyncManager.setLockedAddress("",true);
 			    try {
@@ -290,7 +313,7 @@ public class MainActivity extends FragmentActivity {
 			    } catch (Exception e) {
 			    }			    
 			    mSyncManager.disconnect();
-			    
+			    handler.sendEmptyMessage(2);
 			    Intent intent = new Intent(MainActivity.this,BindHanlangActivity.class);	    
 			    startActivity(intent);
 			    finish();
