@@ -85,7 +85,10 @@ public class HanLangCmdChannel {
 	
 	private MyOnSyncListener mOnSyncListener = new MyOnSyncListener();
 	private class MyOnSyncListener implements SyncChannel.onChannelListener {
-	
+		@Override
+		public void onServiceConnected() {
+			Log.d(TAG, "onServiceConnected ");
+		}	
 		@Override
 		public void onReceive(RESULT arg0, Packet data) {
 			// TODO Auto-generated method stub

@@ -58,6 +58,10 @@ public class SmartGlassService extends Service{
 	private class MyOnSyncListener implements SyncChannel.onChannelListener {
 	
 		@Override
+		public void onServiceConnected() {
+			Log.d(TAG, "onServiceConnected ");
+		}
+		@Override
 		public void onReceive(RESULT arg0, Packet data) {
 			// TODO Auto-generated method stub
 			Log.e(TAG, "Channel onReceive");

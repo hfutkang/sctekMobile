@@ -18,6 +18,7 @@ import android.bluetooth.BluetoothSocket;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothHeadset;
 import android.bluetooth.BluetoothProfile;
+import cn.ingenic.glasssync.DefaultSyncManager;
 
 public class GlassDetect {
     private static final String TAG = "GlassDetect";
@@ -43,14 +44,14 @@ public class GlassDetect {
 	}
 	mBTAdapter.getProfileProxy(mContext, mProfileListener, BluetoothProfile.HEADSET);
 
-        // nReceiver = new GlassDetectReceiver();
-        // IntentFilter filter = new IntentFilter();
-	// filter.addAction(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED);
-	  //       context.registerReceiver(nReceiver,filter);
+        nReceiver = new GlassDetectReceiver();
+        IntentFilter filter = new IntentFilter();
+	filter.addAction(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED);
+	        context.registerReceiver(nReceiver,filter);
     }
 
     protected void finalize(){
-//	mContext.unregisterReceiver(nReceiver);
+	mContext.unregisterReceiver(nReceiver);
     }
 
     public void set_audio_connect(){
@@ -127,15 +128,10 @@ public class GlassDetect {
 	    if (DEBUG)Log.e(TAG, "onReceive " + intent.getAction());
 	    if (intent.getAction().equals(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED)) {
 		int connectState = intent.getIntExtra(BluetoothHeadset.EXTRA_STATE, BluetoothHeadset.STATE_CONNECTED);
-		if (DEBUG)Log.e(TAG, "connectState = " + connectState);
-		Message msg = mCallBackHandler.obtainMessage();
-		msg.obj = PHONE_AUDIO_SYNC;
-		if (connectState == BluetoothProfile.STATE_CONNECTED){       	
-		    msg.what =  BluetoothProfile.STATE_CONNECTED;
-		    msg.sendToTarget();
-		}else if (connectState == BluetoothProfile.STATE_DISCONNECTED){
-		    msg.what =  BluetoothProfile.STATE_DISCONNECTED;
-		    msg.sendToTarget();
+		DefaultSyncManager manager = DefaultSyncManager.getDefault();
+		Log.e("wdu", "connectState = " + connectState + "connectState ="+manager.isConnect());
+		if (connectState == BluetoothProfile.STATE_CONNECTED && !manager.isConnect()){       	
+		    set_audio_disconnect();
 		}
 
 	     }
