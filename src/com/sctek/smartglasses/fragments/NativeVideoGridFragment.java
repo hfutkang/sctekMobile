@@ -67,7 +67,7 @@ public class NativeVideoGridFragment extends BaseFragment {
 		getActivity().getActionBar().setHomeButtonEnabled(false);
 		
 		onCreate = true;
-		getVedioPath();
+		getVideoPath();
 		
 		super.onCreate(savedInstanceState);
 		
@@ -93,7 +93,7 @@ public class NativeVideoGridFragment extends BaseFragment {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					getVedioPath();
+					getVideoPath();
 					mImageAdapter.notifyDataSetChanged();
 				}
 			});
@@ -173,7 +173,7 @@ public class NativeVideoGridFragment extends BaseFragment {
 	}
 	
 	@SuppressLint("NewApi")
-	private void getVedioPath() {
+	private void getVideoPath() {
 		
 		mediaList = new ArrayList<MediaData>();
 		
@@ -181,7 +181,7 @@ public class NativeVideoGridFragment extends BaseFragment {
 		Cursor cursor = cr.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
 				new String[]{MediaStore.MediaColumns._ID, MediaStore.MediaColumns.DISPLAY_NAME}, 
 				MediaStore.MediaColumns.DATA + " like ?", 
-				new String[]{"%/SmartGlasses/vedios%"}, null);
+				new String[]{"%/SmartGlasses/videos%"}, null);
 		
 		while(cursor.moveToNext()) {
 			
@@ -327,7 +327,7 @@ public class NativeVideoGridFragment extends BaseFragment {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
-				onNativeMediaDeleteTvClicked("vedios");
+				onNativeMediaDeleteTvClicked("videos");
 				
 				onCancelTvClicked();
 			}

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import cn.ingenic.glasssync.MediaSyncService;
 import cn.ingenic.glasssync.SyncApp;
 
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -116,7 +116,7 @@ public class VideoActivity extends FragmentActivity {
 				.denyCacheImageMultipleSizesInMemory()
 				.diskCacheFileNameGenerator(new Md5FileNameGenerator())
 				.diskCacheSize(50 * 1024 * 1024) // 50 Mb
-				.diskCache(new UnlimitedDiscCache(cacheFile))
+				.diskCache(new UnlimitedDiskCache(cacheFile))
 				.tasksProcessingOrder(QueueProcessingType.LIFO)
 				.writeDebugLogs() // Remove for release app
 				.diskCacheExtraOptions(480, 320, null)

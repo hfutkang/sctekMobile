@@ -15,7 +15,7 @@ import cn.ingenic.glasssync.screen.LiveDisplayActivity;
 import cn.ingenic.glasssync.utils.ModuleUtils;
 
 import com.ingenic.glass.api.sync.SyncChannel.Packet;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -198,7 +198,7 @@ public class MainActivity extends FragmentActivity {
 				.denyCacheImageMultipleSizesInMemory()
 				.diskCacheFileNameGenerator(new Md5FileNameGenerator())
 				.diskCacheSize(50 * 1024 * 1024) // 50 Mb
-				.diskCache(new UnlimitedDiscCache(cacheFile))
+				.diskCache(new UnlimitedDiskCache(cacheFile))
 				.tasksProcessingOrder(QueueProcessingType.LIFO)
 				.writeDebugLogs() // Remove for release app
 				.diskCacheExtraOptions(480, 320, null)

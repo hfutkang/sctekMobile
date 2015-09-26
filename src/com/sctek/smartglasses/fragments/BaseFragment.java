@@ -105,7 +105,7 @@ public class BaseFragment extends Fragment {
 	public static final String PHOTO_DOWNLOAD_FOLDER = 
 			Environment.getExternalStorageDirectory().toString()	+ "/SmartGlasses/photos/";
 	public static final String VIDEO_DOWNLOAD_FOLDER = 
-			Environment.getExternalStorageDirectory().toString()	+ "/SmartGlasses/vedios";
+			Environment.getExternalStorageDirectory().toString()	+ "/SmartGlasses/videos";
 	
 	public static final String EXTERNEL_DIRCTORY_PATH = 
 			Environment.getExternalStorageDirectory() + "/SmartGlasses/photos/";
@@ -173,7 +173,7 @@ public class BaseFragment extends Fragment {
 		.resetViewBeforeLoading(true)
 		.cacheOnDisk(true)
 		.imageScaleType(ImageScaleType.EXACTLY)
-		.bitmapConfig(Bitmap.Config.ARGB_8888)
+		.bitmapConfig(Bitmap.Config.RGB_565)
 		.considerExifParams(true)
 		.displayer(new FadeInBitmapDisplayer(300))
 		.build();
@@ -479,7 +479,7 @@ public class BaseFragment extends Fragment {
 		if(childIndex != RemoteVideoGridFragment.FRAGMENT_INDEX)
 			return mediaList.get(position).url;
 		else 
-			return mediaList.get(position).url.replace("vedios", ".videothumbnails");
+			return mediaList.get(position).url.replace("videos", ".videothumbnails");
 	}
 
 	static class ViewHolder {
@@ -653,7 +653,7 @@ public class BaseFragment extends Fragment {
     				if(childIndex == RemotePhotoGridFragment.FRAGMENT_INDEX)
     					mMediaUrlTask.execute(new String[]{glassIp, "photos"});
     				else if(childIndex == RemoteVideoGridFragment.FRAGMENT_INDEX)
-    					mMediaUrlTask.execute(new String[]{glassIp, "vedios"});
+    					mMediaUrlTask.execute(new String[]{glassIp, "videos"});
     			}
     		}
     	}
@@ -1186,7 +1186,7 @@ public class BaseFragment extends Fragment {
 					break;
 				case NativeVideoGridFragment.FRAGMENT_INDEX:
 					selectedMedias.add(mediaList.get(position));
-					onNativeMediaDeleteTvClicked("vedios");
+					onNativeMediaDeleteTvClicked("videos");
 					break;
 				case RemotePhotoGridFragment.FRAGMENT_INDEX:
 					ArrayList<MediaData> temp2 = new ArrayList<MediaData>();
@@ -1198,7 +1198,7 @@ public class BaseFragment extends Fragment {
 					ArrayList<MediaData> temp = new ArrayList<MediaData>();
 					temp.add(mediaList.get(position));
 					new RemoteMediaDeleteTask(getActivity(), 
-							mediaList, temp, mImageAdapter).execute(new String[]{"vedios", glassIp});
+							mediaList, temp, mImageAdapter).execute(new String[]{"videos", glassIp});
 					break;
 				}
 				

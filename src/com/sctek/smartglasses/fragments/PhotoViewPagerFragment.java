@@ -50,7 +50,7 @@ public class PhotoViewPagerFragment extends Fragment {
 		.resetViewBeforeLoading(true)
 		.cacheOnDisk(true)
 		.imageScaleType(ImageScaleType.EXACTLY)
-		.bitmapConfig(Bitmap.Config.ARGB_8888)
+		.bitmapConfig(Bitmap.Config.RGB_565)
 		.considerExifParams(true)
 		.displayer(new FadeInBitmapDisplayer(300))
 		.build();

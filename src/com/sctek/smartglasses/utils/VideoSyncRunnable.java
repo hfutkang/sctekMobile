@@ -16,7 +16,7 @@ public class VideoSyncRunnable implements Runnable {
 	
 	private final static String TAG = "VideoSyncRunnable";
 	public static final String VIDEO_DOWNLOAD_FOLDER = 
-			Environment.getExternalStorageDirectory().toString()	+ "/SmartGlasses/vedios/";
+			Environment.getExternalStorageDirectory().toString()	+ "/SmartGlasses/videos/";
 	
 	private ArrayList<MediaData> mVideos;
 	private GlassImageDownloader mDownloader;

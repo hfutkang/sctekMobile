@@ -194,7 +194,7 @@ public class RemoteVideoGridFragment extends BaseFragment {
 	public void onVideoDeleteTvClicked() {
 		ArrayList<MediaData> data = (ArrayList<MediaData>)selectedMedias.clone();
 		new RemoteMediaDeleteTask(getActivity(), 
-				mediaList, data, mImageAdapter).execute(new String[]{"vedios", glassIp});
+				mediaList, data, mImageAdapter).execute(new String[]{"videos", glassIp});
 	}
 	
 	private OnClickListener onPhotoDownloadClickListener = new OnClickListener() {
@@ -312,7 +312,7 @@ private class VideoDownloadTask extends AsyncTask<String, Integer, Void> {
 			notificationManager.notify(VEDIO_NOTIFICATION_ID, notification);
 			
 			if(downloadcount != 0) {
-				refreshGallery("vedios");
+				refreshGallery("videos");
 			}
 			disCheckMedia();
 //			selectedMedias.clear();
@@ -424,7 +424,7 @@ private class VideoDownloadTask extends AsyncTask<String, Integer, Void> {
 				String urlPref = String.format("http://%s/cgi-bin/deletefiles?", glassIp);
 				StringBuffer urlBuffer = new StringBuffer(1024);
 				urlBuffer.append(urlPref);
-				urlBuffer.append("vedios");
+				urlBuffer.append("videos");
 				
 				int i = 0;
 				for(; i<100&&mediaIterator.hasNext(); i++) {
