@@ -103,11 +103,8 @@ public class RtspClient {
 		if (msg.arg1 == 0) { // FRAME_MISS
 			
 		    if (LiveDisplayActivity.mPD != null) {
-		    	Log.e(TAG, "======================111111================:" + LiveDisplayActivity.mPD);
 			LiveDisplayActivity.mPD.setMessage(mContext.getString(R.string.live_wait_network_data));
-			Log.e(TAG, "======================22222================:" + LiveDisplayActivity.mPD);
 			LiveDisplayActivity.mPD.show();
-			Log.e(TAG, "======================33333================:" + LiveDisplayActivity.mPD);
 		    }
 		} else if (msg.arg1 == 1) { // FRAME_GOT
 		    if (LiveDisplayActivity.mPD != null)

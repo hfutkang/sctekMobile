@@ -104,7 +104,7 @@ public class HanLangCmdChannel {
 				boolean round = data.getBoolean("round");
 				String duration = data.getString("duration");
 				
-				Log.e(TAG, "volume:" + volume + " round:" + round + "duration:" + duration); 
+				Log.e(TAG, "volume:" + volume + " round:" + round + "duration:" + duration + "serial:" + serial); 
 				
 				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 				Editor editor = preferences.edit();

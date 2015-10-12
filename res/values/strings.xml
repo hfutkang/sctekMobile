@@ -166,7 +166,7 @@
     <string name="contact">Contacts</string>
     <string name="screen_control">Glass screen controller</string>
     <string name="progress">Synchronizing data</string>
-    <string name="refresh">Click to refresh</string>
+    <string name="reflush">Click to refresh</string>
 
     <!--seeting toast-->
     <string name="sms_send_fail">Message data sync fail</string>
@@ -175,7 +175,8 @@
     <string name="screen_transport_failed">Glass transport data failed, exit then try again </string>
     <string name="wifi_off">Wifi sync requires wifi opened and connected</string>
     <!-- screen_controller -->   
-      <string name="controller_info">You can slide up(down,left,right), click, long press to control screen from glass.</string>
+    <string name="controller_info">You can slide up(down,left,right), click, long press to control screen from glass.</string>
+    <string name="live_controller_info">You will see glass screen while starting live</string>
     <string name="start">Start to experience</string>
     <string name="live">Camera live to experience</string>
  <!-- main_menu -->
@@ -200,26 +201,26 @@
     <string name="no_found_device">Not found the equipment, click rescan</string>
     <string name="name_info">Have been scanned to equipment:</string>
     <string name="address_info">Equipment MAC address:</string>
-   <!-- video play error toast -->
+    <!-- video play error toast -->
     <string name="play_error">Did not find the appropriate application of play </string>
+
+    <!-- the dialog of live -->
+    <string name="live_ok">Go now</string>
+    <string name="live_cancle">Exit the live</string>
+    <string name="live_open_bt">Enable BT, waiting...</string>
+    <string name="live_get_url">Getting live URL, waiting...</string>
+    <string name="live_loading">Getting Video, waiting...</string>
+
+    <string name="live_bt_disconnect">glass has not connected phone yet</string>
+    <string name="live_wifi_disconnect">glass wifi disconnect</string>
+    <string name="live_stream_down">Live connect failed</string>
+    <string name="live_wait_network_data">Network is poor, data loading ...</string>
+    <string name="live_network_disconnect">Network disconnect</string>
+
     <!--the dialog of bluetooth-->
     <string name="dialog_title">Binding the glass need to open the Bluetooth</string>
     <string name="dialog_ok">Go now</string>
     <string name="dialog_cancle">Exit the application</string>
-
-    <string name="live_dialog_title">live need to open the phone wifi hotpot then make glass connect to hotpot</string>
-    <string name="live_dialog_ok">Go now</string>
-    <string name="live_dialog_cancle">Exit the live</string>
-    <string name="live_dialog_loading">Getting Video, waiting...</string>
-
-    <string name="live_not_connected_dialog_title">glass has not connected phone yet</string>
-    <string name="live_stream_disconnect_dialog_title">Live connect failed</string>
-    <string name="live_quit_dialog_title">live failed because of network error or other unknown reason</string>
-    <string name="live_quit_dialog_cancle">Exit the live</string>
-    <string name="live_wait_network_data">Network is poor, data loading ...</string>
-    <string name="live_network_disconnect">Network disconnect</string>
-
-
     <string name="bluetooth_off">Bluetooth is off, has quit the Glass Aide application</string>
     <string name="bind_timeout">Binding device timeout, please research glass</string>
 
@@ -248,6 +249,9 @@
     <string name="release_refresh">release</string>  
     <string name="pullto_refresh">pull to</string>  
     <string name="refreshing">scaning…</string>
+
+    <string name="tttt">pull-down refresh</string>  
+    <string name="bbbb">last update</string>  
     
     <!-- weather -->
     <string name="weather_tip1">Is get the weather information from mobile phone</string>   

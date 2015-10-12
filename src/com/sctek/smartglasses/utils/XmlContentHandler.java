@@ -17,7 +17,7 @@ public class XmlContentHandler extends DefaultHandler {
 	
 	private final static String TAG = "XmlContentHandler";
 	private final static String IMAGE_PREFIX = "http://%s/data/GlassData/photos/";
-	private final static String VEDIO_PREFIX = "http://%s/data/GlassData/vedios/";
+	private final static String VEDIO_PREFIX = "http://%s/data/GlassData/videos/";
 	
 	private String nodeName;
 	private ArrayList<MediaData> mediaList;
@@ -45,7 +45,7 @@ public class XmlContentHandler extends DefaultHandler {
 			Attributes attributes) throws SAXException {
 		// TODO Auto-generated method stub
 		nodeName = localName;
-		if("vedios".equals(nodeName))
+		if("videos".equals(nodeName))
 			urlPrefix = String.format(VEDIO_PREFIX, ip);
 		super.startElement(uri, localName, qName, attributes);
 	}

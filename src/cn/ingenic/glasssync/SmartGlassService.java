@@ -1,22 +1,47 @@
 package cn.ingenic.glasssync;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 
 import com.android.internal.telephony.ITelephony;
+import com.baidu.location.LocationClient;
 import com.ingenic.glass.api.sync.SyncChannel;
 import com.ingenic.glass.api.sync.SyncChannel.CONNECTION_STATE;
 import com.ingenic.glass.api.sync.SyncChannel.Packet;
 import com.ingenic.glass.api.sync.SyncChannel.RESULT;
+import com.sctek.smartglasses.utils.CustomHttpClient;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.telephony.cdma.CdmaCellLocation;
+import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.widget.Toast;
 
 public class SmartGlassService extends Service{
 	
@@ -30,6 +55,7 @@ public class SmartGlassService extends Service{
 	
 	private final static int MSG_TYPE_LOW_POWER = 2;
 	private final static int MSG_TYPE_PHONE = 1;
+
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -47,6 +73,7 @@ public class SmartGlassService extends Service{
 		super.onCreate();
 	}
 	
+	@SuppressLint("NewApi")
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
@@ -150,7 +177,6 @@ public class SmartGlassService extends Service{
 		} catch (Exception e) {
 			e.printStackTrace();
 			try{
-				Log.e("Sandy", "for version 4.1 or larger");
 				Intent intent = new Intent("android.intent.action.MEDIA_BUTTON");
 				KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HEADSETHOOK);
 				intent.putExtra("android.intent.extra.KEY_EVENT",keyEvent);

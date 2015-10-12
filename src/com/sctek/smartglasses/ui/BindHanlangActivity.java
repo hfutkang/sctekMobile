@@ -1,5 +1,6 @@
 package com.sctek.smartglasses.ui;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.List;
@@ -7,7 +8,16 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+
 import com.sctek.smartglasses.ui.MainActivity;
+import com.sctek.smartglasses.utils.CustomHttpClient;
 import com.sctek.smartglasses.zxing.CaptureActivity;
 
 import android.R.layout;
@@ -20,10 +30,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.telephony.CellLocation;
+import android.telephony.TelephonyManager;
+import android.telephony.cdma.CdmaCellLocation;
+import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;

@@ -20,6 +20,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.media.audiofx.AudioEffect.OnControlStatusChangeListener;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
@@ -107,7 +108,7 @@ public class MediaSyncService extends Service{
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
-		
+		LocationManager mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
 		return super.onStartCommand(intent, flags, startId);
 	}
 	
@@ -190,7 +191,7 @@ public class MediaSyncService extends Service{
 		mNotificationManager.notify(VIDOE_NOTIFICATION_ID, mVideoNotification);
 		
 		String photoPath = Environment.getExternalStorageDirectory().toString()
-				+ "/SmartGlasses/vedios/" + name;
+				+ "/SmartGlasses/videos/" + name;
 		Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 		mediaScanIntent.setData(Uri.fromFile(new File(photoPath)));
 		sendBroadcast(mediaScanIntent);

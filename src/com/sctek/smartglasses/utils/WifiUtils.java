@@ -146,8 +146,10 @@ public class WifiUtils {
 	}
 	
 	public static String getDefaultApSsid(Context mContext) {
-		String defaultSsid = "WEAR" + ((TelephonyManager)mContext
-				.getSystemService(mContext.TELEPHONY_SERVICE)).getDeviceId().substring(0, 5);
+		String deviceId = ((TelephonyManager)mContext
+				.getSystemService(mContext.TELEPHONY_SERVICE)).getDeviceId();
+		
+		String defaultSsid = "WEAR" + deviceId.substring(deviceId.length()-5, deviceId.length());
 		String ssid = PreferenceManager.
 				getDefaultSharedPreferences(mContext).getString("ssid", defaultSsid);
 		

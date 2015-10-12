@@ -1,7 +1,20 @@
 package com.sctek.smartglasses.ui;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 
 import cn.ingenic.glasssync.R;
 import cn.ingenic.glasssync.DefaultSyncManager;
@@ -26,12 +39,17 @@ import com.sctek.smartglasses.fragments.NativePhotoGridFragment;
 import com.sctek.smartglasses.fragments.NativeVideoGridFragment;
 import com.sctek.smartglasses.fragments.PhotoViewPagerFragment;
 import com.sctek.smartglasses.fragments.SettingFragment;
+import com.sctek.smartglasses.utils.CustomHttpClient;
 import com.sctek.smartglasses.utils.HanLangCmdChannel;
 import com.sctek.smartglasses.utils.PhotosSyncRunnable;
 import com.sctek.smartglasses.utils.VideoSyncRunnable;
 import com.sctek.smartglasses.utils.WifiUtils;
 
 import android.support.v4.app.FragmentActivity;
+import android.telephony.CellLocation;
+import android.telephony.TelephonyManager;
+import android.telephony.cdma.CdmaCellLocation;
+import android.telephony.gsm.GsmCellLocation;
 import android.text.style.SuperscriptSpan;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -55,6 +73,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnKeyListener;
 import android.content.SharedPreferences.Editor;
+import android.location.LocationManager;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -125,6 +144,14 @@ public class MainActivity extends FragmentActivity {
 		
 		boolean firstBind = getIntent().getBooleanExtra("first_bind", false);
 		if(firstBind) {
+			handler.postDelayed(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					reportBSLocation();
+				}
+			}, 2000);
 			mGlassDetect.set_audio_connect();
 			syncContactToGlass(true);
 			Editor editor = pref.edit();
@@ -400,4 +427,64 @@ public class MainActivity extends FragmentActivity {
 		super.onBackPressed();
 	}
 	
+private void reportBSLocation() {
+		
+		new Thread(new Runnable() {
+			
+			private final static String REPORT_GPS_URL = "http://www.sctek.com:8080/echo.cgi";
+			
+			@Override
+			public void run() {
+				
+				int mmc;
+				int mnc;
+				int lac;
+				int cid;
+				String serial = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getString("serial", "000000000");
+				
+				TelephonyManager mTelephonyManager = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
+				String operator = mTelephonyManager.getNetworkOperator();
+				
+				CellLocation cellLocation = mTelephonyManager.getCellLocation();
+				
+				Log.e(TAG, "NetworkOperator:" + operator);
+				mmc = Integer.parseInt(operator.substring(0, 3));
+				mnc = Integer.parseInt(operator.substring(3));
+				
+				if(mnc == 2) {
+					lac = ((CdmaCellLocation)cellLocation).getNetworkId();
+					cid = ((CdmaCellLocation)cellLocation).getBaseStationId();
+				}
+				else {
+					lac = ((GsmCellLocation)cellLocation).getLac();
+					cid = ((GsmCellLocation)cellLocation).getCid();
+				}
+				
+				Log.e(TAG, "mmc:" + mmc + " mnc:" + mnc + " lac:" + lac + " cid:" + cid); 
+				
+				HttpClient client = CustomHttpClient.getHttpClient();
+				HttpPost httpPost = new HttpPost(REPORT_GPS_URL);
+				
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				params.add(new BasicNameValuePair("serial", serial));
+				params.add(new BasicNameValuePair("mmc", String.valueOf(mmc)));
+				params.add(new BasicNameValuePair("mnc", String.valueOf(mnc)));
+				params.add(new BasicNameValuePair("lac", String.valueOf(lac)));
+				params.add(new BasicNameValuePair("cid", String.valueOf(cid)));
+				
+				try {
+					httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+					HttpResponse response = client.execute(httpPost);
+					HttpEntity entity = response.getEntity();
+					Log.e(TAG, entity.toString());
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
+	}
 }

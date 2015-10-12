@@ -177,8 +177,8 @@
     <string name="media">媒体浏览</string>
     <string name="bind_Glass">绑定眼镜</string>
     <string name="unbond">解除当前绑定</string>
-    <string name="welcome">for Glass</string>
-    <string name="welcome_text">Copyright © 2014 Ingenic.\n All rights reserved.</string>
+    <!-- <string name="welcome">for Glass</string> -->
+    <!-- <string name="welcome_text">Copyright © 2014 Ingenic.\n All rights reserved.</string> -->
     <string name="other_bind">无摄像头快捷绑定</string>
     <string name="pho_bind">摄像头绑定</string>
     <string name="other_bind_info">一键绑定眼镜，需要您在眼镜开机后2分钟之内进行操作，否则将无法进行绑定。</string>
@@ -204,15 +204,16 @@
     <!-- video play error toast -->
     <string name="play_error"> 没有找合适的应用程序进行播放 </string>
 
-    <string name="live_dialog_title">录像直播需要开启手机WIFI热点,并将眼镜连接上手机WIFI热点</string>
-    <string name="live_dialog_ok">现在就去</string>
-    <string name="live_dialog_cancle">退出直播</string>
-    <string name="live_dialog_loading">正在获取视频中，请稍等...</string>
+    <!-- the dialog of live -->
+    <string name="live_ok">现在就去</string>
+    <string name="live_cancle">退出直播</string>
+    <string name="live_open_bt">等待蓝牙开启...</string>
+    <string name="live_get_url">获取直播地址...</string>
+    <string name="live_loading">正在获取视频中，请稍等...</string>
 
-    <string name="live_not_connected_dialog_title">眼镜还没有连接上手机WIFI热点</string>
-    <string name="live_stream_disconnect_dialog_title">直播连接失败</string>
-    <string name="live_quit_dialog_title">直播失败,请检查设备是否连接同一个网络</string>
-    <string name="live_quit_dialog_cancle">退出直播</string>
+    <string name="live_bt_disconnect">眼镜还没有连接上手机</string>
+    <string name="live_wifi_disconnect">眼镜无线网络未连接</string>
+    <string name="live_stream_down">直播连接失败</string>
     <string name="live_wait_network_data">网络较差，数据加载中 ...</string>
     <string name="live_network_disconnect">网络失去连接</string>
 

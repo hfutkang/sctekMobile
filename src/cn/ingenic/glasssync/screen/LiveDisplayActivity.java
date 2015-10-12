@@ -6,15 +6,16 @@ import android.util.Log;
 import android.content.Intent;
 import android.content.Context;
 import cn.ingenic.glasssync.R;
-
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
 import android.os.Build;
 import android.view.KeyEvent;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.app.Dialog;
 import android.app.Application; 
 import android.app.ProgressDialog;
@@ -23,9 +24,8 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.content.ComponentName;
 import android.content.pm.ConfigurationInfo;
-
-
 import android.text.format.Formatter;
+
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -37,12 +37,12 @@ import cn.ingenic.glasssync.devicemanager.WifiManagerApi;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
+
 import java.net.UnknownHostException;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import cn.ingenic.glasssync.DefaultSyncManager;
-
 import cn.ingenic.glasssync.utils.MyDialog;
 import cn.ingenic.glasssync.screen.live.LiveModule;
 import cn.ingenic.glasssync.screen.live.RtspClient;
@@ -144,10 +144,19 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
+	getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 	setContentView(R.layout.activity_display);
 	Log.e(TAG, "onCreate");
 	sActivity = this;
 	sHasError = false;
+	PowerManager pm = (PowerManager) this
+		    .getSystemService(this.POWER_SERVICE);
+		PowerManager.WakeLock wl = pm.newWakeLock(
+							  PowerManager.ACQUIRE_CAUSES_WAKEUP
+							  | PowerManager.SCREEN_DIM_WAKE_LOCK, "bright");
+		wl.acquire();
+		wl.release();
+
 	initView();
     }
 
@@ -420,6 +429,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	if (sHasError)
 	    return;
 
+	//comment by hky@sctek.cn 20150930
 	if (!checkWifiAPState())
 	    return;
 
