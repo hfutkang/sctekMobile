@@ -114,6 +114,8 @@
 
         <service android:name="cn.ingenic.glasssync.SmartGlassService"></service>
         
+        <service android:name="cn.ingenic.glasssync.LocationReportService"></service>        
+        
         <service android:name=".services.SyncService" >
             <intent-filter>
                 <action android:name="cn.ingenic.glasssync.SYNC_SERVICE" />

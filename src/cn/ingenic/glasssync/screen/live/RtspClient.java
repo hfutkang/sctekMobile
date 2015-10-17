@@ -101,7 +101,6 @@ public class RtspClient {
 	    case NATIVE_MSG_NOTIFY_FRAME_STATE:
 		if (DEBUG) Log.e(TAG, "NATIVE_MSG_NOTIFY_FRAME_STATE : " + msg.arg1);
 		if (msg.arg1 == 0) { // FRAME_MISS
-			
 		    if (LiveDisplayActivity.mPD != null) {
 			LiveDisplayActivity.mPD.setMessage(mContext.getString(R.string.live_wait_network_data));
 			LiveDisplayActivity.mPD.show();
@@ -123,11 +122,8 @@ public class RtspClient {
     }
     
     private static void postEventFromNative(Object rtspclient_ref, int what, int arg1, int arg2, Object obj) {
-    	Log.e(TAG, "==============" + what + "  " + arg1 + "    " + arg2 + "  " + obj);
     	RtspClient rc = (RtspClient)((WeakReference)rtspclient_ref).get();
-    	Log.e(TAG, "============rc1=====" + rc);
     	if (rc != null && rc.mEventHandler != null) {
-    		Log.e(TAG, "============rc2=====" + rc);
     	    Message m = rc.mEventHandler.obtainMessage(what, arg1, arg2, obj);
     	    rc.mEventHandler.sendMessage(m);
     	}

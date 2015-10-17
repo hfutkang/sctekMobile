@@ -1,79 +1,41 @@
 package cn.ingenic.glasssync.screen.live;
 
-import android.os.RemoteException;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
-import android.content.Context;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.widget.Toast;
-import android.widget.ImageView;
+import android.content.Context;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.app.Dialog;
-
-import android.view.View;  
-import android.app.Application; 
-
-import java.util.ArrayList;
 import cn.ingenic.glasssync.R;
 import cn.ingenic.glasssync.services.SyncData;
 import cn.ingenic.glasssync.services.SyncModule;
 import cn.ingenic.glasssync.services.SyncException;
-
-import cn.ingenic.glasssync.utils.MyDialog;
-import cn.ingenic.glasssync.screen.live.RtspClient;
 import cn.ingenic.glasssync.screen.LiveDisplayActivity;
 
 public class LiveModule extends SyncModule {
     private static final String TAG = "MobileLiveModule";
-    public static final Boolean DEBUG = false;
+    private static final String MODULE_NAME = "live_module";
+    private Boolean DEBUG = true;
 
-    public static final String LIVE_NAME = "live_module";
-    public static final String LIVE_SHARE = "live_share";
-    public static final String LIVE_TRANSPORT_CMD = "live_transport_cmd";
-    public static final String LIVE_QUIT_CMD = "live_quit_cmd";
-    public static final String LIVE_RTSP_URL = "live_rtsp_url";
+    // key-value pairs
+    private final String LIVE_MESSAGE = "live_message";
+    private final String LIVE_ERROR = "live_err";    
+    private final String LIVE_RTSP_URL = "live_rtsp_url";
 
-    public static final String LIVE_WIFI_CONNECTED = "live_wifi_connected";
-    public static final String LIVE_WIFI_UNCONNECTED = "live_wifi_unconnected";
+    // glass message receiver
+    private final int LIVE_MSG_START = 0;
+    private final int LIVE_MSG_STOP = 1;
+    private final int LIVE_MSG_GET_URL = 2;
 
-    public static final String LIVE_CAMERA_OPENED = "live_camera_opened";
-    public static final String LIVE_CAMERA_NOT_OPENED = "live_camera_not_opened";
-    public static final String LIVE_CAMERA_NOT_OPENED_ERROR = "live_camera_not_opened_err";
-    
-    public static final int TRANSPORT_WIFI_CONNECTED = 0;
-    public static final int TRANSPORT_WIFI_UNCONNECTED = 1;
-    public static final int TRANSPORT_CAMERA_OPENED = 2;
-    public static final int TRANSPORT_CAMERA_NOT_OPENED = 3;
-	
-    
+    // mobile message receiver
+    private final int LIVE_MSG_WIFI_CONNECTED = 1000;
+    private final int LIVE_MSG_WIFI_UNCONNECTED = 1001;
+    private final int LIVE_MSG_CAMERA_OPENED = 1002;
+    private final int LIVE_MSG_CAMERA_NOT_OPENED = 1003;
+
     private static LiveModule sInstance;
     private Context mContext;
     private String mUrl = null;
-    private String mNeededIP = null;
-    private StringBuilder mIP = null;
-
-    // mStopped true: when LiveDisplayActivity ask glass to open camera; false: when LiveDisplayActivity ask glass to close camera
-    // if true don't response retry request from self
-    private boolean mStopped = true; 
-    private final int MSG_RETRY = 0;
-    private Handler mHandler = new Handler(){
-	@Override
-	public void handleMessage(Message msg){
-	    switch (msg.what) {
-	    case MSG_RETRY:
-		    if (!mStopped)
-			sendRequestData(msg.arg1 == 1, true);
-		    break;
-	    }
-	}
-    };
 
     private LiveModule(Context context) {
-	super(LIVE_NAME, context);
+	super(MODULE_NAME, context);
 	mContext = context;
     }
     
@@ -91,95 +53,80 @@ public class LiveModule extends SyncModule {
 
     @Override
     protected void onRetrive(SyncData data) {
-	if(DEBUG) Log.e(TAG, "---Mobile onRetrive");
+	if(DEBUG) Log.e(TAG, "Mobile onRetrive");
 
-	int choice = data.getInt(LIVE_SHARE);
-	if (DEBUG) Log.e(TAG, "choice = " + choice);
-	switch (choice) {
-	case TRANSPORT_WIFI_CONNECTED:
+	int message = data.getInt(LIVE_MESSAGE);
+	switch (message) {
+	case LIVE_MSG_WIFI_CONNECTED:
 	    mUrl = data.getString(LIVE_RTSP_URL);
-	    Log.e(TAG, "TRANSPORT_WIFI_CONNECTED mUrl = " + mUrl);
-	    break;
-	case TRANSPORT_WIFI_UNCONNECTED:
-	    if (DEBUG) Log.e(TAG, "RANSPORT_WIFI_UNCONNECTED");
-	    break;
-	case TRANSPORT_CAMERA_OPENED:
-	    if (DEBUG) Log.e(TAG, "RANSPORT_CAMERA_OPENED");
-	    LiveDisplayActivity.mRTSPOpened = true;
-	    if (isHasNeedIP()) {
-		if (LiveDisplayActivity.mPD != null) {
-		    LiveDisplayActivity.mPD.setMessage(mContext.getString(R.string.live_dialog_loading));
-		    LiveDisplayActivity.mPD.show();
-		}
-		Log.d(TAG, "LiveDisplayActivity.mRtspClient "+LiveDisplayActivity.mRtspClient+" "+mUrl);
-		if (LiveDisplayActivity.mRtspClient != null)
-		    LiveDisplayActivity.mRtspClient.start(mUrl);
-	    }else{
-		LiveDisplayActivity.mWifiDeviceConnected = false;
+	    if (DEBUG) Log.e(TAG, "LIVE_MSG_WIFI_CONNECTED mUrl = " + mUrl);
+	    if (LiveDisplayActivity.mPD != null) {
+		LiveDisplayActivity.mPD.setMessage(mContext.getString(R.string.live_loading));
+		LiveDisplayActivity.mPD.show();
 	    }
+	    if (mUrl != null)
+		LiveDisplayActivity.startRtspClient(mUrl);
 	    break;
-	case TRANSPORT_CAMERA_NOT_OPENED:
-	    if (DEBUG) Log.e(TAG, "TRANSPORT_CAMERA_NOT_OPENED");
-	    String err = data.getString(LIVE_CAMERA_NOT_OPENED_ERROR);
+
+	case LIVE_MSG_WIFI_UNCONNECTED:
+	    if (DEBUG) Log.e(TAG, "LIVE_MSG_WIFI_UNCONNECTED");
+	    LiveDisplayActivity.showLiveErrorDialog(mContext.getString(R.string.live_wifi_disconnect));
+	    break;
+
+	case LIVE_MSG_CAMERA_OPENED:
+	    if (DEBUG) Log.e(TAG, "LIVE_MSG_CAMERA_OPENED");
+	    if (LiveDisplayActivity.mPD != null) {
+		LiveDisplayActivity.mPD.setMessage(mContext.getString(R.string.live_get_url));
+		LiveDisplayActivity.mPD.show();
+	    }
+	    sendGetURLMessage();
+	    break;
+
+	case LIVE_MSG_CAMERA_NOT_OPENED:
+	    if (DEBUG) Log.e(TAG, "LIVE_MSG_CAMERA_NOT_OPENED");
+	    String err = data.getString(LIVE_ERROR);
 	    if (err != null) {
-		LiveDisplayActivity.showCameraErrorDialog(err);    
-	    } else if (!mStopped)
-		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_RETRY, 1, 0), 3000);
-	    break;
-	default:
-	    break;
-	}
-	if(DEBUG) Log.e(TAG, "---Mobile onRetrive end");
-    }
-
-    private boolean isHasNeedIP() {
-	ArrayList<String> connectedIP = LiveDisplayActivity.mConnectedIP;
-	if (mUrl != null) {
-	    for (String ip : connectedIP) {
-		if(mUrl.indexOf(ip) != -1) {
-		    mNeededIP = ip;  
-		    return true;
-		}
+		LiveDisplayActivity.showLiveErrorDialog(err);
 	    }
+	    break;
+
+	default:
+	    Log.e(TAG, "Unknow message " + message);
+	    break;
 	}
-	return false;
+	if(DEBUG) Log.e(TAG, "Mobile onRetrive end");
     }
 
-    private void sendRequestData(boolean bool, boolean callBySelf) {
-	// if app ask to quit, don't response connect request from self anymore
-	if (bool && callBySelf && mStopped)
-	    return;
+    private void sendGetURLMessage() {
+	if (DEBUG) Log.e(TAG, "sendGetURLMessage");
 	SyncData data = new SyncData();
-	if (DEBUG) Log.e(TAG, "sendRequestData");
-	data.putInt(LIVE_SHARE, 1);
-	data.putBoolean(LIVE_TRANSPORT_CMD, bool);
-	if (DEBUG) Log.e(TAG, "bool = " + bool);
+	data.putInt(LIVE_MESSAGE, LIVE_MSG_GET_URL);
 	try {
-	    if (DEBUG) Log.e(TAG, "---send data " + bool);
 	    send(data);
 	} catch (SyncException e) {
-	    Log.e(TAG, "---send file sync failed:" + e);
+	    Log.e(TAG, "send file sync failed:" + e);
 	}
     }
 
-    public void sendRequestData(boolean bool) {
-	if (bool) mStopped = false;
-	sendRequestData(bool, false);
-    }
-
-    public void sendQuitMessage() {
-	mStopped = true;
-	mHandler.removeMessages(MSG_RETRY);
+    public void sendStartMessage() {
+	if (DEBUG) Log.e(TAG, "sendStartMessage");
 	SyncData data = new SyncData();
-	Log.e(TAG, "sendQuitMessage");
-	data.putInt(LIVE_SHARE, 1);
-	data.putBoolean(LIVE_QUIT_CMD, true);
+	data.putInt(LIVE_MESSAGE, LIVE_MSG_START);
 	try {
-	    Log.e(TAG, "---send quit message");
 	    send(data);
 	} catch (SyncException e) {
-	    Log.e(TAG, "---send file sync failed:" + e);
+	    Log.e(TAG, "send file sync failed:" + e);
 	}
     }
 
+    public void sendStopMessage() {
+	Log.e(TAG, "sendStopMessage");
+	SyncData data = new SyncData();
+	data.putInt(LIVE_MESSAGE, LIVE_MSG_STOP);
+	try {
+	    send(data);
+	} catch (SyncException e) {
+	    Log.e(TAG, "send file sync failed:" + e);
+	}
+    }
 }

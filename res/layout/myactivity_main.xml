@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    		android:id="@+id/main_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="5dp"
@@ -17,29 +18,86 @@
 		    android:layout_height="wrap_content"
 		    android:weightSum="3">
 		    
-		    <ImageButton 
-		        android:id="@+id/photo_ib"
+		    <LinearLayout 
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:background="@color/transparent"
-		        android:src="@drawable/photo_selector"
-		        android:layout_weight="1"/>
+		        android:layout_gravity="center_horizontal"
+		        android:orientation="vertical"
+		        android:gravity="center_horizontal"
+		        android:layout_weight="1">
 		    
-		    <ImageButton 
-		        android:id="@+id/video_ib"
+				    <ImageButton 
+				        android:id="@+id/photo_ib"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:background="@color/transparent"
+				        android:src="@drawable/photo_selector" />
+				    
+				    		<TextView
+				    		    android:layout_width="wrap_content"
+				    		    	android:layout_height="wrap_content"
+				    		    	android:text="@string/hanlang_photo"
+				    		    	android:textColor="@color/whitesmoke"
+				    		    	android:layout_marginTop="3dp"
+				    		    	android:typeface="monospace"
+				    		    	android:gravity="fill_horizontal"
+				    		    	android:textSize="15dp"/>
+				    		
+		    </LinearLayout>
+		    
+		    <LinearLayout 
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:background="@color/transparent"
-		        android:src="@drawable/video_selector"
-		        android:layout_weight="1"/>
+		        android:layout_gravity="center_horizontal"
+		        android:orientation="vertical"
+		        android:gravity="center_horizontal"
+		        android:layout_weight="1">
+				    		
+				    <ImageButton 
+				        android:id="@+id/video_ib"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:background="@color/transparent"
+				        android:src="@drawable/video_selector"/>
+				    
+				    <TextView
+				    		    android:layout_width="wrap_content"
+				    		    	android:layout_height="wrap_content"
+				    		    	android:text="@string/hanlang_video"
+				    		    	android:textColor="@color/whitesmoke"
+				    		    	android:layout_marginTop="3dp"
+				    		    	android:typeface="monospace"
+				    		    	android:gravity="fill_horizontal"
+				    		    	android:textSize="15dp"/>
+				    
+				    </LinearLayout>
 		    
+		    <LinearLayout 
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_gravity="center_horizontal"
+		        android:orientation="vertical"
+		        android:gravity="center_horizontal"
+		        android:layout_weight="1">
+				    
 		    <ImageButton 
 		        android:id="@+id/live_ib"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:background="@color/transparent"
-		        android:src="@drawable/live_selector"
-		        android:layout_weight="1"/>
+		        android:src="@drawable/live_selector"/>
+		    
+		    <TextView
+				    		    android:layout_width="wrap_content"
+				    		    	android:layout_height="wrap_content"
+				    		    	android:text="@string/hanlang_live"
+				    		    	android:textColor="@color/whitesmoke"
+				    		    	android:layout_marginTop="3dp"
+				    		    	android:typeface="monospace"
+				    		    	android:gravity="fill_horizontal"
+				    		    	android:textSize="15dp"/>
+				    
+				    </LinearLayout>
 		    
 		</TableRow>
     
@@ -49,29 +107,86 @@
 		    android:paddingTop="25dp"
 		    android:weightSum="3">
 		    
+		    <LinearLayout 
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_gravity="center_horizontal"
+		        android:orientation="vertical"
+		        android:gravity="center_horizontal"
+		        android:layout_weight="1">
+		    
 		    <ImageButton 
 		        android:id="@+id/setting_ib"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:background="@color/transparent"
-		        android:src="@drawable/setting_selector"
-		        android:layout_weight="1"/>
+		        android:src="@drawable/setting_selector"/>
 		    
-		    <ImageButton 
-		        android:id="@+id/about_ib"
+		    <TextView
+				    		    android:layout_width="wrap_content"
+				    		    	android:layout_height="wrap_content"
+				    		    	android:text="@string/hanlang_setting"
+				    		    	android:textColor="@color/whitesmoke"
+				    		    	android:layout_marginTop="3dp"
+				    		    	android:typeface="monospace"
+				    		    	android:gravity="fill_horizontal"
+				    		    	android:textSize="15dp"/>
+				    
+		    </LinearLayout>
+		    
+		    <LinearLayout 
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:background="@color/transparent"
-		        android:src="@drawable/about_selector"
-		        android:layout_weight="1"/>
+		        android:layout_gravity="center_horizontal"
+		        android:orientation="vertical"
+		        android:gravity="center_horizontal"
+		        android:layout_weight="1">
 		    
-		    <ImageButton 
-		        android:id="@+id/unbind_ib"
+			    <ImageButton 
+			        android:id="@+id/about_ib"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:background="@color/transparent"
+			        android:src="@drawable/about_selector"/>
+			    
+			    <TextView
+				    		    android:layout_width="wrap_content"
+				    		    	android:layout_height="wrap_content"
+				    		    	android:text="@string/hanlang_about"
+				    		    	android:textColor="@color/whitesmoke"
+				    		    	android:layout_marginTop="3dp"
+				    		    	android:typeface="monospace"
+				    		    	android:gravity="fill_horizontal"
+				    		    	android:textSize="15dp"/>
+				    
+		    </LinearLayout>
+		    
+		     <LinearLayout 
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:background="@color/transparent"
-		        android:src="@drawable/unbind_selector"
-		        android:layout_weight="1"/>
+		        android:layout_gravity="center_horizontal"
+		        android:orientation="vertical"
+		        android:gravity="center_horizontal"
+		        android:layout_weight="1">
+		    
+			    <ImageButton 
+			        android:id="@+id/unbind_ib"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:background="@color/transparent"
+			        android:src="@drawable/unbind_selector"/>
+			    
+			    <TextView
+				    		    android:layout_width="wrap_content"
+				    		    	android:layout_height="wrap_content"
+				    		    	android:text="@string/hanlang_unbind"
+				    		    	android:textColor="@color/whitesmoke"
+				    		    	android:layout_marginTop="3dp"
+				    		    	android:typeface="monospace"
+				    		    	android:gravity="fill_horizontal"
+				    		    	android:textSize="15dp"/>
+				    
+		    </LinearLayout>
 		</TableRow>
     </TableLayout>
 </LinearLayout>

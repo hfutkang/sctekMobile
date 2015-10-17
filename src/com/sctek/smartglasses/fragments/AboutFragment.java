@@ -97,13 +97,15 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 				switch (type) {
 				case GET_POWER_LEVEL:
 					int level = data.getInt("power");
-					mPowerPreference.setSummary("悍狼当前电量:" + level + "%");
+					String text1 = String.format((String)getResources().getText(R.string.hanlang_power_state), level);
+					mPowerPreference.setSummary(text1 + "%");
 					removeMessages(GET_POWER_TIMEOUT);
 					break;
 				case GET_STORAGE_INFO:
 					String total = data.getString("total");
 					String available = data.getString("available");
-					mStoragePreference.setSummary("悍狼当前存储:" + available + "/" + total); 
+					String text2 = String.format((String)getResources().getText(R.string.hanlang_storage_state), available, total);
+					mStoragePreference.setSummary(text2); 
 					removeMessages(GET_STORAGE_TIMEOUT);
 					break;
 				case GET_UP_TIME:
@@ -202,13 +204,13 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 		
 		String result = null;
 		if(upHour > 0 ) {
-			result = String.format("悍狼已运行%d小时%d分%d秒", upHour, upMinute, upSecond);
+			result = String.format((String)getResources().getText(R.string.hanlang_on_time_hour), upHour, upMinute, upSecond);
 		}
 		else if(upMinute > 0) {
-			result = String.format("悍狼已运行%d分%d秒", upMinute, upSecond);
+			result = String.format((String)getResources().getText(R.string.hanlang_on_time_minute), upMinute, upSecond);
 		}
 		else {
-			result = String.format("悍狼已运行%d秒", upSecond);
+			result = String.format((String)getResources().getText(R.string.hanlang_on_time_second), upSecond);
 		}
 		return result;
 		
@@ -226,13 +228,13 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 			int upHour = (int) ((totalSecond/60/60));
 			
 			if(upHour > 0 ) {
-				result = String.format("录像中(%d小时%d分%d秒)", upHour, upMinute, upSecond);
+				result = String.format((String)getResources().getText(R.string.hanlang_video_state_hour), upHour, upMinute, upSecond);
 			}
 			else if(upMinute > 0) {
-				result = String.format("录像中(%d分%d秒)", upMinute, upSecond);
+				result = String.format((String)getResources().getText(R.string.hanlang_video_state_minute), upMinute, upSecond);
 			}
 			else {
-				result = String.format("录像中(%d秒)", upSecond);
+				result = String.format((String)getResources().getText(R.string.hanlang_video_state_second), upSecond);
 			}
 		}
 		return result;

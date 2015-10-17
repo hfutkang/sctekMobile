@@ -398,4 +398,18 @@
     	<string name="no_available_player">未找到可用播放器，请通过图库打开</string>
     	<string name="app_version">App版本</string>
     	<string name="unbonding">正在解绑&#8230;</string>
+    	<string name="hanlang_photo">悍&#160;狼&#160;照&#160;片</string>
+    	<string name="hanlang_video">悍&#160;狼&#160;视&#160;频</string>
+    	<string name="hanlang_live">悍&#160;狼&#160;直&#160;播</string>
+    	<string name="hanlang_setting">悍&#160;狼&#160;设&#160;置</string>
+    	<string name="hanlang_about">悍&#160;狼&#160;关&#160;于</string>
+    	<string name="hanlang_unbind">解&#160;除&#160;悍&#160;狼</string>
+    		<string name="hanlang_power_state">悍狼当前电量:%1$d</string>
+    	<string name="hanlang_storage_state">悍狼当前存储:%1$s/%2$s</string>
+    	<string name="hanlang_on_time_hour">悍狼已运行%1$d小时%2$d分%3$d秒</string>
+			<string name="hanlang_on_time_minute">悍狼已运行%1$d分%2$d秒</string>
+			<string name="hanlang_on_time_second">悍狼已运行%1$d秒</string>
+			<string name="hanlang_video_state_hour">录像中(%1$d小时%2$d分%3$d秒)</string>
+			<string name="hanlang_video_state_minute">录像中(%1$d分%2$d秒)</string>
+			<string name="hanlang_video_state_second">录像中(%1$d秒)</string>
 </resources>

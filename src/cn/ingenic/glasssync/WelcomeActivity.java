@@ -5,15 +5,17 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Locale;
 
 import com.sctek.smartglasses.ui.BindHanlangActivity;
 import com.sctek.smartglasses.ui.MainActivity;
+
+import cn.ingenic.glasssync.R;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.content.Context;
 import android.util.Log;
 import android.app.Dialog;
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
@@ -23,11 +25,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
 import android.provider.Settings;
+
+
+
 // import cn.ingenic.glasssync.ui.BindGlassActivity;
 import com.sctek.smartglasses.ui.BindGlassActivity;
+
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import cn.ingenic.glasssync.SyncApp;
 import cn.ingenic.glasssync.ui.Fragment_MainActivity;
@@ -45,10 +52,12 @@ public class WelcomeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.welcome_activity);
+		
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
 		registerReceiver(mBluetoothReceiver, filter);
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
+		
 
 		if(mAdapter.isEnabled()==false){
 		    mDialog = new MyDialog(this, R.style.MyDialog,getApplication().getResources().getString(R.string.dialog_title), getApplication().getResources().getString(R.string.dialog_ok),getApplication().getResources().getString(R.string.dialog_cancle),new MyDialog.LeaveMeetingDialogListener() {
@@ -81,6 +90,7 @@ public class WelcomeActivity extends Activity {
 		}
 		startActivity();
 	}
+
 
     private final BroadcastReceiver mBluetoothReceiver = new BroadcastReceiver() {
 	    @Override
@@ -140,6 +150,13 @@ public class WelcomeActivity extends Activity {
     @Override
     	protected void onResume() {
     	super.onResume();
+    	
+    	Locale local = getResources().getConfiguration().locale;
+    	
+    	if(!local.getLanguage().contains("zh")) {
+    		LinearLayout layout = (LinearLayout)findViewById(R.id.welcome_layout);
+    		layout.setBackgroundResource(R.drawable.welcome_background_en_low);
+    	}
     	if(mFirst){ 
     	    mFirst = false;
     	    return;
