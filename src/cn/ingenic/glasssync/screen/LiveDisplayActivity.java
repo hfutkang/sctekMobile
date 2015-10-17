@@ -90,10 +90,19 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
+	getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 	setContentView(R.layout.activity_display);
 	Log.e(TAG, "onCreate");
 	sActivity = this;
 	sHasError = false;
+	PowerManager pm = (PowerManager) this
+		    .getSystemService(this.POWER_SERVICE);
+		PowerManager.WakeLock wl = pm.newWakeLock(
+							  PowerManager.ACQUIRE_CAUSES_WAKEUP
+							  | PowerManager.SCREEN_DIM_WAKE_LOCK, "bright");
+		wl.acquire();
+		wl.release();
+
 	initView();
     }
 
