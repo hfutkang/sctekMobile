@@ -377,7 +377,7 @@ public class BindHanlangActivity extends Activity {
     }
     
     private String getNameFromQrResult(String result) {
-    	
+    	Log.e(TAG, "result:" + result);
     	if(result == null)
     		return null;
     	
@@ -387,7 +387,7 @@ public class BindHanlangActivity extends Activity {
     		return null;
     	
     	if(strings[1].startsWith("WEAR")) {
-    		Pattern patter = Pattern.compile("^WEAR_[0-9]{9}$");
+    		Pattern patter = Pattern.compile("^WEAR_[A-Z]{2}[0-9]*$");
     		Matcher matcher = patter.matcher(strings[1]);
     		if(matcher.matches())
     			return strings[1];

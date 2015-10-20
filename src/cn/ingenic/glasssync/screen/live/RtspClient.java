@@ -22,9 +22,11 @@ public class RtspClient {
     private static final String TAG = "RtspClient";
     private final boolean DEBUG = true;
     
-    private OnRtspClientListener mOnRtspClientListener = null;
-    private static EventHandler mEventHandler = null;
     private Context mContext = null;
+    private OnRtspClientListener mOnRtspClientListener = null;
+
+    private static boolean mHandleEvent = false;
+    private static EventHandler mEventHandler = null;
 
 	// used by native
     private int mNativeContext = 0;
@@ -49,10 +51,12 @@ public class RtspClient {
     public void start(String url) {
 	if (DEBUG) Log.e(TAG, "start");
 	native_start(new WeakReference<RtspClient>(this), url);
+	mHandleEvent = true;
     }
 
     public void close() {
 	if (DEBUG) Log.e(TAG, "close");
+	mHandleEvent = false;
 	native_stop();
     }
 
@@ -123,7 +127,7 @@ public class RtspClient {
     
     private static void postEventFromNative(Object rtspclient_ref, int what, int arg1, int arg2, Object obj) {
     	RtspClient rc = (RtspClient)((WeakReference)rtspclient_ref).get();
-    	if (rc != null && rc.mEventHandler != null) {
+    	if (rc != null && rc.mHandleEvent == true && rc.mEventHandler != null) {
     	    Message m = rc.mEventHandler.obtainMessage(what, arg1, arg2, obj);
     	    rc.mEventHandler.sendMessage(m);
     	}
