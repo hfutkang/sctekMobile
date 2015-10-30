@@ -184,6 +184,8 @@
     <string name="media">Media browser</string>
     <string name="bind_Glass">Binding of glasses</string>
     <string name="unbond">Release the bound</string>
+    <string name="take_photo">take photo</string>
+    <string name="take_video">video/stop</string>
     <string name="finish">Finish</string>
     <string name="other_bind">No camera shortcut binding</string>
     <string name="pho_bind">camera binding</string>
@@ -320,7 +322,8 @@
     <string name="vedio_duration_summary">Choose video fragment duration</string>
     <string name="media_pixel">Pixel</string>
     <string name="photo_pixel_summary">Choose photo pixel</string>
-    <string name="bluetooth_error">Bluetooth connection error ,Try again</string>
+    <string name="bluetooth_error">Bluetooth connection interrupt ,Try again</string>
+    <string name="update_bluetooth_error">Bluetooth connection interrupt,Give up update.</string>
     <string name="select_all">All</string>
     <string name="vedio">Video</string>
     <string name="volume">Media Volume</string>
@@ -443,4 +446,25 @@
 			<string name="hanlang_video_state_hour">Recording(%1$dh %2$dm %3$ds)</string>
 			<string name="hanlang_video_state_minute">Recording(%1$dm %2$ds)</string>
 			<string name="hanlang_video_state_second">Recording(%1$ds)</string>
+			<string name="updates_note">Found a new software version for glasses,would you like to update now.\nNote:Make sure of you get a wifi network when update.</string>
+			<string name="update_now">Now</string>
+			<string name="update_later">Update later</string>
+			<string name="config_wifi">Config wifi</string>
+			<string name="ssid_hint">name of the available wifi</string>
+			<string name="pw_hint">wifi password</string>
+			<string name="cancel_update">Give up upgrade</string>
+			<string name="hanlang_update">Glasses Update</string>
+			<string name="update_try_connect_wifi">Try connect the given wifi.</string>
+			<string name="update_connect_wifi_timeout">Try connect wifi timeout,abandon update</string>
+			<string name="update_start_download">Start downloading upgrade package&#8230;</string>
+			<string name="update_donwload_error">Fail to download upgrade package，abandon upgrade.</string>
+			<string name="update_invalid_package">Invalid package，abandon upgrade。</string>
+			<string name="update_start">Download upgrade package done,start upgrading.\n(if it take too long,please reboot glasses)</string>
+			<string name="update_success">Upgrade successfully,the system is up-to-date now。</string>
+			<string name="update_fail">Upgrade fail，the system remain as it was。</string>
+			<string name="update_power_shortage">Power shortage,abandon upgrade。</string>
+			<string name="language">Language setting</string>
+		   <string name="language_summary">Set up the language of the glass</string>
+		   <string name="language_zh">Chinese</string>
+		   <string name="language_us">English</string>
 </resources>

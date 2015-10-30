@@ -127,7 +127,7 @@ public class RtspClient {
     
     private static void postEventFromNative(Object rtspclient_ref, int what, int arg1, int arg2, Object obj) {
     	RtspClient rc = (RtspClient)((WeakReference)rtspclient_ref).get();
-    	if (rc != null && rc.mHandleEvent == true && rc.mEventHandler != null) {
+    	if (rc != null && rc.mEventHandler != null) {
     	    Message m = rc.mEventHandler.obtainMessage(what, arg1, arg2, obj);
     	    rc.mEventHandler.sendMessage(m);
     	}

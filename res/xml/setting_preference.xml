@@ -70,5 +70,13 @@
         android:key="sync_contact"
         android:defaultValue="true"
         android:summary="@string/sync_contact_to_glass"/>
+	
+	<ListPreference 
+           android:title="@string/language"
+           android:defaultValue="@string/language_zh"
+           android:entries="@array/language"
+           android:entryValues="@array/language_values"
+           android:key="language"
+           android:summary="@string/language_summary"/>
 
 </PreferenceScreen>

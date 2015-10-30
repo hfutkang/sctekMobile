@@ -77,5 +77,15 @@
         <item>Download</item>
         <item>Delete</item>
     </string-array>
+
+    <string-array name="language">
+      <item>@string/language_zh</item>
+      <item>@string/language_us</item>
+    </string-array>
+    
+    <string-array name="language_values">
+      <item>@string/language_zh</item>
+      <item>@string/language_us</item>
+    </string-array>
     
 </resources>

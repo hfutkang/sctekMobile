@@ -6,7 +6,6 @@ import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 import android.view.ViewGroup.LayoutParams;
-import android.view.WindowManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,11 +45,12 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     private BluetoothAdapter mBluetoothAdapter;
     private long mStart = 0;
     private static Activity sActivity = null;
-    private static boolean sHasError = false;
+    private static boolean mStartStatus = false;
+    private static final Object mStartLock = new Object();
 
     private Handler mHandler = new Handler() {
 	    @Override
-	    public void handleMessage(Message msg){
+	    public void handleMessage(Message msg) {
 		super.handleMessage(msg);
 		if (DEBUG) Log.e(TAG, "[ mHandler ] handle Message " + msg.what);
 		if (msg.what == BT_MSG_CONNECTED) {
@@ -92,20 +92,18 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
-	getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 	setContentView(R.layout.activity_display);
 	Log.e(TAG, "onCreate");
 	sActivity = this;
-	sHasError = false;
-	PowerManager pm = (PowerManager) this
-		    .getSystemService(this.POWER_SERVICE);
-		PowerManager.WakeLock wl = pm.newWakeLock(
-							  PowerManager.ACQUIRE_CAUSES_WAKEUP
-							  | PowerManager.SCREEN_DIM_WAKE_LOCK, "bright");
-		wl.acquire();
-		wl.release();
-
 	initView();
+
+	PowerManager pm = (PowerManager) this
+	    .getSystemService(this.POWER_SERVICE);
+	PowerManager.WakeLock wl = pm.newWakeLock(
+	    PowerManager.ACQUIRE_CAUSES_WAKEUP
+	    | PowerManager.SCREEN_DIM_WAKE_LOCK, "bright");
+	wl.acquire();
+	wl.release();
     }
 
 
@@ -144,33 +142,40 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     }
 
     private void initUnConnectedDialog() {
-	mUnConnectedDialog = new MyDialog(this, R.style.MyDialog,getApplication().getResources().getString(R.string.live_bt_disconnect), getApplication().getResources().getString(R.string.live_cancle),new MyDialog.LeaveMeetingDialogListener() {
-		@Override
-		public void onClick(View view) {
-		    switch (view.getId()) {
-		    case R.id.dialog_tv_cancel_one:
-			mUnConnectedDialog.cancel();
-			finish();
-			break;
+	synchronized (mStartLock) {
+	    if (mStartStatus) {
+		mUnConnectedDialog = new MyDialog(this, R.style.MyDialog,
+						  getString(R.string.live_bt_disconnect),
+						  getString(R.string.live_cancle),
+						  new MyDialog.LeaveMeetingDialogListener() {
+						      @Override
+						      public void onClick(View view) {
+							  switch (view.getId()) {
+							  case R.id.dialog_tv_cancel_one:
+							      mUnConnectedDialog.cancel();
+							      finish();
+							      break;
 		
-		    }
-		}});
-        mUnConnectedDialog.setCanceledOnTouchOutside(false);
-    	mUnConnectedDialog.setCancelable(false);
-   	mUnConnectedDialog.setOnKeyListener(new DialogInterface.OnKeyListener(){
-		public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-		    if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (mUnConnectedDialog != null)
-			    mUnConnectedDialog.dismiss();
-			finish();
-		    }
-		    return false;
-		}
-	    });
-    	mUnConnectedDialog.show();
+							  }
+						      }});
+		mUnConnectedDialog.setOnKeyListener(new DialogInterface.OnKeyListener(){
+			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+			    if (keyCode == KeyEvent.KEYCODE_BACK) {
+				if (mUnConnectedDialog != null)
+				    mUnConnectedDialog.dismiss();
+				finish();
+			    }
+			    return false;
+			}
+		    });
+		mUnConnectedDialog.setCanceledOnTouchOutside(false);
+		mUnConnectedDialog.setCancelable(false);
+		mUnConnectedDialog.show();
+	    }
+	}
     }
 
-    private ProgressDialog processDialog(){
+    private ProgressDialog processDialog() {
 	if (DEBUG) Log.e(TAG, "processDialog");
 	ProgressDialog pd = new ProgressDialog(this); 
 	pd.setCancelable(false); 
@@ -215,7 +220,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     }
 
 
-    public static void closeRtspClient(){
+    public static void closeRtspClient() {
     	Log.e(TAG, "closeRtspClient");
         if (mRtspClient != null)
 	    mRtspClient.close();
@@ -225,9 +230,6 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     public void onStart() {
 	if (DEBUG) Log.e(TAG, "onStart");
 	super.onStart();
-
-	if (sHasError)
-	    return;
 
 	if (!checkBTEnabled()) {
 	    mPD.setMessage(getString(R.string.live_open_bt)); 
@@ -240,11 +242,22 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	    if (mLiveModule != null)
 		mLiveModule.sendStartMessage();
 	}
+
+	synchronized (mStartLock) {
+	    mStartStatus = true;
+	}
     }
 
     @Override
     public void onStop() {
 	Log.e(TAG, "onStop");
+	synchronized (mStartLock) {
+	    mStartStatus = false;
+	}
+
+	mLiveModule.StopMessageHandle();
+
+	mRtspClient.setListener(null);
 	closeRtspClient();
 
 	mHandler.removeCallbacks(BtRunnable);	
@@ -265,84 +278,104 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	super.onDestroy();
 	mPD = null;
 	sActivity = null;
-	sHasError = false;
     }
 
     // RTSPClient Listener function
     @Override
     public void onVideoSizeChanged(int width, int height) {
-	if (DEBUG) Log.e(TAG, "[ onVideoSizeChanged ] width = " + width + " height = " + height);
-	LayoutParams lp = mSurfaceView.getLayoutParams();
-	lp.width = width;
-	lp.height = height;
-	mSurfaceView.setLayoutParams(lp);
-	mSurfaceView.requestLayout();
+	synchronized (mStartLock) {
+	    if (DEBUG) Log.e(TAG, "[ onVideoSizeChanged ] width = " + width + " height = " + height);
+	    if (mStartStatus) {
+		LayoutParams lp = mSurfaceView.getLayoutParams();
+		lp.width = width;
+		lp.height = height;
+		mSurfaceView.setLayoutParams(lp);
+		mSurfaceView.requestLayout();
+	    }
+	}
     }
     
     @Override
     public void onStreamDown() {
-	mStreamDown = new MyDialog(this, R.style.MyDialog,getApplication().getResources().getString(R.string.live_stream_down), getApplication().getResources().getString(R.string.live_cancle),new MyDialog.LeaveMeetingDialogListener() {
-		@Override
-		public void onClick(View view) {
-		    switch (view.getId()) {
-		    case R.id.dialog_tv_cancel_one:
-			mStreamDown.cancel();
-			finish();
-			break;
+	synchronized (mStartLock) {
+	    if (mStartStatus) {
+		mStreamDown = new MyDialog(this, R.style.MyDialog,
+					   getString(R.string.live_stream_down),
+					   getString(R.string.live_cancle),
+					   new MyDialog.LeaveMeetingDialogListener() {
+					       @Override
+					       public void onClick(View view) {
+						   switch (view.getId()) {
+						   case R.id.dialog_tv_cancel_one:
+						       mStreamDown.cancel();
+						       finish();
+						       break;
 		
-		    }
-		}});
-	mStreamDown.setCanceledOnTouchOutside(false);
-	mStreamDown.setCancelable(false);
-	mStreamDown.show();
+						   }
+					       }});
+		mStreamDown.setCanceledOnTouchOutside(false);
+		mStreamDown.setCancelable(false);
+		mStreamDown.show();
+	    }
+	}
     }
 
     @Override
     public void onStreamDisconnect() {
-	mStreamDisconnect = new MyDialog(this, R.style.MyDialog,getApplication().getResources().getString(R.string.live_network_disconnect), getApplication().getResources().getString(R.string.live_cancle),new MyDialog.LeaveMeetingDialogListener() {
-		@Override
-		public void onClick(View view) {
-		    switch (view.getId()) {
-		    case R.id.dialog_tv_cancel_one:
-			mStreamDisconnect.cancel();
-			finish();
-			break;
+	synchronized (mStartLock) {
+	    if (mStartStatus) {
+		mStreamDisconnect = new MyDialog(this, R.style.MyDialog,
+						 getString(R.string.live_network_disconnect),
+						 getString(R.string.live_cancle),
+						 new MyDialog.LeaveMeetingDialogListener() {
+						     @Override
+						     public void onClick(View view) {
+							 switch (view.getId()) {
+							 case R.id.dialog_tv_cancel_one:
+							     mStreamDisconnect.cancel();
+							     finish();
+							     break;
 		
-		    }
-		}});
-	mStreamDisconnect.setCanceledOnTouchOutside(false);
-	mStreamDisconnect.setCancelable(false);
-	mStreamDisconnect.show();
+							 }
+						     }});
+		mStreamDisconnect.setCanceledOnTouchOutside(false);
+		mStreamDisconnect.setCancelable(false);
+		mStreamDisconnect.show();
+	    }
+	}
     }
 
     // LiveModule Listener function
     public static void showLiveErrorDialog(String err) {
-	sHasError = true;
-        final MyDialog dialog = new MyDialog(sActivity, R.style.MyDialog, err, 
-				       sActivity.getString(R.string.live_cancle), null);
-	dialog.setLeaveMeetingDialogListener(new MyDialog.LeaveMeetingDialogListener() {
-		@Override
-		public void onClick(View view) {
-		    switch (view.getId()) {
-		    case R.id.dialog_tv_cancel_one:
-			dialog.cancel();
-			sActivity.finish();
-			break;		
-		    }
-		}
-	    });
-	dialog.setOnKeyListener(new DialogInterface.OnKeyListener(){
-		@Override
-		public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-		    if (keyCode == KeyEvent.KEYCODE_BACK) {
-			dialog.cancel();
-			sActivity.finish();
-		    }
-		    return false;
-		}
-	    });
-	dialog.setCanceledOnTouchOutside(false);
-	dialog.setCancelable(false);
-	dialog.show();
-    }    
+	synchronized (mStartLock) {
+	    if (mStartStatus) {
+		final MyDialog dialog = new MyDialog(sActivity, R.style.MyDialog, err, 
+						     sActivity.getString(R.string.live_cancle), null);
+		dialog.setLeaveMeetingDialogListener(new MyDialog.LeaveMeetingDialogListener() {
+			@Override
+			public void onClick(View view) {
+			    switch (view.getId()) {
+			    case R.id.dialog_tv_cancel_one:
+				dialog.cancel();
+				sActivity.finish();
+				break;		
+			    }
+			}
+		    });
+		dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+			@Override
+			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+			    if (keyCode == KeyEvent.KEYCODE_BACK) {
+				dialog.cancel();
+				sActivity.finish();
+			    }
+			    return false;
+			}
+		    });
+		dialog.setCanceledOnTouchOutside(false);
+		dialog.setCancelable(false);
+		dialog.show();
+	    }
+	}
+    }
 }

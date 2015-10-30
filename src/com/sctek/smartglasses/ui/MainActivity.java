@@ -26,11 +26,13 @@ import cn.ingenic.glasssync.SyncApp;
 import cn.ingenic.glasssync.devicemanager.GlassDetect;
 import cn.ingenic.glasssync.devicemanager.TimeSyncManager;
 import cn.ingenic.glasssync.screen.LiveDisplayActivity;
+import android.content.DialogInterface;
 // import cn.ingenic.glasssync.ui.BindGlassActivity;
-
 
 import cn.ingenic.glasssync.utils.ModuleUtils;
 
+import com.fota.iport.MobAgentPolicy;
+import com.fota.iport.config.VersionInfo;
 import com.ingenic.glass.api.sync.SyncChannel.Packet;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -71,7 +73,6 @@ import android.bluetooth.BluetoothHeadset;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -83,12 +84,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -100,6 +104,7 @@ public class MainActivity extends FragmentActivity {
 	private  String TAG = "MainActivity";
 	
 	public final static int GET_GLASS_INFO = 17;
+	public final static int UPDATE_CONNECT_WIFI_MSG =20;
 	
 	private ImageButton photoIb;
 	private ImageButton videoIb;
@@ -139,6 +144,8 @@ public class MainActivity extends FragmentActivity {
 		
 		mSyncManager = DefaultSyncManager.getDefault();
 		initImageLoader(getApplicationContext());
+		
+		HanLangCmdChannel.getInstance(getApplicationContext()).setHandler(handler);
 		
 		dialog = new ProgressDialog(MainActivity.this);
 		
@@ -184,7 +191,6 @@ public class MainActivity extends FragmentActivity {
 		Packet pk = channel.createPacket();
 		pk.putInt("type", GET_GLASS_INFO);
 		channel.sendPacket(pk);
-		
 	}
 	
 	private long currentTime = System.currentTimeMillis();
@@ -338,6 +344,9 @@ public class MainActivity extends FragmentActivity {
 				if(dialog.isShowing())
 					dialog.cancel();
 				break;
+			case 3:
+				showUpdateConfirmDialog();
+				break;
 			}
 		}
 	};
@@ -441,6 +450,89 @@ public class MainActivity extends FragmentActivity {
 	
 	private void quit() {
 		super.onBackPressed();
+	}
+	
+	private void showUpdateConfirmDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.software_updates);
+		builder.setMessage(R.string.updates_note);
+		builder.setNegativeButton(R.string.update_later, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.cancel();
+			}
+		});
+		
+		builder.setPositiveButton(R.string.update_now, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.cancel();
+				showWifiConnectDialog();
+			}
+		});
+		
+		builder.create().show();
+	}
+	
+	private void showWifiConnectDialog(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		View view = LayoutInflater.from(this).inflate(R.layout.config_wifi, null);
+		
+		final EditText ssidEt = (EditText)view.findViewById(R.id.ap_ssid_et);
+		final EditText pwEt = (EditText)view.findViewById(R.id.ap_pw_et);
+		
+		builder.setView(view);
+		builder.setTitle(R.string.config_wifi);
+		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				String ssid = ssidEt.getText().toString();
+				String pw = pwEt.getText().toString();
+				
+				HanLangCmdChannel channel = HanLangCmdChannel.getInstance(getApplicationContext());
+				
+				if(ssid.isEmpty()) {
+					Toast.makeText(MainActivity.this, R.string.empty_ssid, Toast.LENGTH_SHORT).show();
+					showWifiConnectDialog();
+					return;
+				}
+				
+				if(!channel.isConnected()) {
+					Toast.makeText(MainActivity.this, R.string.update_bluetooth_error, Toast.LENGTH_SHORT).show();
+					return;
+				}
+					
+				VersionInfo vi = MobAgentPolicy.getVersionInfo();
+				Packet pk = channel.createPacket();;
+				pk.putInt("type", UPDATE_CONNECT_WIFI_MSG);
+				pk.putString("ssid", ssid);
+				pk.putString("pw", pw);
+				pk.putString("url", vi.deltaUrl);
+				pk.putString("deltaid", vi.deltaID);
+				pk.putString("md5", vi.md5sum);
+				pk.putInt("size", vi.fileSize);
+				pk.putString("vname", vi.versionName);
+				Log.e(TAG, "url:" + vi.deltaUrl + "deltaid:" + vi.deltaID + "md5:" + vi.md5sum + "size:" + vi.fileSize + "vname:" + vi.versionName);
+				channel.sendPacket(pk);
+			}
+		});
+		
+		builder.setNegativeButton(R.string.cancel_update, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.cancel();
+			}
+		});
+		
+		builder.create().show();
 	}
 	
 }

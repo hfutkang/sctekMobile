@@ -111,8 +111,6 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="o0j2FDG1LtCc19Lgr4fSkOzf" />
-
-        <service android:name="cn.ingenic.glasssync.SmartGlassService"></service>
         
         <service android:name="cn.ingenic.glasssync.LocationReportService"></service>        
         

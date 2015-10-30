@@ -19,6 +19,7 @@ LOCAL_STATIC_JAVA_LIBRARIES :=  \
 	universal-image-loader\
 	zxing-core \
 	baidu_lbs	\
+	fota_iport	\
 	sync_framework
 
 LOCAL_RESOURCE_DIR = \
@@ -44,7 +45,10 @@ include $(BUILD_PACKAGE)
 
 include $(CLEAR_VARS)  
 LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES :=libammsdk:libs/libammsdk.jar
-LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES += mzxing:libs/zxing.jar android_api:libs/android_api.jar universal-image-loader:libs/universal-image-loader-1.9.3.jar zxing-core:libs/zxing-core.jar baidu_lbs:libs/BaiduLBS_Android.jar
+LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES += mzxing:libs/zxing.jar android_api:libs/android_api.jar \
+																										universal-image-loader:libs/universal-image-loader-1.9.3.jar \
+																										zxing-core:libs/zxing-core.jar baidu_lbs:libs/BaiduLBS_Android.jar \
+																										fota_iport:libs/iport.jar
 #LOCAL_PREBUILT_LIBS := liblocSDK5:libs/armeabi/liblocSDK5.so
 LOCAL_PREBUILT_LIBS := liblocSDK6a:libs/armeabi/liblocSDK6a.so
 LOCAL_PREBUILT_LIBS += libffmpeg:libs/armeabi/libffmpeg.so 

@@ -176,6 +176,11 @@
     <string name="setting">设置</string>
     <string name="media">媒体浏览</string>
     <string name="bind_Glass">绑定眼镜</string>
+	<string name="glass_photo">悍狼照片</string>
+    <string name="glass_video">悍狼视频</string>
+    <string name="glass_live">悍狼直播</string>
+    <string name="take_photo">拍 照</string>
+    <string name="take_video">录像/关闭</string>
     <string name="unbond">解除当前绑定</string>
     <!-- <string name="welcome">for Glass</string> -->
     <!-- <string name="welcome_text">Copyright © 2014 Ingenic.\n All rights reserved.</string> -->
@@ -290,7 +295,8 @@
     <string name="vedio_duration_summary">选择视频分段时长</string>
     <string name="media_pixel">分辨率</string>
     <string name="photo_pixel_summary">选择拍照的分辨率</string>
-    <string name="bluetooth_error">蓝牙连接错误,请重试</string>
+    <string name="bluetooth_error">蓝牙连接已断开,请重试</string>
+    <string name="update_bluetooth_error">蓝牙连接已断开,放弃升级.</string>
     <string name="select_all">全选</string>
     <string name="vedio">录像</string>
     <string name="volume">媒体音量</string>
@@ -398,6 +404,10 @@
     	<string name="no_available_player">未找到可用播放器，请通过图库打开</string>
     	<string name="app_version">App版本</string>
     	<string name="unbonding">正在解绑&#8230;</string>
+		<string name="language">语言设置</string>
+	   <string name="language_summary">设置眼镜端的语言</string>
+	   <string name="language_zh">中文</string>
+	   <string name="language_us">英文</string>
     	<string name="hanlang_photo">悍&#160;狼&#160;照&#160;片</string>
     	<string name="hanlang_video">悍&#160;狼&#160;视&#160;频</string>
     	<string name="hanlang_live">悍&#160;狼&#160;直&#160;播</string>
@@ -412,4 +422,21 @@
 			<string name="hanlang_video_state_hour">录像中(%1$d小时%2$d分%3$d秒)</string>
 			<string name="hanlang_video_state_minute">录像中(%1$d分%2$d秒)</string>
 			<string name="hanlang_video_state_second">录像中(%1$d秒)</string>
+			<string name="updates_note">检测到眼镜端程序有更新,是否现在更新.\n注意:更新眼镜端程序需要wifi网络.</string>
+			<string name="update_now">现在更新</string>
+			<string name="update_later">以后再说</string>
+			<string name="config_wifi">设置Wifi</string>
+			<string name="ssid_hint">可用wifi的名称</string>
+			<string name="pw_hint">wifi密码</string>
+			<string name="cancel_update">放弃更新</string>
+			<string name="hanlang_update">悍狼升级</string>
+			<string name="update_try_connect_wifi">正在尝试连接wifi。</string>
+			<string name="update_connect_wifi_timeout">尝试连接wifi超时，放弃升级。</string>
+			<string name="update_start_download">开始下载升级包&#8230;</string>
+			<string name="update_donwload_error">下载升级包失败，放弃升级。</string>
+			<string name="update_invalid_package">无效的升级包，放弃升级。</string>
+			<string name="update_start">下载升级包成功，开始升级。\n（如果长时间未完成，请重启眼镜）。</string>
+			<string name="update_success">悍狼眼镜升级成功，当前系统已更新。</string>
+			<string name="update_fail">升级未完成，系统已恢复到升级前状态。</string>
+			<string name="update_power_shortage">电量不足，放弃升级。</string>
 </resources>

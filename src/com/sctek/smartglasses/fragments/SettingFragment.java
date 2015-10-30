@@ -19,7 +19,7 @@ import com.sctek.smartglasses.ui.VolumeSeekBarPreference;
 import com.sctek.smartglasses.utils.HanLangCmdChannel;
 import com.sctek.smartglasses.utils.WifiUtils;
 import com.sctek.smartglasses.utils.WifiUtils.WifiCipherType;
-
+import com.sctek.smartglasses.language.LanguageModule;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -80,6 +80,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 	public final static int SET_PW = 10;
 	public final static int SET_WIFI_AP = 11;
 	public final static int SWITCH_ROUND_VIDEO = 12;
+        public final static int LANGUAGE_SETTING = 13;
 	
 	public final static int MSG_SEND_FINISH = 1;
 	public final static int CONTACT_READABLE = 103;
@@ -88,15 +89,19 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 	
 	public final int PHONE_AUDIO_CONNECT = 6;
 	public final int PHONE_AUDIO_DISCONNECT = 7;
+
+        private final int LANGUAGE_ZH = 1;
+        private final int LANGUAGE_US = 2;
 	
 	private boolean contactReadable = false;
 	private boolean syncContactToGlass = false;
+        private boolean mIsDefaultLanguage = true;
 	
 	private static final String[] lables = {"pixel", "pixel", "pixel", "duration", "sw", "sw", "sw", "volume", "ssid", "pw", "NULL", "sw" };
 	private static final String[] keys = {"NULL", "photo_pixel", "vedio_pixel", "duration", 
 		"default_switch", "anti_shake", "timestamp"};
 	
-	private ListPreference mVedioDurationPreference;
+        private ListPreference mVedioDurationPreference,mLanguagePreference;
 //	private VolumeSeekBarPreference mVolumeSeekBarPreference;
 	private Preference mWifiPreference;
 	private SwitchPreference mBluetoothPhonePreference;
@@ -171,6 +176,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 	private void initPrefereceView() {
 		
 		mVedioDurationPreference = (ListPreference)findPreference("duration");
+		mLanguagePreference = (ListPreference)findPreference("language");
 //		mVolumeSeekBarPreference = (VolumeSeekBarPreference)findPreference("volume");
 		mWifiPreference = (Preference)findPreference("wifi");
 		mBluetoothPhonePreference = (SwitchPreference)findPreference("phone_on");
@@ -183,6 +189,7 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 		
 		try {
 			mVedioDurationPreference.setOnPreferenceChangeListener(this);
+			mLanguagePreference.setOnPreferenceChangeListener(this);
 //			mVolumeSeekBarPreference.setOnPreferenceChangeListener(this);
 			mBluetoothPhonePreference.setOnPreferenceChangeListener(this);
 			mRoundVideoPreference.setOnPreferenceChangeListener(this);
@@ -248,6 +255,23 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 			return ;
 		}
 		
+		else if("language".equals(key)){
+		    String type = (String)value;
+		    Log.d(TAG, "onPreferenceChanged :: language =" +type );
+		 
+		    if (type.equals(getString(R.string.language_zh))){
+			setLanguageForGlass(LANGUAGE_ZH);
+			mIsDefaultLanguage = true;
+		
+		    }else {
+			setLanguageForGlass(LANGUAGE_US);
+			mIsDefaultLanguage = false;
+		    }
+		    
+
+		    return ;
+			
+		}		
 		mHanLangCmdChannel.sendPacket(pk);
 	}
 
@@ -412,6 +436,21 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 			else if(msg.what == CONTACT_READABLE) {
 				setBack = true;
 				mSyncContactPreference.setChecked((Boolean)msg.obj);
+			}else if (msg.what == LANGUAGE_SETTING){
+			    if (!(Boolean)msg.obj) return;
+			    setBack = true;
+			    SharedPreferences pref = PreferenceManager
+				.getDefaultSharedPreferences(getActivity());
+			    Editor editor = pref.edit();
+			    Log.d(TAG,"mIsDefaultLanguage = "+mIsDefaultLanguage);
+			    if (mIsDefaultLanguage){
+				mLanguagePreference.setValueIndex(0);
+				editor.putString("language", getString(R.string.language_zh));
+			    }else{ 
+				mLanguagePreference.setValueIndex(1);
+				editor.putString("language", getString(R.string.language_us));
+			    }
+			    editor.commit();
 			}
 			handler.postDelayed(disableSetBackRunnable, 200);
 		}
@@ -513,4 +552,9 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 			}
 		}).start();
 	}
+
+     private void setLanguageForGlass(int languageType){
+	 LanguageModule langModule = LanguageModule.getInstance(getActivity());
+	 langModule.sendSyncRequest(languageType,handler);
+     }
 }

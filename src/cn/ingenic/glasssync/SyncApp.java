@@ -9,6 +9,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import com.ingenic.glass.api.sync.SyncChannel.Packet;
 import com.sctek.smartglasses.utils.HanLangCmdChannel;
+import com.sctek.smartglasses.utils.HanLangNotifyChannel;
 
 import android.app.Application;
 import android.app.Activity;
@@ -132,8 +133,8 @@ public class SyncApp extends Application implements
 		    
 	//init hanlang cmd channel
 		    HanLangCmdChannel.getInstance(this);
+		    HanLangNotifyChannel.getInstance(this);
 		    startService(new Intent(this, MediaSyncService.class));
-		    startService(new Intent(this, SmartGlassService.class));
 		    
 		    Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 				
