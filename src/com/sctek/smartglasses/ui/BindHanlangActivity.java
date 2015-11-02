@@ -211,14 +211,14 @@ public class BindHanlangActivity extends Activity {
 
 		    if (DEBUG)Log.d(TAG, "name="+scanDevice.getName()+"address="+scanDevice.getAddress()+"--Build.BOARD="+Build.BOARD);
 
-		    if(deviceName == null && scanDevice.getName().startsWith(HANLANG_BT_NAME)){
+		    if(deviceName == null && scanDevice.getName().toUpperCase().startsWith(HANLANG_BT_NAME)){
 		    	mHandler.removeMessages(REQUEST_CANCEL_SCAN_DEVICE);
 		    	Message requestpairMsg = mHandler.obtainMessage();
 		    	requestpairMsg.what = REQUEST_CONNECT;
 		    	requestpairMsg.obj = scanDevice;
 			mHandler.sendMessage(requestpairMsg);
 		    }
-		    else if(deviceName != null && scanDevice.getName().endsWith(deviceName)) {
+		    else if(deviceName != null && scanDevice.getName().toUpperCase().endsWith(deviceName)) {
 		    	mHandler.removeMessages(REQUEST_CANCEL_SCAN_DEVICE);
 		    	Message requestpairMsg = mHandler.obtainMessage();
 		    	requestpairMsg.what = REQUEST_CONNECT;
@@ -381,6 +381,7 @@ public class BindHanlangActivity extends Activity {
     	if(result == null)
     		return null;
     	
+    	result.toUpperCase();
     	String strings[] = result.split("#");
     	
     	if(strings.length != 2)

@@ -52,7 +52,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	    @Override
 	    public void handleMessage(Message msg) {
 		super.handleMessage(msg);
-		if (DEBUG) Log.e(TAG, "[ mHandler ] handle Message " + msg.what);
+		if (DEBUG) Log.d(TAG, "[ mHandler ] handle Message " + msg.what);
 		if (msg.what == BT_MSG_CONNECTED) {
 		    mPD.setMessage(getString(R.string.waiting_for_glass_open_camera)); 
 		    mPD.show(); 
@@ -69,10 +69,10 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     Runnable BtRunnable = new Runnable() {
 	    @Override
 	    public void run() {
-		if (DEBUG) Log.e(TAG, "BtRunnable");
+		if (DEBUG) Log.d(TAG, "BtRunnable");
 		if (!checkBTEnabled()) {
 		    long end = System.currentTimeMillis() - mStart;
-		    if (DEBUG) Log.e(TAG, "[ Bt disabled ] end " + end + " mStart " + mStart);
+		    if (DEBUG) Log.d(TAG, "[ Bt disabled ] end " + end + " mStart " + mStart);
 		    if ((end > 60000)) {
 			Log.e(TAG, "Wait enable BT failed in 20 sec");
 			Message message = Message.obtain();
@@ -82,7 +82,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 			mHandler.postDelayed(this, 2000);  
 		    }
 		} else {
-		    Log.e(TAG, "Bt enabled in 20 sec");
+		    Log.d(TAG, "Bt enabled in 20 sec");
 		    Message message = Message.obtain();
 		    message.what = BT_MSG_CONNECTED;
 		    mHandler.sendMessage(message);
@@ -93,7 +93,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_display);
-	Log.e(TAG, "onCreate");
+	Log.d(TAG, "onCreate");
 	sActivity = this;
 	initView();
 
@@ -114,7 +114,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     // }  
 
     private void initView() {
-	Log.e(TAG, "InitView++");
+	Log.d(TAG, "InitView++");
 	mRtspClient = new RtspClient(this);
 	mRtspClient.setListener(this);
 	mLiveModule = LiveModule.getInstance(this);
@@ -124,12 +124,12 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	mSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback(){
 		@Override
 		public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
-		    Log.e(TAG, "surfaceChanged");
+		    Log.d(TAG, "surfaceChanged");
 		}
 		
 		@Override
 		public void surfaceCreated(SurfaceHolder arg0) {
-		    Log.e(TAG, "surfaceCreated");
+		    Log.d(TAG, "surfaceCreated");
 		    if (mRtspClient != null)
 			mRtspClient.setSurface(arg0);
 		}
@@ -176,7 +176,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     }
 
     private ProgressDialog processDialog() {
-	if (DEBUG) Log.e(TAG, "processDialog");
+	if (DEBUG) Log.d(TAG, "processDialog");
 	ProgressDialog pd = new ProgressDialog(this); 
 	pd.setCancelable(false); 
 	pd.setOnKeyListener(new DialogInterface.OnKeyListener() {
@@ -195,41 +195,42 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     private boolean checkBTEnabled() {
 	mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter(); 
 	if ((mBluetoothAdapter == null) || (!mBluetoothAdapter.isEnabled())) {
-	    Log.e(TAG, "BluetoothAdapter is null or unenable, screen share failed");
+	    Log.e(TAG, "Bluetooth unuseable : mBluetoothAdapter = " + mBluetoothAdapter);
 	    return false;
 	}
 	
 	mManager = DefaultSyncManager.getDefault();
-	if (mManager != null) {
-	    Log.e(TAG, "mManager.isConnect() = " + mManager.isConnect());
-	}
-	
-	if ((mManager == null) || (!mManager.isConnect()))  {
-	    Log.e(TAG, "unused bluetooth, screen share failed");
+	if ((mManager == null) || (!mManager.isConnect())) {
+	    Log.e(TAG, "Bluetooth unconnect : mManager " + mManager);
 	    return false;
 	}
-	if (DEBUG) Log.e(TAG, "Bluetooth connected");
-
+	
 	return true;
     }
 
     public static void startRtspClient(String url) {
-	Log.e(TAG, "startRtspClient url = " + url);
+	Log.d(TAG, "startRtspClient url = " + url);
 	if (mRtspClient != null)
 	    mRtspClient.start(url);
     }
 
 
     public static void closeRtspClient() {
-    	Log.e(TAG, "closeRtspClient");
+    	Log.d(TAG, "closeRtspClient");
         if (mRtspClient != null)
 	    mRtspClient.close();
     }
 
     @Override
     public void onStart() {
-	if (DEBUG) Log.e(TAG, "onStart");
+	if (DEBUG) Log.d(TAG, "onStart");
 	super.onStart();
+
+	mLiveModule.StartMessageHandle();
+
+	synchronized (mStartLock) {
+	    mStartStatus = true;
+	}
 
 	if (!checkBTEnabled()) {
 	    mPD.setMessage(getString(R.string.live_open_bt)); 
@@ -242,21 +243,11 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	    if (mLiveModule != null)
 		mLiveModule.sendStartMessage();
 	}
-
-	synchronized (mStartLock) {
-	    mStartStatus = true;
-	}
     }
 
     @Override
     public void onStop() {
-	Log.e(TAG, "onStop");
-	synchronized (mStartLock) {
-	    mStartStatus = false;
-	}
-
-	mLiveModule.StopMessageHandle();
-
+	Log.d(TAG, "onStop");
 	mRtspClient.setListener(null);
 	closeRtspClient();
 
@@ -268,13 +259,19 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	if (mPD != null)
 	    mPD.dismiss();
 
+	mLiveModule.StopMessageHandle();
+
+	synchronized (mStartLock) {
+	    mStartStatus = false;
+	}
+
 	super.onStop();
 	finish();
     }
 
     @Override
     protected void onDestroy() {
-	if (DEBUG) Log.e(TAG, "onDestroy");
+	if (DEBUG) Log.d(TAG, "onDestroy");
 	super.onDestroy();
 	mPD = null;
 	sActivity = null;
@@ -284,7 +281,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     @Override
     public void onVideoSizeChanged(int width, int height) {
 	synchronized (mStartLock) {
-	    if (DEBUG) Log.e(TAG, "[ onVideoSizeChanged ] width = " + width + " height = " + height);
+	    if (DEBUG) Log.d(TAG, "[ onVideoSizeChanged ] width = " + width + " height = " + height);
 	    if (mStartStatus) {
 		LayoutParams lp = mSurfaceView.getLayoutParams();
 		lp.width = width;

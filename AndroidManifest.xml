@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.ingenic.glasssync"
     	android:versionCode="1"
-    	android:versionName="HanLang1.0" >
+    	android:versionName="HanLang_P1.0" >
 
     <!-- gps -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -340,26 +340,31 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         
-        <activity
+        <activity 
+	    android:logo="@drawable/gallery"
             android:name="com.sctek.smartglasses.ui.PhotoActivity"
             android:screenOrientation="nosensor">
         </activity>
         <activity
+	    android:logo="@drawable/video"
             android:name="com.sctek.smartglasses.ui.VideoActivity" 
             android:screenOrientation="nosensor">
         </activity>
         
          <activity
+	    android:logo="@drawable/setting"
             android:name="com.sctek.smartglasses.ui.SettingActivity"
             android:screenOrientation="nosensor" >
         </activity>
         
          <activity
+	    android:logo="@drawable/about"
             android:name="com.sctek.smartglasses.ui.AboutActivity"
             android:screenOrientation="nosensor">
         </activity>
         
          <activity
+	     android:logo="@drawable/camera"
              android:name="com.sctek.smartglasses.ui.GetGlassIpActivity"
              android:screenOrientation="nosensor">
          </activity>

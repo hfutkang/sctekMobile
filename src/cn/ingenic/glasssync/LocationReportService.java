@@ -130,7 +130,7 @@ public class LocationReportService extends Service {
 				Log.e(TAG, "mmc:" + mmc + " mnc:" + mnc + " lac:" + lac + " cid:" + cid); 
 				
 				HttpClient client = CustomHttpClient.getHttpClient();
-				HttpPost httpPost_1 = new HttpPost(REPORT_LOCATION_URL_1);
+//				HttpPost httpPost_1 = new HttpPost(REPORT_LOCATION_URL_1);
 				HttpPost httpPost_2 = new HttpPost(REPORT_LOCATION_URL_2);
 				
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -147,8 +147,8 @@ public class LocationReportService extends Service {
 				params.add(new BasicNameValuePair("time", date));
 				
 				try {
-					httpPost_1.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
-					client.execute(httpPost_1);
+//					httpPost_1.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+//					client.execute(httpPost_1);
 					
 					httpPost_2.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
 					client.execute(httpPost_2);

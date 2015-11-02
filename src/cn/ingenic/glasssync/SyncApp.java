@@ -39,10 +39,11 @@ import cn.ingenic.glasssync.weather.PositionModule;
 import cn.ingenic.glasssync.weather.HTTPGetModule;
 import cn.ingenic.glasssync.lbs.GlassSyncLbsModule;
 import cn.ingenic.glasssync.devicemanager.GlassDetect;
+import com.sctek.smartglasses.language.LanguageModule;
 import android.widget.Toast;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
-
+import cn.ingenic.glasssync.camera.PhotoModule;
 import java.util.List;
 
 public class SyncApp extends Application implements
@@ -71,7 +72,7 @@ public class SyncApp extends Application implements
 		//share
 		ShareModule sharemodule=ShareModule.getInstance(this);
 		VoiceShareModule.getInstance(this);
-
+		PhotoModule.getInstance(this);
 		  //for get position by baiduSDK
 		// PositionModule positionModule=PositionModule.getInstance(this);
 		// HTTPGetModule httpgetModule=HTTPGetModule.getInstance(this);
@@ -105,6 +106,7 @@ public class SyncApp extends Application implements
 		LiveModule.getInstance(this);
 		
 		// ImeSyncModule.getInstance(this);
+		LanguageModule.getInstance(this);
 		if (android.os.Build.VERSION.SDK_INT >= 14) {
 		    //CalendarModule calm = new CalendarModule();
 			// if (manager.registModule(calm)) {

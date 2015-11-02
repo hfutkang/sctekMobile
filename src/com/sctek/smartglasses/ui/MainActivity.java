@@ -23,6 +23,7 @@ import cn.ingenic.glasssync.LocationReportService;
 import cn.ingenic.glasssync.R;
 import cn.ingenic.glasssync.DefaultSyncManager;
 import cn.ingenic.glasssync.SyncApp;
+import cn.ingenic.glasssync.camera.PhotoModule;
 import cn.ingenic.glasssync.devicemanager.GlassDetect;
 import cn.ingenic.glasssync.devicemanager.TimeSyncManager;
 import cn.ingenic.glasssync.screen.LiveDisplayActivity;
@@ -95,6 +96,9 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import cn.ingenic.glasssync.contactslite.ContactsLiteModule;
@@ -106,13 +110,14 @@ public class MainActivity extends FragmentActivity {
 	public final static int GET_GLASS_INFO = 17;
 	public final static int UPDATE_CONNECT_WIFI_MSG =20;
 	
-	private ImageButton photoIb;
-	private ImageButton videoIb;
-	private ImageButton settingIb;
-	private ImageButton liveIb;
-	private ImageButton unbindIb;
-	private ImageButton aboutIb;
-	
+	private TextView photoTv;
+	private TextView videoTv;
+	private TextView settingTv;
+	private TextView liveTv;
+	private TextView unbindTv;
+	private TextView aboutTv;
+        private Button takePhotoBt;
+        private Button takeVideoBt;
 	private DefaultSyncManager mSyncManager;
 
 	private static MainActivity mInstance = null;
@@ -128,20 +133,24 @@ public class MainActivity extends FragmentActivity {
 		getActionBar().hide();
 		mInstance = this;
 		SyncApp.getInstance().addActivity(this);
-		photoIb = (ImageButton)findViewById(R.id.photo_ib);
-		videoIb = (ImageButton)findViewById(R.id.video_ib);
-		settingIb = (ImageButton)findViewById(R.id.setting_ib);
-		liveIb = (ImageButton)findViewById(R.id.live_ib);
-		unbindIb = (ImageButton)findViewById(R.id.unbind_ib);
-		aboutIb = (ImageButton)findViewById(R.id.about_ib);
-		
-		photoIb.setOnClickListener(onImageButtonClickedListener);
-		videoIb.setOnClickListener(onImageButtonClickedListener);
-		settingIb.setOnClickListener(onImageButtonClickedListener);
-		liveIb.setOnClickListener(onImageButtonClickedListener);
-		unbindIb.setOnClickListener(onImageButtonClickedListener);
-		aboutIb.setOnClickListener(onImageButtonClickedListener);
-		
+		photoTv = (TextView)findViewById(R.id.photo_tv);
+		videoTv = (TextView)findViewById(R.id.video_tv);
+		settingTv = (TextView)findViewById(R.id.setting_tv);
+		liveTv = (TextView)findViewById(R.id.live_tv);
+		unbindTv = (TextView)findViewById(R.id.unbind_tv);
+		aboutTv = (TextView)findViewById(R.id.about_tv);
+		takePhotoBt =(Button)findViewById(R.id.take_photo_bt);
+		takeVideoBt =(Button)findViewById(R.id.take_video_bt);
+
+		photoTv.setOnClickListener(mClickedListener);
+		videoTv.setOnClickListener(mClickedListener);
+		settingTv.setOnClickListener(mClickedListener);
+		liveTv.setOnClickListener(mClickedListener);
+		unbindTv.setOnClickListener(mClickedListener);
+		aboutTv.setOnClickListener(mClickedListener);
+		takePhotoBt.setOnClickListener(mClickedListener);
+		takeVideoBt.setOnClickListener(mClickedListener);
+
 		mSyncManager = DefaultSyncManager.getDefault();
 		initImageLoader(getApplicationContext());
 		
@@ -221,7 +230,7 @@ public class MainActivity extends FragmentActivity {
 		super.onResume();
 		Locale local = getResources().getConfiguration().locale;
 		if(!local.getLanguage().contains("zh")) {
-    		LinearLayout layout = (LinearLayout)findViewById(R.id.main_background);
+			RelativeLayout layout = (RelativeLayout)findViewById(R.id.main_background);
     		layout.setBackgroundResource(R.drawable.app_background_en_low);
     	}
 	}
@@ -257,32 +266,43 @@ public class MainActivity extends FragmentActivity {
 			ImageLoader.getInstance().init(config);
 	}
 	
-	private OnClickListener onImageButtonClickedListener = new OnClickListener() {
+	private OnClickListener mClickedListener = new OnClickListener() {
 		
 		@SuppressLint("NewApi")
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			switch (v.getId()) {
-				case R.id.photo_ib:
+				case R.id.photo_tv:
 					startActivity(new Intent(MainActivity.this, PhotoActivity.class));
 					break;
-				case R.id.video_ib:
+				case R.id.video_tv:
 					startActivity(new Intent(MainActivity.this, VideoActivity.class));
 					break;
-				case R.id.setting_ib:
+				case R.id.setting_tv:
 					startActivity(new Intent(MainActivity.this, SettingActivity.class));
 					break;
-				case R.id.live_ib:
+				case R.id.live_tv:
 					Intent intent = new Intent(MainActivity.this, GetGlassIpActivity.class);
 					startActivity(intent);
 					break;
-				case R.id.unbind_ib:
+				case R.id.unbind_tv:
 					showUbindDialog();
 					break;
-				case R.id.about_ib:
+				case R.id.about_tv:
 					startActivity(new Intent(MainActivity.this, AboutActivity.class));
 					break;
+		   	        case R.id.take_photo_bt:
+				    PhotoModule m=PhotoModule.getInstance(getApplicationContext());
+				    m.send_take_photo();
+				    takePhotoBt.setEnabled(false);
+				    handler.postDelayed(takePhotoRunnable, 2000);
+				    break;
+				case R.id.take_video_bt:
+				    PhotoModule.getInstance(getApplicationContext()).send_record();
+				    takeVideoBt.setEnabled(false);
+				    handler.postDelayed(takeVideoRunnable, 2000);
+				    break;    
 			default:
 				break;
 			}
@@ -374,6 +394,24 @@ public class MainActivity extends FragmentActivity {
 		    }).start();
 	    }		
 	
+        private Runnable takePhotoRunnable = new Runnable() {
+		
+		@Override
+		public void run() {
+		    takePhotoBt.setEnabled(true);
+		      //takePhotoBt.setAlpha(255);
+		}
+	};
+
+        private Runnable takeVideoRunnable = new Runnable() {
+		
+		@Override
+		public void run() {
+		    takeVideoBt.setEnabled(true);
+		      //takeVideoBt.setAlpha(255);
+		}
+	};
+
 	private void disableLocalData(){	
 		SharedPreferences sp = getSharedPreferences(SyncApp.SHARED_FILE_NAME
 									  ,MODE_PRIVATE);

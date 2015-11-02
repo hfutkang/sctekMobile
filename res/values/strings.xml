@@ -180,10 +180,13 @@
     <string name="start">Start to experience</string>
     <string name="live">Camera live to experience</string>
  <!-- main_menu -->
-    <string name="setting">The synchronization settings</string>
+    <string name="setting">Settings</string>
     <string name="media">Media browser</string>
     <string name="bind_Glass">Binding of glasses</string>
-    <string name="unbond">Release the bound</string>
+    <string name="unbond">Ubinding</string>
+    <string name="glass_photo">Photos</string>
+    <string name="glass_video">Videos</string>
+    <string name="glass_live">Live</string>
     <string name="take_photo">take photo</string>
     <string name="take_video">video/stop</string>
     <string name="finish">Finish</string>
@@ -355,7 +358,7 @@
     <string name="power_summary">Getting glasses power&#8230;</string>
     <string name="glass_storage">Glasses Storage</string>
     <string name="storage_summary">Getting glasses storage&#8230;</string>
-    <string name="about_glass">About glasses</string>
+    <string name="about_glass">About</string>
     <string name="round_video">Driving record</string>
     <string name="round_video_summary">Switch on/off driving record</string>
     <string name="start_live">Start</string>
@@ -376,7 +379,7 @@
     <string name="bind_hanlang">Bind Glasses</string>
     <string name="rebind_hanlang">Rebind</string>
     <string name="binding_hanlang">Binding&#8230;</string>
-    <string name="hanlang_comment">1. Make sure glasses is nearby and on。\n\n2. We will bind the glasses with strongest signal\n\n3. Make sure the glasses is not binded with other phone</string>
+    <string name="hanlang_comment">1. Make sure glasses is nearby and on\n\n2. We will bind the glasses with strongest signal\n\n3. Make sure the glasses is not binded with other phone\n\n4.if cann\&apos;t bind the glasses,try to reboot it or the phone bluetooth</string>
     <string name="sync_time">Sync time</string>
     <string name="sync_contact">Sync Contacts</string>
     <string name="sync_contact_to_glass">Turn on/off contacts sync</string>
@@ -463,6 +466,7 @@
 			<string name="update_success">Upgrade successfully,the system is up-to-date now。</string>
 			<string name="update_fail">Upgrade fail，the system remain as it was。</string>
 			<string name="update_power_shortage">Power shortage,abandon upgrade。</string>
+			<string name="update_storage_shortage">Storage shortage,abandon upgrade。</string>
 			<string name="language">Language setting</string>
 		   <string name="language_summary">Set up the language of the glass</string>
 		   <string name="language_zh">Chinese</string>

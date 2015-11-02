@@ -51,6 +51,7 @@ public class LiveModule extends SyncModule {
     @Override
     protected void onCreate() {
 	synchronized (mHandleLock) {
+	    if(DEBUG) Log.d(TAG, "onCreate");
 	    MessageHandle = true;
 	}
     }
@@ -58,9 +59,9 @@ public class LiveModule extends SyncModule {
 
     @Override
     protected void onRetrive(SyncData data) {
-	if(DEBUG) Log.e(TAG, "Mobile onRetrive");
 
 	synchronized (mHandleLock) {
+	    if(DEBUG) Log.d(TAG, "Mobile onRetrive MessageHandle = " + MessageHandle);
 	    if (MessageHandle == false)
 		return ;
 
@@ -68,7 +69,7 @@ public class LiveModule extends SyncModule {
 	    switch (message) {
 	    case LIVE_MSG_WIFI_CONNECTED:
 		mUrl = data.getString(LIVE_RTSP_URL);
-		if (DEBUG) Log.e(TAG, "LIVE_MSG_WIFI_CONNECTED mUrl = " + mUrl);
+		if (DEBUG) Log.d(TAG, "LIVE_MSG_WIFI_CONNECTED mUrl = " + mUrl);
 		if (LiveDisplayActivity.mPD != null) {
 		    LiveDisplayActivity.mPD.setMessage(mContext.getString(R.string.live_loading));
 		    LiveDisplayActivity.mPD.show();
@@ -78,12 +79,12 @@ public class LiveModule extends SyncModule {
 		break;
 
 	    case LIVE_MSG_WIFI_UNCONNECTED:
-		if (DEBUG) Log.e(TAG, "LIVE_MSG_WIFI_UNCONNECTED");
+		if (DEBUG) Log.d(TAG, "LIVE_MSG_WIFI_UNCONNECTED");
 		LiveDisplayActivity.showLiveErrorDialog(mContext.getString(R.string.live_wifi_disconnect));
 		break;
 
 	    case LIVE_MSG_CAMERA_OPENED:
-		if (DEBUG) Log.e(TAG, "LIVE_MSG_CAMERA_OPENED");
+		if (DEBUG) Log.d(TAG, "LIVE_MSG_CAMERA_OPENED");
 		if (LiveDisplayActivity.mPD != null) {
 		    LiveDisplayActivity.mPD.setMessage(mContext.getString(R.string.live_get_url));
 		    LiveDisplayActivity.mPD.show();
@@ -92,7 +93,7 @@ public class LiveModule extends SyncModule {
 		break;
 
 	    case LIVE_MSG_CAMERA_NOT_OPENED:
-		if (DEBUG) Log.e(TAG, "LIVE_MSG_CAMERA_NOT_OPENED");
+		if (DEBUG) Log.d(TAG, "LIVE_MSG_CAMERA_NOT_OPENED");
 		String err = data.getString(LIVE_ERROR);
 		if (err != null) {
 		    LiveDisplayActivity.showLiveErrorDialog(err);
@@ -103,14 +104,14 @@ public class LiveModule extends SyncModule {
 		Log.e(TAG, "Unknow message " + message);
 		break;
 	    }
-	    if(DEBUG) Log.e(TAG, "Mobile onRetrive end");
+	    if(DEBUG) Log.d(TAG, "Mobile onRetrive end");
 	}
     }
 
     private void sendGetURLMessage() {
-	if (DEBUG) Log.e(TAG, "sendGetURLMessage");
 
 	synchronized (mHandleLock) {
+	    if (DEBUG) Log.d(TAG, "sendGetURLMessage MessageHandle = " + MessageHandle);
 	    if (MessageHandle == false)
 		return ;
 
@@ -125,9 +126,8 @@ public class LiveModule extends SyncModule {
     }
 
     public void sendStartMessage() {
-	if (DEBUG) Log.e(TAG, "sendStartMessage");
-
 	synchronized (mHandleLock) {
+	    if (DEBUG) Log.d(TAG, "sendStartMessage MessageHandle = " + MessageHandle);
 	    if (MessageHandle == false)
 		return ;
 
@@ -142,9 +142,8 @@ public class LiveModule extends SyncModule {
     }
 
     public void sendStopMessage() {
-	Log.e(TAG, "sendStopMessage");
-
 	synchronized (mHandleLock) {
+	    if (DEBUG) Log.d(TAG, "sendStopMessage MessageHandle = " + MessageHandle);
 	    if (MessageHandle == false)
 		return ;
 
@@ -160,12 +159,14 @@ public class LiveModule extends SyncModule {
 
     public void StartMessageHandle() {
 	synchronized (mHandleLock) {
+	    if (DEBUG) Log.d(TAG, "StartMessageHandle");
 	    MessageHandle = true;
 	}
     }
 
     public void StopMessageHandle() {
 	synchronized (mHandleLock) {
+	    if (DEBUG) Log.d(TAG, "StopMessageHandle");
 	    MessageHandle = false;
 	}
     }

@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     		android:id="@+id/main_background"
     android:layout_width="match_parent"
@@ -10,189 +10,139 @@
     
     <TableLayout 
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+	android:layout_centerInParent="true">
         
-		<TableRow 
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:weightSum="3">
+      <TableRow 
+	  android:layout_width="match_parent"
+	  android:layout_height="wrap_content"
+	  android:weightSum="3">
+	
+	<TextView
+	    android:id="@+id/photo_tv"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:drawableTop="@drawable/gallery"
+	    android:layout_weight="1"
+	    android:text="@string/glass_photo"
+	    android:drawablePadding="5dp"
+	    android:textColor="#ffffff"
+	    android:gravity="center"
+	    android:textSize="18sp"
+	    android:textStyle="bold"/>
 		    
-		    <LinearLayout 
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_gravity="center_horizontal"
-		        android:orientation="vertical"
-		        android:gravity="center_horizontal"
-		        android:layout_weight="1">
-		    
-				    <ImageButton 
-				        android:id="@+id/photo_ib"
-				        android:layout_width="wrap_content"
-				        android:layout_height="wrap_content"
-				        android:background="@color/transparent"
-				        android:src="@drawable/photo_selector" />
-				    
-				    		<TextView
-				    		    android:layout_width="wrap_content"
-				    		    	android:layout_height="wrap_content"
-				    		    	android:text="@string/hanlang_photo"
-				    		    	android:textColor="@color/whitesmoke"
-				    		    	android:layout_marginTop="3dp"
-				    		    	android:typeface="monospace"
-				    		    	android:gravity="fill_horizontal"
-				    		    	android:textStyle="bold"
-				    		    	android:textSize="15dp"/>
-				    		
-		    </LinearLayout>
-		    
-		    <LinearLayout 
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_gravity="center_horizontal"
-		        android:orientation="vertical"
-		        android:gravity="center_horizontal"
-		        android:layout_weight="1">
-				    		
-				    <ImageButton 
-				        android:id="@+id/video_ib"
-				        android:layout_width="wrap_content"
-				        android:layout_height="wrap_content"
-				        android:background="@color/transparent"
-				        android:src="@drawable/video_selector"/>
-				    
-				    <TextView
-				    		    android:layout_width="wrap_content"
-				    		    	android:layout_height="wrap_content"
-				    		    	android:text="@string/hanlang_video"
-				    		    	android:textColor="@color/whitesmoke"
-				    		    	android:layout_marginTop="3dp"
-				    		    	android:typeface="monospace"
-				    		    	android:gravity="fill_horizontal"
-				    		    	android:textStyle="bold"
-				    		    	android:textSize="15dp"/>
-				    
-				    </LinearLayout>
-		    
-		    <LinearLayout 
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_gravity="center_horizontal"
-		        android:orientation="vertical"
-		        android:gravity="center_horizontal"
-		        android:layout_weight="1">
-				    
-		    <ImageButton 
-		        android:id="@+id/live_ib"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:background="@color/transparent"
-		        android:src="@drawable/live_selector"/>
-		    
-		    <TextView
-				    		    android:layout_width="wrap_content"
-				    		    	android:layout_height="wrap_content"
-				    		    	android:text="@string/hanlang_live"
-				    		    	android:textColor="@color/whitesmoke"
-				    		    	android:layout_marginTop="3dp"
-				    		    	android:typeface="monospace"
-				    		    	android:gravity="fill_horizontal"
-				    		    	android:textStyle="bold"
-				    		    	android:textSize="15dp"/>
-				    
-				    </LinearLayout>
-		    
-		</TableRow>
+	<TextView
+	    android:id="@+id/video_tv"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:drawableTop="@drawable/video"
+	    android:layout_weight="1"
+	    android:text="@string/glass_video"
+	    android:drawablePadding="5dp"
+	    android:textColor="#ffffff"
+	    android:gravity="center"
+	    android:textSize="18sp"
+	    android:textStyle="bold"/>
+
+	<TextView
+	    android:id="@+id/live_tv"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:drawableTop="@drawable/camera"
+	    android:layout_weight="1"
+	    android:text="@string/glass_live"
+	    android:drawablePadding="5dp"
+	    android:textColor="#ffffff"
+	    android:gravity="center"
+	    android:textSize="18sp"
+	    android:textStyle="bold"/>
+	
+      </TableRow>
     
-		<TableRow 
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:paddingTop="25dp"
-		    android:weightSum="3">
-		    
-		    <LinearLayout 
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_gravity="center_horizontal"
-		        android:orientation="vertical"
-		        android:gravity="center_horizontal"
-		        android:layout_weight="1">
-		    
-		    <ImageButton 
-		        android:id="@+id/setting_ib"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:background="@color/transparent"
-		        android:src="@drawable/setting_selector"/>
-		    
-		    <TextView
-				    		    android:layout_width="wrap_content"
-				    		    	android:layout_height="wrap_content"
-				    		    	android:text="@string/hanlang_setting"
-				    		    	android:textColor="@color/whitesmoke"
-				    		    	android:layout_marginTop="3dp"
-				    		    	android:typeface="monospace"
-				    		    	android:gravity="fill_horizontal"
-				    		    	android:textStyle="bold"
-				    		    	android:textSize="15dp"/>
-				    
-		    </LinearLayout>
-		    
-		    <LinearLayout 
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_gravity="center_horizontal"
-		        android:orientation="vertical"
-		        android:gravity="center_horizontal"
-		        android:layout_weight="1">
-		    
-			    <ImageButton 
-			        android:id="@+id/about_ib"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:background="@color/transparent"
-			        android:src="@drawable/about_selector"/>
-			    
-			    <TextView
-				    		    android:layout_width="wrap_content"
-				    		    	android:layout_height="wrap_content"
-				    		    	android:text="@string/hanlang_about"
-				    		    	android:textColor="@color/whitesmoke"
-				    		    	android:layout_marginTop="3dp"
-				    		    	android:typeface="monospace"
-				    		    	android:gravity="fill_horizontal"
-				    		    	android:textStyle="bold"
-				    		    	android:textSize="15dp"/>
-				    
-		    </LinearLayout>
-		    
-		     <LinearLayout 
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_gravity="center_horizontal"
-		        android:orientation="vertical"
-		        android:gravity="center_horizontal"
-		        android:layout_weight="1">
-		    
-			    <ImageButton 
-			        android:id="@+id/unbind_ib"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:background="@color/transparent"
-			        android:src="@drawable/unbind_selector"/>
-			    
-			    <TextView
-				    		    android:layout_width="wrap_content"
-				    		    	android:layout_height="wrap_content"
-				    		    	android:text="@string/hanlang_unbind"
-				    		    	android:textColor="@color/whitesmoke"
-				    		    	android:layout_marginTop="3dp"
-				    		    	android:typeface="monospace"
-				    		    	android:gravity="fill_horizontal"
-				    		    	android:textStyle="bold"
-				    		    	android:textSize="15dp"/>
-				    
-		    </LinearLayout>
-		</TableRow>
+      <TableRow 
+	  android:layout_width="match_parent"
+	  android:layout_height="wrap_content"
+	  android:paddingTop="10dp"
+	  android:weightSum="3">
+
+	<TextView
+	    android:id="@+id/setting_tv"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:drawableTop="@drawable/setting"
+	    android:layout_weight="1"
+	    android:text="@string/setting"
+	    android:drawablePadding="5dp"
+	    android:textColor="#ffffff"
+	    android:gravity="center"
+	    android:textSize="18sp"
+	    android:textStyle="bold"/>
+
+	<TextView
+	    android:id="@+id/about_tv"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:drawableTop="@drawable/about"
+	    android:layout_weight="1"
+	    android:text="@string/about_glass"
+	    android:drawablePadding="5dp"
+	    android:textColor="#ffffff"
+	    android:gravity="center"
+	    android:textSize="18sp"
+	    android:textStyle="bold"/>
+
+	<TextView
+	    android:id="@+id/unbind_tv"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:drawableTop="@drawable/unbind"
+	    android:layout_weight="1"
+	    android:text="@string/unbind"
+	    android:drawablePadding="5dp"
+	    android:textColor="#ffffff"
+	    android:gravity="center"
+	    android:textSize="18sp"
+	    android:textStyle="bold"/>
+      </TableRow>
+
     </TableLayout>
-</LinearLayout>
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+	android:layout_alignParentBottom="true"
+	android:layout_marginBottom="30dp">
+        
+        <Button 
+	        android:id="@+id/take_photo_bt"
+	        android:layout_width="0dp"
+	        android:layout_height="40dp"
+		android:layout_marginTop="5dp"
+	        android:layout_marginBottom="15dp"
+	        android:layout_weight="1"
+	        android:layout_marginLeft="10dp"
+		android:gravity="center"
+		android:background="@drawable/btn_bottom_selector"
+		android:textSize="18sp"
+		android:textColor="#000000"
+                android:text="@string/take_photo"/>
+        
+        <Button 
+	        android:id="@+id/take_video_bt"
+	        android:layout_width="0dp"
+	        android:layout_height="40dp"
+		android:layout_marginTop="5dp"
+	        android:layout_marginBottom="15dp"
+	        android:layout_weight="1"
+	        android:layout_marginLeft="20dp"
+	        android:layout_marginRight="10dp"
+		android:background="@drawable/btn_bottom_selector"
+            	android:gravity="center"
+		android:textSize="18sp"
+		android:textColor="#000000"
+            	android:text="@string/take_video"/>
+        
+    </LinearLayout>
+</RelativeLayout>

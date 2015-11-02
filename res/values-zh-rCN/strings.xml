@@ -180,7 +180,7 @@
     <string name="glass_video">悍狼视频</string>
     <string name="glass_live">悍狼直播</string>
     <string name="take_photo">拍 照</string>
-    <string name="take_video">录像/关闭</string>
+    <string name="take_video">录像/停止</string>
     <string name="unbond">解除当前绑定</string>
     <!-- <string name="welcome">for Glass</string> -->
     <!-- <string name="welcome_text">Copyright © 2014 Ingenic.\n All rights reserved.</string> -->
@@ -349,7 +349,7 @@
     <string name="bind_hanlang">绑定悍狼</string>
     <string name="rebind_hanlang">重新绑定</string>
     <string name="binding_hanlang">绑定悍狼&#8230;</string>
-    <string name="hanlang_comment">1. 请确保悍狼在附近，并已开机。\n\n2. 应用会自动绑定信号最强的悍狼。\n\n3. 请确保悍狼没有绑定其他手机。</string>
+    <string name="hanlang_comment">1. 请确保悍狼在附近，并已开机。\n\n2. 应用会自动绑定信号最强的悍狼。\n\n3. 请确保悍狼没有绑定其他手机。\n\n4. 如多次绑定失败，请尝试重启眼镜或手机蓝牙。</string>
     <string name="sync_time">时间同步</string>
     <string name="sync_contact">联系人同步</string>
     <string name="sync_contact_to_glass">开启/关闭同步联系人到眼镜</string>
@@ -422,7 +422,7 @@
 			<string name="hanlang_video_state_hour">录像中(%1$d小时%2$d分%3$d秒)</string>
 			<string name="hanlang_video_state_minute">录像中(%1$d分%2$d秒)</string>
 			<string name="hanlang_video_state_second">录像中(%1$d秒)</string>
-			<string name="updates_note">检测到眼镜端程序有更新,是否现在更新.\n注意:更新眼镜端程序需要wifi网络.</string>
+			<string name="updates_note">\n检测到眼镜端程序有更新,是否更新.\n\n注意:更新眼镜端程序需要wifi网络.\n</string>
 			<string name="update_now">现在更新</string>
 			<string name="update_later">以后再说</string>
 			<string name="config_wifi">设置Wifi</string>
@@ -435,8 +435,9 @@
 			<string name="update_start_download">开始下载升级包&#8230;</string>
 			<string name="update_donwload_error">下载升级包失败，放弃升级。</string>
 			<string name="update_invalid_package">无效的升级包，放弃升级。</string>
-			<string name="update_start">下载升级包成功，开始升级。\n（如果长时间未完成，请重启眼镜）。</string>
-			<string name="update_success">悍狼眼镜升级成功，当前系统已更新。</string>
+			<string name="update_start">下载完成，开始升级。(如失败，请重启眼镜)</string>
+			<string name="update_success">悍狼眼镜升级成功，系统已更新。</string>
 			<string name="update_fail">升级未完成，系统已恢复到升级前状态。</string>
 			<string name="update_power_shortage">电量不足，放弃升级。</string>
+			<string name="update_storage_shortage">空间不足，放弃升级。</string>
 </resources>

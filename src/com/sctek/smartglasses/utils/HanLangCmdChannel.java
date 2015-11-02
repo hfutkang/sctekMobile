@@ -168,14 +168,16 @@ public class HanLangCmdChannel {
         //检测版本所需参数
         final MobileParamInfo mobileParamInfo = new MobileParamInfo();
 //        mobileParamInfo.mid = pk.getString("serial");
-        mobileParamInfo.mid = "1111111";
+        mobileParamInfo.mid = pk.getString("serial");
         mobileParamInfo.version = pk.getString("version");
         mobileParamInfo.oem = pk.getString("oem");
         mobileParamInfo.models = pk.getString("models");
         mobileParamInfo.token = HANLANG_FOTA_TOKE;
         mobileParamInfo.platform = pk.getString("platform");
         mobileParamInfo.deviceType = pk.getString("deviceType");
-
+        			Log.e(TAG, "mid:" + mobileParamInfo.mid + " version" + mobileParamInfo.version + " oem:" + mobileParamInfo.oem + 
+        					" models" + mobileParamInfo.models + " token:" + mobileParamInfo.token + " platform:" + mobileParamInfo.platform
+        					 +  " deviceType:" + mobileParamInfo.deviceType);
         if (!isValidToDownload(mobileParamInfo)) {
             return;
         }

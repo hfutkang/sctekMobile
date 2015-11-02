@@ -33,7 +33,7 @@ public class HanLangNotifyChannel {
 	
 	private final static int updateMsgs[] = {R.string.update_try_connect_wifi, R.string.update_connect_wifi_timeout, R.string.update_start_download,
 																										R.string.update_donwload_error, R.string.update_invalid_package, R.string.update_start,
-																										R.string.update_success, R.string.update_fail, R.string.update_power_shortage};
+																										R.string.update_success, R.string.update_fail, R.string.update_power_shortage, R.string.update_storage_shortage};
 	
 	private SyncChannel mChannel;
 	
