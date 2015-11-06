@@ -172,7 +172,7 @@ public class HanLangCmdChannel {
         mobileParamInfo.version = pk.getString("version");
         mobileParamInfo.oem = pk.getString("oem");
         mobileParamInfo.models = pk.getString("models");
-        mobileParamInfo.token = HANLANG_FOTA_TOKE;
+        mobileParamInfo.token = pk.getString("token");
         mobileParamInfo.platform = pk.getString("platform");
         mobileParamInfo.deviceType = pk.getString("deviceType");
         			Log.e(TAG, "mid:" + mobileParamInfo.mid + " version" + mobileParamInfo.version + " oem:" + mobileParamInfo.oem + 

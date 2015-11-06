@@ -462,7 +462,7 @@
 			<string name="update_start_download">Start downloading upgrade package&#8230;</string>
 			<string name="update_donwload_error">Fail to download upgrade package，abandon upgrade.</string>
 			<string name="update_invalid_package">Invalid package，abandon upgrade。</string>
-			<string name="update_start">Download upgrade package done,start upgrading.\n(if it take too long,please reboot glasses)</string>
+			<string name="update_start">Downloading complete,start upgrading.\n(if fail,please reboot glasses)</string>
 			<string name="update_success">Upgrade successfully,the system is up-to-date now。</string>
 			<string name="update_fail">Upgrade fail，the system remain as it was。</string>
 			<string name="update_power_shortage">Power shortage,abandon upgrade。</string>

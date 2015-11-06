@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.app.Dialog;
 import android.app.Application; 
 import android.app.ProgressDialog;
@@ -47,6 +48,9 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
     private static Activity sActivity = null;
     private static boolean mStartStatus = false;
     private static final Object mStartLock = new Object();
+    
+    private PowerManager pm;
+    private WakeLock wl;
 
     private Handler mHandler = new Handler() {
 	    @Override
@@ -97,13 +101,13 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	sActivity = this;
 	initView();
 
-	PowerManager pm = (PowerManager) this
+	pm = (PowerManager) this
 	    .getSystemService(this.POWER_SERVICE);
-	PowerManager.WakeLock wl = pm.newWakeLock(
+	wl = pm.newWakeLock(
 	    PowerManager.ACQUIRE_CAUSES_WAKEUP
 	    | PowerManager.SCREEN_DIM_WAKE_LOCK, "bright");
 	wl.acquire();
-	wl.release();
+//	wl.release();
     }
 
 
@@ -155,7 +159,6 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 							      mUnConnectedDialog.cancel();
 							      finish();
 							      break;
-		
 							  }
 						      }});
 		mUnConnectedDialog.setOnKeyListener(new DialogInterface.OnKeyListener(){
@@ -266,6 +269,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	}
 
 	super.onStop();
+	wl.release();
 	finish();
     }
 

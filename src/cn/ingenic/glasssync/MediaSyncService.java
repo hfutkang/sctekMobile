@@ -253,7 +253,7 @@ public class MediaSyncService extends Service{
 		RemoteViews videoView = new RemoteViews(getPackageName(), R.layout.notification_view);
 		
 		mVideoNotification.contentView = videoView;
-		mVideoNotification.icon = R.drawable.ic_download;
+		mVideoNotification.icon = R.drawable.ic_download_ntf;
 		mVideoNotification.contentView.setProgressBar(R.id.donwload_progress, 100, 0, false);
 		
 		Intent videoIntent = new Intent(VIDEO_NOTIFICATION_ACTION);
@@ -269,7 +269,7 @@ private void initPhotoNotification() {
 		RemoteViews photoView = new RemoteViews(getPackageName(), R.layout.notification_view);
 		
 		mPhotoNotification.contentView = photoView;
-		mPhotoNotification.icon = R.drawable.ic_download;
+		mPhotoNotification.icon = R.drawable.ic_download_ntf;
 		mPhotoNotification.contentView.setProgressBar(R.id.donwload_progress, 100, 100, true);
 		mPhotoNotification.contentView.setTextViewText(R.id.speed_tv, "");
 		

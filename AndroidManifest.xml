@@ -3,6 +3,9 @@
     package="cn.ingenic.glasssync"
     	android:versionCode="1"
     	android:versionName="HanLang_P1.0" >
+    	
+    <meta-data android:name="BDAPPID" android:value="7200534" />
+    <meta-data android:name="BDAPPKEY" android:value="2clTjOmQoUoIkwFHA1zkvUvW029IylwG" />
 
     <!-- gps -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

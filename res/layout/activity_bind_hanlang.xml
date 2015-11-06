@@ -4,41 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.sctek.smartglasses.ui.BindHanlangActivity" >
-    
-    <LinearLayout 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
-        android:orientation="horizontal">
-        
-        <Button 
-	        android:id="@+id/bind_hanlang_bt"
-	        android:layout_width="0dp"
-	        android:layout_height="40dp"
-	        android:background="@drawable/bordershape"
-	        android:layout_marginBottom="50dp"
-	        android:text="@string/search_bind"
-	        android:layout_weight="1"
-	        android:layout_marginLeft="10dp"
-	        android:onClick="onBindHanLangButtonClicked"/>
-        
-        <Button 
-	        android:id="@+id/scan_qrcode_bt"
-	        android:layout_width="0dp"
-	        android:layout_height="40dp"
-	        android:background="@drawable/bordershape"
-	        android:layout_marginBottom="50dp"
-	        android:text="@string/qr_bind"
-	        android:layout_weight="1"
-	        android:layout_marginLeft="20dp"
-	        android:layout_marginRight="10dp"
-	        android:onClick="onBindScanQrCodeClicked"/>
-        
-    </LinearLayout>
-    
-    
-	
+           	
     <FrameLayout 
         android:id="@+id/progress_fl"
         android:layout_alignParentTop="true"
@@ -72,8 +38,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/progress_fl"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
         android:text="@string/hanlang_comment"/>
+
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+	android:layout_below="@id/hanlang_comment_tv"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+        
+        <Button 
+	        android:id="@+id/bind_hanlang_bt"
+	        android:layout_width="0dp"
+	        android:layout_height="40dp"
+	        android:background="@drawable/bordershape"
+	        android:text="@string/search_bind"
+	        android:layout_weight="1"
+	        android:layout_marginLeft="10dp"
+	        android:onClick="onBindHanLangButtonClicked"/>
+        
+        <Button 
+	        android:id="@+id/scan_qrcode_bt"
+	        android:layout_width="0dp"
+	        android:layout_height="40dp"
+	        android:background="@drawable/bordershape"
+	        android:text="@string/qr_bind"
+	        android:layout_weight="1"
+	        android:layout_marginLeft="20dp"
+	        android:layout_marginRight="10dp"
+	        android:onClick="onBindScanQrCodeClicked"/>
+        
+    </LinearLayout>
 
 </RelativeLayout>
