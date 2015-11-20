@@ -8,20 +8,22 @@
     android:background="@drawable/app_background_low"
     tools:context="com.sctek.smartglasses.ui.MainActivity" >
     
-    <TableLayout 
+  <LinearLayout 
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:gravity="center"
+      android:layout_centerInParent="true">
+    <LinearLayout 
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-	android:layout_centerInParent="true">
+        android:layout_height="0dp"
+	android:orientation="horizontal"
+	android:layout_weight="1"
+        android:gravity="center">
         
-      <TableRow 
-	  android:layout_width="match_parent"
-	  android:layout_height="wrap_content"
-	  android:weightSum="3">
-	
 	<TextView
 	    android:id="@+id/photo_tv"
-	    android:layout_width="wrap_content"
+	    android:layout_width="0dp"
 	    android:layout_height="wrap_content"
 	    android:drawableTop="@drawable/gallery"
 	    android:layout_weight="1"
@@ -34,7 +36,7 @@
 		    
 	<TextView
 	    android:id="@+id/video_tv"
-	    android:layout_width="wrap_content"
+	    android:layout_width="0dp"
 	    android:layout_height="wrap_content"
 	    android:drawableTop="@drawable/video"
 	    android:layout_weight="1"
@@ -47,7 +49,7 @@
 
 	<TextView
 	    android:id="@+id/live_tv"
-	    android:layout_width="wrap_content"
+	    android:layout_width="0dp"
 	    android:layout_height="wrap_content"
 	    android:drawableTop="@drawable/camera"
 	    android:layout_weight="1"
@@ -58,17 +60,18 @@
 	    android:textSize="18sp"
 	    android:textStyle="bold"/>
 	
-      </TableRow>
+      </LinearLayout>
     
-      <TableRow 
+      <LinearLayout 
 	  android:layout_width="match_parent"
-	  android:layout_height="wrap_content"
-	  android:paddingTop="10dp"
-	  android:weightSum="3">
-
+	  android:layout_height="0dp"
+	  android:orientation="horizontal"
+	  android:layout_marginTop="10dp"
+	  android:layout_weight="1"
+	  android:gravity="center">
 	<TextView
 	    android:id="@+id/setting_tv"
-	    android:layout_width="wrap_content"
+	    android:layout_width="0dp"
 	    android:layout_height="wrap_content"
 	    android:drawableTop="@drawable/setting"
 	    android:layout_weight="1"
@@ -81,7 +84,7 @@
 
 	<TextView
 	    android:id="@+id/about_tv"
-	    android:layout_width="wrap_content"
+	    android:layout_width="0dp"
 	    android:layout_height="wrap_content"
 	    android:drawableTop="@drawable/about"
 	    android:layout_weight="1"
@@ -94,7 +97,7 @@
 
 	<TextView
 	    android:id="@+id/unbind_tv"
-	    android:layout_width="wrap_content"
+	    android:layout_width="0dp"
 	    android:layout_height="wrap_content"
 	    android:drawableTop="@drawable/unbind"
 	    android:layout_weight="1"
@@ -104,10 +107,9 @@
 	    android:gravity="center"
 	    android:textSize="18sp"
 	    android:textStyle="bold"/>
-      </TableRow>
+      </LinearLayout>
+  </LinearLayout>
 
-    </TableLayout>
-    
     <LinearLayout 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -146,3 +148,5 @@
         
     </LinearLayout>
 </RelativeLayout>
+
+

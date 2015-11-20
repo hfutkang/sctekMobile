@@ -2,6 +2,7 @@ package com.sctek.smartglasses.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,6 +80,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnKeyListener;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.LocationManager;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -229,10 +233,24 @@ public class MainActivity extends FragmentActivity {
 		// TODO Auto-generated method stub
 		super.onResume();
 		Locale local = getResources().getConfiguration().locale;
-		if(!local.getLanguage().contains("zh")) {
-			RelativeLayout layout = (RelativeLayout)findViewById(R.id.main_background);
-    		layout.setBackgroundResource(R.drawable.app_background_en_low);
-    	}
+		RelativeLayout layout = (RelativeLayout)findViewById(R.id.main_background);
+		InputStream is ;
+		BitmapFactory.Options opt = new BitmapFactory.Options();
+		opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+		opt.inPurgeable = true;
+
+		opt.inInputShareable = true;
+
+		opt.inSampleSize = 2;
+
+		if(local.getLanguage().contains("zh")) 
+		    is= getResources().openRawResource(R.drawable.app_background_low);
+		else 
+		    is = getResources().openRawResource(R.drawable.app_background_en_low);
+		Bitmap bm = BitmapFactory.decodeStream(is, null, opt);
+		BitmapDrawable bd = new BitmapDrawable(getResources(), bm);
+		layout.setBackgroundDrawable(bd);
 	}
 	
 	@Override

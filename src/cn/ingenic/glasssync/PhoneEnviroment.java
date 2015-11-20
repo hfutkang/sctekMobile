@@ -21,7 +21,7 @@ public class PhoneEnviroment extends Enviroment {
 
 			@SuppressWarnings("deprecation")
 			@Override
-			Notification getRetryFailedNotification() {
+			public Notification getRetryFailedNotification() {
 				Notification noti = new Notification();
 				noti.flags |= Notification.FLAG_ONGOING_EVENT;
 				noti.icon = android.R.drawable.ic_dialog_alert;
@@ -41,7 +41,7 @@ public class PhoneEnviroment extends Enviroment {
 			}
 
 			@Override
-			Toast getRetryToast(int reason) {
+			public Toast getRetryToast(int reason) {
 				String str = "UNKNOW";
 				switch (reason) {
 				case DefaultSyncManager.CONNECTING:

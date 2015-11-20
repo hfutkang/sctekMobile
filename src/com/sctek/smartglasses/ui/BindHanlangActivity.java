@@ -211,14 +211,16 @@ public class BindHanlangActivity extends Activity {
 
 		    if (DEBUG)Log.d(TAG, "name="+scanDevice.getName()+"address="+scanDevice.getAddress()+"--Build.BOARD="+Build.BOARD);
 
-		    if(deviceName == null && scanDevice.getName().toUpperCase().startsWith(HANLANG_BT_NAME)){
+		    String name = scanDevice.getName();
+		    
+		    if(deviceName == null && name.toUpperCase().startsWith(HANLANG_BT_NAME)){
 		    	mHandler.removeMessages(REQUEST_CANCEL_SCAN_DEVICE);
 		    	Message requestpairMsg = mHandler.obtainMessage();
 		    	requestpairMsg.what = REQUEST_CONNECT;
 		    	requestpairMsg.obj = scanDevice;
 			mHandler.sendMessage(requestpairMsg);
 		    }
-		    else if(deviceName != null && scanDevice.getName().toUpperCase().endsWith(deviceName)) {
+		    else if(deviceName != null && name.toUpperCase().endsWith(deviceName)) {
 		    	mHandler.removeMessages(REQUEST_CANCEL_SCAN_DEVICE);
 		    	Message requestpairMsg = mHandler.obtainMessage();
 		    	requestpairMsg.what = REQUEST_CONNECT;
@@ -232,8 +234,9 @@ public class BindHanlangActivity extends Activity {
 		    BluetoothDevice device = intent
 			.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 		    if (DEBUG)Log.d(TAG, device.getBondState() + "Other activity===bonded");
-		    if((deviceName == null && device.getName().startsWith(HANLANG_BT_NAME)) ||
-		    		(deviceName != null && device.getName().equals(deviceName))) {
+		    String name = device.getName();
+		    if((deviceName == null && name.toUpperCase().startsWith(HANLANG_BT_NAME)) ||
+		    		(deviceName != null && name.toUpperCase().equals(deviceName))) {
 			    switch (device.getBondState()) {
 			    case BluetoothDevice.BOND_BONDED:
 				// if(device.getAddress().equals(mPairingDevice.getAddress()))

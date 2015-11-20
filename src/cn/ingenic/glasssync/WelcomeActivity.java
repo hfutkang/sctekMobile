@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Locale;
 
+import com.baidu.autoupdatesdk.BDAutoUpdateSDK;
+import com.baidu.autoupdatesdk.UICheckUpdateCallback;
 import com.sctek.smartglasses.ui.BindHanlangActivity;
 import com.sctek.smartglasses.ui.MainActivity;
 
@@ -25,6 +27,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
 import android.provider.Settings;
+
+
 
 
 
@@ -121,6 +125,9 @@ public class WelcomeActivity extends Activity {
 	}
 
 	private void startActivity() {
+		
+		BDAutoUpdateSDK.uiUpdateAction(this, new MyUICheckUpdateCallback());
+		
 		new Handler().postDelayed(new Runnable() {
 			@Override
 			public void run() {
@@ -141,6 +148,16 @@ public class WelcomeActivity extends Activity {
 			}
 		}, 2000);
 	}
+	
+	private class MyUICheckUpdateCallback implements UICheckUpdateCallback {
+
+		@Override
+		public void onCheckComplete() {
+			Log.e(TAG, "baidu update onCheckComplete================");
+		}
+
+	}
+	
     @Override
 	protected void onDestroy() {
 	super.onDestroy();

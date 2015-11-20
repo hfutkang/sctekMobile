@@ -54,7 +54,7 @@ public class RemoteMediaDeleteTask extends AsyncTask<String, Integer, Void> {
 	protected void onProgressUpdate(Integer... values) {
 		// TODO Auto-generated method stub
 		if(values[1] == 0) {
-			Toast.makeText(mContext, R.string.connect_error, Toast.LENGTH_LONG).show();
+			Toast.makeText(mContext, R.string.delete_error, Toast.LENGTH_LONG).show();
 		}
 		else
 		{
@@ -93,24 +93,20 @@ public class RemoteMediaDeleteTask extends AsyncTask<String, Integer, Void> {
 				
 				HttpClient httpClient = CustomHttpClient.getHttpClient();
 				HttpGet httpGet = new HttpGet(urlBuffer.toString());
-				int error = GlassImageDownloader.deleteRequestExecute(httpClient, httpGet);
-				if(error < 0) {
-					publishProgress(-1);
-					return null;
-				}
+				int delcount = GlassImageDownloader.deleteRequestExecute(httpClient, httpGet);
 				
-				if(error < 0) {
+				if(delcount < 0) {
 					errors += i;
 				}
 				else {
-					errors += error;
-					dones += (i - error);
+					errors += i - delcount;
+					dones += delcount;
 				}
 				
 			} catch (Exception e) {
 				e.printStackTrace();
-				publishProgress(-1);
-				return null;
+//				publishProgress(-1);
+//				return null;
 			}
 			
 		}

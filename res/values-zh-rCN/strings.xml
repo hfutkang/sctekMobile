@@ -440,4 +440,5 @@
 			<string name="update_fail">升级未完成，系统已恢复到升级前状态。</string>
 			<string name="update_power_shortage">电量不足，放弃升级。</string>
 			<string name="update_storage_shortage">空间不足，放弃升级。</string>
+			<string name="delete_error">删除失败</string>
 </resources>

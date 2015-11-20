@@ -123,6 +123,7 @@ public class GetGlassIpActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
+		Log.e(TAG, "onDestroy");
 		mHanlder.removeMessages(RESEDN_CONNET_WIFI_MSG);
 		unregisterReceiver(mApStateBroadcastReceiver);
 		SyncApp.getInstance().removeActivity(this);
@@ -213,7 +214,7 @@ public class GetGlassIpActivity extends Activity {
     }
 	
 	private void sendApInfoToGlass() {
-		
+		Log.e(TAG, "sendApInfoToGlass");
 		if(mHanLangCmdChannel.isConnected()) {
 			
 			
@@ -289,6 +290,7 @@ public class GetGlassIpActivity extends Activity {
 				glassIp = data.getString("ip");
 				
 				if(glassIp != null && glassIp.length() != 0&&!connected) {
+					mHanLangCmdChannel.setHandler(null);
 					mProgressDialog.cancel();
 					mHanlder.removeMessages(RESEDN_CONNET_WIFI_MSG);
 					Intent intent = new Intent(GetGlassIpActivity.this, LiveDisplayActivity.class);

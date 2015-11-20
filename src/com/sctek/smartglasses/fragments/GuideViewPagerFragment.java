@@ -1,6 +1,7 @@
 package com.sctek.smartglasses.fragments;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import cn.ingenic.glasssync.R;
 
@@ -42,8 +43,7 @@ public class GuideViewPagerFragment extends Fragment {
 	private ImageView dot4;
 	private ImageView dot5;
 	
-	private int guideIds[] = { R.drawable.g1, R.drawable.g2, R.drawable.g3, R.drawable.g4, R.drawable.g5, 
-																			R.drawable.g6, R.drawable.g7, R.drawable.g8};
+	private int guideIds[];
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +51,18 @@ public class GuideViewPagerFragment extends Fragment {
 		Log.e(TAG, "onCreate");
 		
 		getActivity().getActionBar().hide();
+		
+		Locale local = getActivity().getResources().getConfiguration().locale;
+		if(local.getLanguage().contains("zh")) {
+			guideIds = new int[]{ R.drawable.gc1, R.drawable.gc2, R.drawable.gc3, R.drawable.gc4, R.drawable.gc5, 
+					R.drawable.gc6, R.drawable.gc7, R.drawable.gc8, R.drawable.gc9, R.drawable.gc10, 
+					R.drawable.gc11, R.drawable.gc12};
+		}
+		else {
+			guideIds = new int[] { R.drawable.ge1, R.drawable.ge2, R.drawable.ge3, R.drawable.ge4, R.drawable.ge5, 
+					R.drawable.ge6, R.drawable.ge7, R.drawable.ge8, R.drawable.ge9, R.drawable.ge10, 
+					R.drawable.ge11, R.drawable.ge12, R.drawable.ge13};
+		}
 		
 	}
 	

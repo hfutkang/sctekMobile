@@ -2,6 +2,8 @@ package com.sctek.smartglasses.utils;
 
 import java.util.zip.Inflater;
 
+import com.baidu.autoupdatesdk.BDAutoUpdateSDK;
+import com.baidu.autoupdatesdk.UICheckUpdateCallback;
 import com.fota.iport.ICheckVersionCallback;
 import com.fota.iport.MobAgentPolicy;
 import com.fota.iport.config.MobileParamInfo;

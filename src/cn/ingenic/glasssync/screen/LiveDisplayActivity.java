@@ -159,6 +159,7 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 							      mUnConnectedDialog.cancel();
 							      finish();
 							      break;
+		
 							  }
 						      }});
 		mUnConnectedDialog.setOnKeyListener(new DialogInterface.OnKeyListener(){
@@ -269,7 +270,8 @@ public class LiveDisplayActivity extends Activity implements RtspClient.OnRtspCl
 	}
 
 	super.onStop();
-	wl.release();
+	if(wl.isHeld())
+		wl.release();
 	finish();
     }
 

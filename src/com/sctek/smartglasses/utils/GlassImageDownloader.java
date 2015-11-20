@@ -84,7 +84,7 @@ public class GlassImageDownloader {
 	public static int deleteRequestExecute(HttpClient httpclient, HttpGet httpget) {
 		
 		BufferedReader in = null;
-		int errors = 0;
+		int delcount = 0;
 		
 		try{
 			
@@ -101,14 +101,14 @@ public class GlassImageDownloader {
 			in.close();
 			if(result != null) {
 				
-				int start = result.indexOf("<error>");
-				int end = result.indexOf("</error>");
+				int start = result.indexOf("<result>");
+				int end = result.indexOf("</result>");
 				
 				if(start > 0 && end >0)
-					errors = Integer.parseInt(result.substring(start + 7, end));
+					delcount = Integer.parseInt(result.substring(start + 8, end));
 			}
 				Log.e(TAG, result.toString());
-			return errors;
+			return delcount;
 		}catch (Exception e) {
 			e.printStackTrace();
 			return -1;

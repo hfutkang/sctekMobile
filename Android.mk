@@ -21,6 +21,10 @@ LOCAL_STATIC_JAVA_LIBRARIES :=  \
 	universal-image-loader \
 	zxing-core \
 	fota_iport \
+	android_api_3.6.9.3	\
+	BDAutoUpdate	\
+	need_lib	\
+	patchupdate	\
 	sync_framework
 
 LOCAL_RESOURCE_DIR = \
@@ -35,6 +39,8 @@ LOCAL_AAPT_FLAGS := \
 LOCAL_JNI_SHARED_LIBRARIES := liblocSDK5
 LOCAL_JNI_SHARED_LIBRARIES += libffmpeg
 LOCAL_JNI_SHARED_LIBRARIES += liblive_jni
+LOCAL_JNI_SHARED_LIBRARIES += libbase64encoder_v1_4
+LOCAL_JNI_SHARED_LIBRARIES += libMD5_v1
 LOCAL_PACKAGE_NAME := HanLang
 
 
@@ -45,10 +51,17 @@ include $(BUILD_PACKAGE)
 
 include $(CLEAR_VARS)  
 LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES :=libammsdk:libs/libammsdk.jar
-LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES += mzxing:libs/zxing.jar android_api:libs/android_api.jar universal-image-loader:libs/universal-image-loader-1.9.3.jar zxing-core:libs/zxing-core.jar
+LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES += mzxing:libs/zxing.jar android_api:libs/android_api.jar \
+																						universal-image-loader:libs/universal-image-loader-1.9.3.jar \
+																						zxing-core:libs/zxing-core.jar	android_api_3.6.9.3:libs/android_api_3.6.9.3.jar	\
+																						BDAutoUpdate:libs/BDAutoUpdate_APPX_SDK_20150826.jar	need_lib:libs/need_lib.jar	\
+																						patchupdate:libs/patchupdate.jar
+																						
 LOCAL_PREBUILT_LIBS := liblocSDK5:libs/armeabi/liblocSDK5.so
 LOCAL_PREBUILT_LIBS += libffmpeg:libs/armeabi/libffmpeg.so 
 LOCAL_PREBUILT_LIBS += liblive_jni:libs/armeabi/liblive_jni.so 
+LOCAL_PREBUILT_LIBS += libbase64encoder_v1_4:libs/armeabi/libbase64encoder_v1_4.so 
+LOCAL_PREBUILT_LIBS += libMD5_v1:libs/armeabi/libMD5_v1.so 
 LOCAL_MODULE_TAGS := optional  
 include $(BUILD_MULTI_PREBUILT)  
 
