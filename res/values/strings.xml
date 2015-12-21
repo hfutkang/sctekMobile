@@ -1,6 +1,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Power Wolf</string>
-    <string name="app_label">Power Wolf</string>
+    <string name="app_name">Smart Glasses</string>
+    <string name="app_label">Smart Glasses</string>
     <string name="bond">bind</string>
     <string name="pair">pair</string>
     <string name="pair_fail">Matching failure</string>
@@ -351,7 +351,7 @@
     <string name="low_power">Low power notification</string>
     <string name="low_power_msg">Glasses power is low</string>
     <string name="glass_model">Model</string>
-    <string name="version_code_summary">HanLang V1.0</string>
+    <string name="version_code_summary">Glasses V1.0</string>
     <string name="glass_serial_number">Serial</string>
     <string name="serial_number_summary">ABCD123456789</string>
     <string name="glass_power">Glasses power</string>
@@ -374,8 +374,8 @@
     <string name="turning_bluetoothheadset_on">Turning on&#8230;</string>
     <string name="turning_bluetoothheadset_off">Turning off&#8230;</string>
     <string name="bluetooth_finded_devices">Glasses found</string>
-    <string name="welcome_use_hanlang">Welcome to use HanLang</string>
-    <string name="serching_hanlang">Searching HanLang&#8230;</string>
+    <string name="welcome_use_hanlang">Welcome to use</string>
+    <string name="serching_hanlang">Searching Glasses&#8230;</string>
     <string name="bind_hanlang">Bind Glasses</string>
     <string name="rebind_hanlang">Rebind</string>
     <string name="binding_hanlang">Binding&#8230;</string>
@@ -393,7 +393,7 @@
     <string name="glass_ram">RAM</string>
     <string name="glass_up_time">Running time</string>
     <string name="up_time_summary">Getting running time&#8230;</string>
-    <string name="glass_version">HanLang version</string>
+    <string name="glass_version">Glasses version</string>
     <string name="get_power_timeout">Get glasses power time out</string>
     <string name="get_storage_timeout">Get glasses storage time out</string>
     <string name="get_uptime_timeout">Get running time time out</string>
@@ -415,8 +415,8 @@
     <string name="media_downloaded">Downloaded</string>
     <string name="media_path">Native files path</string>
     <string name="media_path_summary">SD Card/SmartGlasses/</string>
-    <string name="glass_state">HanLang state</string>
-    <string name="glass_state_summary">Getting HanLang state&#8230;</string>
+    <string name="glass_state">Glasses state</string>
+    <string name="glass_state_summary">Getting Glasses state&#8230;</string>
     <string name="turn_wifi_ap_off">Tunr Ap Off</string>
     <string name="wifi_ap_hint_off">Would you like to turn ap off</string>
     <string name="delete_message">Do you want to delete selected itmes</string>
@@ -431,7 +431,7 @@
     <string name="qr_bind">QrCode Bind</string>
     <string name="msg_camera_framework_bug">Sorry, Fail to open camera. please check camera permissiion is granted.</string>
 			<string name="user_guide"	>User guide</string>
-    	<string name="user_guide_summary">Click to view the HanLang operation guide</string>
+    	<string name="user_guide_summary">Click to view the Glasses operation guide</string>
     	<string name="no_available_player">Find no available player,you can open in gallery</string>
     	<string name="app_version">App version</string>
     	<string name="unbonding">Unbonding&#8230;</string>

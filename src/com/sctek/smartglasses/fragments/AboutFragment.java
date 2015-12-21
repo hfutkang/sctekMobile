@@ -58,7 +58,7 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 	private Preference mUptimePreference;
 	private Preference mStatePreference;
 	private Preference mMediaPathPreference;
-	private Preference mGuidePreference;
+//	private Preference mGuidePreference;
 	private Preference mAppVersionPreference;
 	
 	@Override
@@ -147,7 +147,7 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 		mUptimePreference = findPreference("uptime");
 		mStatePreference = findPreference("state");
 		mMediaPathPreference = findPreference("media_path");
-		mGuidePreference = findPreference("guide");
+//		mGuidePreference = findPreference("guide");
 		mAppVersionPreference = findPreference("app_version");
 		
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -159,24 +159,24 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
 		mMediaPathPreference.setSummary(Environment.getExternalStorageDirectory().toString() + "/SmartGlasses");
 		mAppVersionPreference.setSummary(getAppVersion());
 		
-		mGuidePreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				// TODO Auto-generated method stub
-				FragmentManager fragManager = getActivity().getFragmentManager();
-				FragmentTransaction transcaction = fragManager.beginTransaction();
-				String tag = GuideViewPagerFragment.class.getName();
-				GuideViewPagerFragment photoFm = (GuideViewPagerFragment)fragManager.findFragmentByTag(tag);
-				if(photoFm == null)
-					photoFm = new GuideViewPagerFragment();
-				
-				transcaction.replace(android.R.id.content, photoFm, tag);
-				transcaction.addToBackStack(null);
-				transcaction.commit();
-				return false;
-			}
-		});
+//		mGuidePreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+//			
+//			@Override
+//			public boolean onPreferenceClick(Preference preference) {
+//				// TODO Auto-generated method stub
+//				FragmentManager fragManager = getActivity().getFragmentManager();
+//				FragmentTransaction transcaction = fragManager.beginTransaction();
+//				String tag = GuideViewPagerFragment.class.getName();
+//				GuideViewPagerFragment photoFm = (GuideViewPagerFragment)fragManager.findFragmentByTag(tag);
+//				if(photoFm == null)
+//					photoFm = new GuideViewPagerFragment();
+//				
+//				transcaction.replace(android.R.id.content, photoFm, tag);
+//				transcaction.addToBackStack(null);
+//				transcaction.commit();
+//				return false;
+//			}
+//		});
 		
 		getPower();
 		

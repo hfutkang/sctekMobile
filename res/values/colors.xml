@@ -31,5 +31,12 @@
 	<color name="viewfinder_mask">#60000000</color>
 	<color name="result_view">#b0000000</color>
 	<color name="possible_result_points">#c0ffbd21</color> <!-- Android standard ICS color -->
+	<color name="pink">#FFC0CB</color><!--粉红色 -->
+	<color name="orange">#FFA500</color><!--橙色 -->
+	<color name="cornsilk">#FFF8DC</color><!--米绸色 -->
+	<color name="indigo">#4B0082</color><!--靛青色 -->
+	<color name="oldlace">#FDF5E6</color><!--老花色 -->
+	<color name="peachpuff">#FFDAB9</color><!--桃色 -->
+	<color name="darkblue">#00008B</color><!--暗蓝色 -->
 	
 </resources>

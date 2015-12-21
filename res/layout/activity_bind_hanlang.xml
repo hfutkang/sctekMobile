@@ -3,6 +3,7 @@
     xmlns:widget="http://schemas.android.com/apk/res/cn.ingenic.glasssync"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/orange"
     tools:context="com.sctek.smartglasses.ui.BindHanlangActivity" >
            	
     <FrameLayout 
@@ -45,9 +46,8 @@
     <LinearLayout 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-	android:layout_below="@id/hanlang_comment_tv"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="50dp"
         android:orientation="horizontal">
         
         <Button 

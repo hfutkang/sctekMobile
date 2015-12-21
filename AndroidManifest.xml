@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.ingenic.glasssync"
     	android:versionCode="1"
-    	android:versionName="HanLang_P1.0.1111" >
+    	android:versionName="SmartGlasses_P1.0.1130" >
 
     <!-- gps -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

@@ -114,6 +114,24 @@ public class MainActivity extends FragmentActivity {
 	public final static int GET_GLASS_INFO = 17;
 	public final static int UPDATE_CONNECT_WIFI_MSG =20;
 	
+    private int[] imgs = new int[]{
+            R.drawable.gallery,
+            R.drawable.video,
+            R.drawable.camera,
+            R.drawable.setting,
+            R.drawable.about,
+            R.drawable.unbind};
+
+    //菜单按钮对应的文案
+    private int[] titles = new int[]{
+            R.string.glass_photo,
+            R.string.glass_video,
+            R.string.glass_live,
+            R.string.setting,
+            R.string.about_glass,
+            R.string.unbind
+    };
+	
 	private TextView photoTv;
 	private TextView videoTv;
 	private TextView settingTv;
@@ -123,6 +141,8 @@ public class MainActivity extends FragmentActivity {
         private Button takePhotoBt;
         private Button takeVideoBt;
 	private DefaultSyncManager mSyncManager;
+	
+	private CircleMenuLayout mCircleMenuLayout;
 
 	private static MainActivity mInstance = null;
 	public static MainActivity getInstance() {
@@ -137,21 +157,51 @@ public class MainActivity extends FragmentActivity {
 		getActionBar().hide();
 		mInstance = this;
 		SyncApp.getInstance().addActivity(this);
-		photoTv = (TextView)findViewById(R.id.photo_tv);
-		videoTv = (TextView)findViewById(R.id.video_tv);
-		settingTv = (TextView)findViewById(R.id.setting_tv);
-		liveTv = (TextView)findViewById(R.id.live_tv);
-		unbindTv = (TextView)findViewById(R.id.unbind_tv);
-		aboutTv = (TextView)findViewById(R.id.about_tv);
+//		photoTv = (TextView)findViewById(R.id.photo_tv);
+//		videoTv = (TextView)findViewById(R.id.video_tv);
+//		settingTv = (TextView)findViewById(R.id.setting_tv);
+//		liveTv = (TextView)findViewById(R.id.live_tv);
+//		unbindTv = (TextView)findViewById(R.id.unbind_tv);
+//		aboutTv = (TextView)findViewById(R.id.about_tv);
 		takePhotoBt =(Button)findViewById(R.id.take_photo_bt);
 		takeVideoBt =(Button)findViewById(R.id.take_video_bt);
+		
+		mCircleMenuLayout = (CircleMenuLayout)findViewById(R.id.circle_menu);
+		mCircleMenuLayout.setMenuResource(imgs,titles);
+		mCircleMenuLayout.setOnMenuClickListener(new CircleMenuLayout.OnMenuClickListener() {
+            @Override
+            public void onMenuClick(int position) {
+                System.out.println("position:"+position);
+                switch (position) {
+                case 0:
+					startActivity(new Intent(MainActivity.this, PhotoActivity.class));
+					break;
+				case 1:
+					startActivity(new Intent(MainActivity.this, VideoActivity.class));
+					break;
+				case 2:
+					startActivity(new Intent(MainActivity.this, GetGlassIpActivity.class));
+					break;
+				case 3:
+					Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+					startActivity(intent);
+					break;
+				case 4:
+					startActivity(new Intent(MainActivity.this, AboutActivity.class));
+					break;
+				case 5:
+					showUbindDialog();
+					break; 
+                }
+            }
+        });
 
-		photoTv.setOnClickListener(mClickedListener);
-		videoTv.setOnClickListener(mClickedListener);
-		settingTv.setOnClickListener(mClickedListener);
-		liveTv.setOnClickListener(mClickedListener);
-		unbindTv.setOnClickListener(mClickedListener);
-		aboutTv.setOnClickListener(mClickedListener);
+//		photoTv.setOnClickListener(mClickedListener);
+//		videoTv.setOnClickListener(mClickedListener);
+//		settingTv.setOnClickListener(mClickedListener);
+//		liveTv.setOnClickListener(mClickedListener);
+//		unbindTv.setOnClickListener(mClickedListener);
+//		aboutTv.setOnClickListener(mClickedListener);
 		takePhotoBt.setOnClickListener(mClickedListener);
 		takeVideoBt.setOnClickListener(mClickedListener);
 
@@ -232,25 +282,25 @@ public class MainActivity extends FragmentActivity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		Locale local = getResources().getConfiguration().locale;
-		RelativeLayout layout = (RelativeLayout)findViewById(R.id.main_background);
-		InputStream is ;
-		BitmapFactory.Options opt = new BitmapFactory.Options();
-		opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
+//		Locale local = getResources().getConfiguration().locale;
+//		RelativeLayout layout = (RelativeLayout)findViewById(R.id.main_background);
+//		InputStream is ;
+//		BitmapFactory.Options opt = new BitmapFactory.Options();
+//		opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
+//
+//		opt.inPurgeable = true;
+//
+//		opt.inInputShareable = true;
+//
+//		opt.inSampleSize = 2;
 
-		opt.inPurgeable = true;
-
-		opt.inInputShareable = true;
-
-		opt.inSampleSize = 2;
-
-		if(local.getLanguage().contains("zh")) 
-		    is= getResources().openRawResource(R.drawable.app_background_low);
-		else 
-		    is = getResources().openRawResource(R.drawable.app_background_en_low);
-		Bitmap bm = BitmapFactory.decodeStream(is, null, opt);
-		BitmapDrawable bd = new BitmapDrawable(getResources(), bm);
-		layout.setBackgroundDrawable(bd);
+//		if(local.getLanguage().contains("zh")) 
+//		    is= getResources().openRawResource(R.drawable.app_background_low);
+//		else 
+//		    is = getResources().openRawResource(R.drawable.app_background_en_low);
+//		Bitmap bm = BitmapFactory.decodeStream(is, null, opt);
+//		BitmapDrawable bd = new BitmapDrawable(getResources(), bm);
+//		layout.setBackgroundDrawable(bd);
 	}
 	
 	@Override
@@ -291,25 +341,25 @@ public class MainActivity extends FragmentActivity {
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			switch (v.getId()) {
-				case R.id.photo_tv:
-					startActivity(new Intent(MainActivity.this, PhotoActivity.class));
-					break;
-				case R.id.video_tv:
-					startActivity(new Intent(MainActivity.this, VideoActivity.class));
-					break;
-				case R.id.setting_tv:
-					startActivity(new Intent(MainActivity.this, SettingActivity.class));
-					break;
-				case R.id.live_tv:
-					Intent intent = new Intent(MainActivity.this, GetGlassIpActivity.class);
-					startActivity(intent);
-					break;
-				case R.id.unbind_tv:
-					showUbindDialog();
-					break;
-				case R.id.about_tv:
-					startActivity(new Intent(MainActivity.this, AboutActivity.class));
-					break;
+//				case R.id.photo_tv:
+//					startActivity(new Intent(MainActivity.this, PhotoActivity.class));
+//					break;
+//				case R.id.video_tv:
+//					startActivity(new Intent(MainActivity.this, VideoActivity.class));
+//					break;
+//				case R.id.setting_tv:
+//					startActivity(new Intent(MainActivity.this, SettingActivity.class));
+//					break;
+//				case R.id.live_tv:
+//					Intent intent = new Intent(MainActivity.this, GetGlassIpActivity.class);
+//					startActivity(intent);
+//					break;
+//				case R.id.unbind_tv:
+//					showUbindDialog();
+//					break;
+//				case R.id.about_tv:
+//					startActivity(new Intent(MainActivity.this, AboutActivity.class));
+//					break;
 		   	        case R.id.take_photo_bt:
 				    PhotoModule m=PhotoModule.getInstance(getApplicationContext());
 				    m.send_take_photo();

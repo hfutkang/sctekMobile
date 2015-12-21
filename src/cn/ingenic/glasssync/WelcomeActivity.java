@@ -32,6 +32,7 @@ import android.provider.Settings;
 
 
 
+
 // import cn.ingenic.glasssync.ui.BindGlassActivity;
 import com.sctek.smartglasses.ui.BindGlassActivity;
 
@@ -39,6 +40,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import cn.ingenic.glasssync.SyncApp;
 import cn.ingenic.glasssync.ui.Fragment_MainActivity;
@@ -168,12 +170,19 @@ public class WelcomeActivity extends Activity {
     	protected void onResume() {
     	super.onResume();
     	
-    	Locale local = getResources().getConfiguration().locale;
-    	
-    	if(!local.getLanguage().contains("zh")) {
-    		LinearLayout layout = (LinearLayout)findViewById(R.id.welcome_layout);
-    		layout.setBackgroundResource(R.drawable.welcome_background_en_low);
+//    	Locale local = getResources().getConfiguration().locale;
+//    	
+//    	if(!local.getLanguage().contains("zh")) {
+//    		LinearLayout layout = (LinearLayout)findViewById(R.id.welcome_layout);
+//    		layout.setBackgroundResource(R.drawable.welcome_background_en_low);
+//    	}
+    	try {
+	    	TextView versionTv = (TextView)findViewById(R.id.version_tv);
+	    	versionTv.setText(getPackageManager().getPackageInfo(getPackageName(), 0).versionName + "");
+    	} catch (Exception e) {
+    		e.printStackTrace();
     	}
+    	
     	if(mFirst){ 
     	    mFirst = false;
     	    return;

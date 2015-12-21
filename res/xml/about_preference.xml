@@ -40,8 +40,8 @@
         android:key="state"
         android:summary="@string/glass_state_summary"/>
     
-    <Preference android:title="@string/user_guide"
+<!--     <Preference android:title="@string/user_guide"
         android:key="guide"
-        android:summary="@string/user_guide_summary"/>
+        android:summary="@string/user_guide_summary"/> -->
 
 </PreferenceScreen>
